@@ -77,8 +77,8 @@ parser.add_argument('--charging_heuristic', type=str, default='empty_to_full',
                     help='Which charging heuristic to use')
 
 args = parser.parse_args()
-args.cuda = torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+# always using cpu
+device = torch.device("cpu")
 lr_a = args.lr_a
 lr_c = args.lr_c
 grad_norm_clip_a = args.grad_norm_clip_a
@@ -105,10 +105,15 @@ if args.toy:
 else:
     # problem_folder = 'NY/ClusterDataset1'
     # file_path = os.path.join('data', problem_folder,  'd1.json')
-    problem_folder = 'NY_5'
-    file_path = os.path.join('data', problem_folder,  'NY_5_day.json')
+    # problem_folder = 'NY_5'
+    # file_path = os.path.join('data', problem_folder,  'NY_5_day.json')
     # problem_folder = 'SF_5_clustered'
     # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
+
+    problem_folder = 'SF_5_clustered'
+    file_path = os.path.join('data', problem_folder,  'SF_5.json')
+
+
     experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
     energy_dist_path = os.path.join('data', problem_folder, 'energy_distance.npy')
     scenario = create_scenario(file_path, energy_dist_path)
