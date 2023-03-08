@@ -58,9 +58,9 @@ args = parser.parse_args()
 # device = torch.device("cuda" if args.cuda else "cpu")
 device = torch.device("cpu")
 
-# problem_folder = 'Toy'
-problem_folder = 'TrainingData'
-file_path = os.path.join('data', problem_folder, 'scenario_train_3_2.json')
+problem_folder = 'Toy'
+# file_path = os.path.join('data', problem_folder, 'scenario_train_3_2.json')
+file_path = os.path.join('data', 'TrainingData', 'scenario_train_3_2.json')
 experiment = args.baseline_type + '_baseline_testing_' + file_path
 energy_dist_path = os.path.join('data', problem_folder, 'energy_distance_3x2.npy')
 test_scenario = create_scenario(file_path, energy_dist_path)
