@@ -12,6 +12,7 @@ import wandb
 from src.envs.amod_env import Scenario, AMoD
 from src.algos.a2c_gnn import A2C
 # from src.algos.reb_flow_solver import solveRebFlow
+from src.algos.pax_flows_solver import PaxFlowsSolver
 from src.algos.reb_flows_solver import RebalFlowSolver
 from src.misc.utils import dictsum
 
@@ -119,7 +120,8 @@ model.set_env(env)
 done = False
 while(not done):
     # take matching step (Step 1 in paper)
-    obs, paxreward, done, info = env.pax_step()
+    pax_flows_solver = PaxFlowsSolver(env=env,gurobi_env=gurobi_env)
+    obs, paxreward, done, info = env.pax_step(pax_flows_solver=pax_flows_solver)
     episode_reward += paxreward
     # use GNN-RL policy (Step 2 in paper)
     action_rl = model.select_equal_action()
