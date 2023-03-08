@@ -58,8 +58,9 @@ parser.add_argument('--number_subproblems', type=int, default=3, metavar='N',
 parser.add_argument('--T', type=int, default=10, metavar='N',
                     help='Time horizon for the A2C')
 args = parser.parse_args()
-args.cuda = torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+# args.cuda = torch.cuda.is_available()
+# device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cpu")
 
 
 def create_scenario(json_file_path, energy_file_path, seed=10):
@@ -283,7 +284,8 @@ def main():
     # gurobi_env.start()
 
     if args.toy:
-        problem_folder = 'Toy'
+        # problem_folder = 'Toy'
+        problem_folder = 'TrainingData'
         file_path = os.path.join(
             'data', problem_folder, 'scenario_train1x1.json')
         experiment = 'training_stable_baselines_' + problem_folder + '_' + \
