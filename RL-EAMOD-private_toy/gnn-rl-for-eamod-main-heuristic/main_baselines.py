@@ -44,7 +44,9 @@ parser.add_argument('--beta', type=int, default=0.5, metavar='S',
                     help='cost of rebalancing (default: 0.5)')
 
 # Model parameters
-parser.add_argument('--baseline_type', type=str, default=None,
+# parser.add_argument('--baseline_type', type=str, default=None,
+#                     help='defines the mode for agent evaluation')
+parser.add_argument('--baseline_type', type=str, default='heuristic',
                     help='defines the mode for agent evaluation')
 parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
