@@ -96,7 +96,7 @@ if args.toy:
     # file_path = os.path.join('data', problem_folder, 'scenario_test_6_1x2_flip.json')
     file_path = os.path.join('data', 'scenario_train1x1.json')
     experiment = 'training_' + problem_folder+ '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + file_path + '_heuristic_' + charging_heuristic + "_fast_charging"
-    energy_dist_path = os.path.join('data', problem_folder,  'energy_distance_1x2.npy')
+    energy_dist_path = os.path.join('data', problem_folder,  'energy_distance_1x1.npy')
     scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(scenario)
     scale_factor = 0.01
