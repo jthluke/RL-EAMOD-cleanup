@@ -77,8 +77,9 @@ parser.add_argument('--charging_heuristic', type=str, default='empty_to_full',
                     help='Which charging heuristic to use')
 
 args = parser.parse_args()
-args.cuda = torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+# args.cuda = torch.cuda.is_available()
+# device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cpu")
 lr_a = args.lr_a
 lr_c = args.lr_c
 grad_norm_clip_a = args.grad_norm_clip_a
@@ -92,7 +93,8 @@ T = args.T
 # toy 1x1
 if args.toy:
     problem_folder = 'Toy'
-    file_path = os.path.join('data', problem_folder, 'scenario_test_6_1x2_flip.json')
+    # file_path = os.path.join('data', problem_folder, 'scenario_test_6_1x2_flip.json')
+    file_path = os.path.join('data', 'TrainingData', 'scenario_test_6_1x2_flip.json')
     experiment = 'training_' + problem_folder+ '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + file_path + '_heuristic_' + charging_heuristic + "_fast_charging"
     energy_dist_path = os.path.join('data', problem_folder,  'energy_distance_1x2.npy')
     scenario = create_scenario(file_path, energy_dist_path)
