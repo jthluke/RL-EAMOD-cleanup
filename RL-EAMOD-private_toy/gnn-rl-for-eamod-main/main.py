@@ -85,7 +85,7 @@ T = args.T
 if args.toy:
     problem_folder = 'Toy'
     # file_path = os.path.join('data', problem_folder, 'scenario_artificial.json')
-    file_path = os.path.join('data', 'TrainingData', 'scenario_test1x1.json')
+    file_path = os.path.join('data', 'TrainingData', 'scenario_artificial.json')
     experiment = 'training_' + problem_folder+ '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + file_path
     energy_dist_path = os.path.join('data', problem_folder,  'energy_distance_artificial.npy')
     scenario = create_scenario(file_path, energy_dist_path)
