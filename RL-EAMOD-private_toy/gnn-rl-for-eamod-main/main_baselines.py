@@ -45,8 +45,11 @@ parser.add_argument('--beta', type=int, default=0.5, metavar='S',
                     help='cost of rebalancing (default: 0.5)')
 
 # Model parameters
-parser.add_argument('--baseline_type', type=str, default=None,
+
+parser.add_argument('--baseline_type', type=str, default='greedy',
                     help='defines the mode for agent evaluation')
+# parser.add_argument('--baseline_type', type=str, default=None,
+#                help='defines the mode for agent evaluation')
 parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
 
@@ -122,7 +125,7 @@ while(not done):
 
     # rebAction = solveRebFlow(env=env, desiredAcc=desiredAcc, gurobi_env=gurobi_env)
     rebAction = RebalFlowSolver(env=env, desiredAcc=desiredAcc, gurobi_env=gurobi_env).solve()
-    
+
     # Take action in environment
     new_obs, rebreward, done, info = env.reb_step(rebAction)
     episode_reward += rebreward
