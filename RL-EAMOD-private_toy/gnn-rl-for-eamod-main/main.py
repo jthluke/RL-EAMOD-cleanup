@@ -69,8 +69,9 @@ parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
                     help='Gradient norm clipping for the critic')
 
 args = parser.parse_args()
-args.cuda = torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+# args.cuda = torch.cuda.is_available()
+# device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cpu")
 lr_a = args.lr_a
 lr_c = args.lr_c
 grad_norm_clip_a = args.grad_norm_clip_a
@@ -83,7 +84,8 @@ T = args.T
 # toy 
 if args.toy:
     problem_folder = 'Toy'
-    file_path = os.path.join('data', problem_folder, 'scenario_artificial.json')
+    # file_path = os.path.join('data', problem_folder, 'scenario_artificial.json')
+    file_path = os.path.join('data', 'Training Data', 'scenario_test1x1.json')
     experiment = 'training_' + problem_folder+ '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + file_path
     energy_dist_path = os.path.join('data', problem_folder,  'energy_distance_artificial.npy')
     scenario = create_scenario(file_path, energy_dist_path)
