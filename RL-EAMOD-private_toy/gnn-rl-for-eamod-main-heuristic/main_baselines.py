@@ -119,7 +119,7 @@ model.set_env(env)
 done = False
 while(not done):
     # take matching step (Step 1 in paper)
-    obs, paxreward, done, info = env.pax_step(gurobi_env=gurobi_env)
+    obs, paxreward, done, info = env.pax_step()
     episode_reward += paxreward
     # use GNN-RL policy (Step 2 in paper)
     action_rl = model.select_equal_action()
