@@ -12,6 +12,7 @@ import wandb
 from src.envs.amod_env import Scenario, AMoD
 from src.algos.a2c_gnn import A2C
 # from src.algos.reb_flow_solver import solveRebFlow
+from src.algos.pax_flows_solver import PaxFlowsSolver
 from src.algos.reb_flows_solver import RebalFlowSolver
 from src.misc.utils import dictsum
 
@@ -26,12 +27,15 @@ def create_scenario(json_file_path, energy_file_path, seed=10):
     # spatial_nodes = data['spacialNodes']
     tf = data['episodeLength']
     number_charge_levels = data['chargelevels']
-    charge_time_per_level = data['chargeTime']
+
+    # charge_time_per_level = data['chargeTime']
+    charge_levels_per_charge_step = data['chargeLevelsPerChargeStep']
+
     chargers = []
     for node in range(spatial_nodes):
         chargers.append(node)
 
-    scenario = Scenario(spatial_nodes=spatial_nodes, charging_stations=chargers, number_charge_levels=number_charge_levels, charge_time=charge_time_per_level, 
+    scenario = Scenario(spatial_nodes=spatial_nodes, charging_stations=chargers, number_charge_levels=number_charge_levels, charge_levels_per_charge_step=charge_levels_per_charge_step, 
                         energy_distance=energy_dist, tf=tf, sd=seed, tripAttr = tripAttr, demand_ratio=1, reb_time=reb_time, total_acc = total_acc)
     return scenario
 
