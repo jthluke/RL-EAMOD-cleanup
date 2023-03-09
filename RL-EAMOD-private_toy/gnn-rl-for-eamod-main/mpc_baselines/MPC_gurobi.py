@@ -57,6 +57,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                     if env.paxFlow[o_node,d_node][t + time] != 0.0:
                         dacc[d_node][t+1] += env.paxFlow[o_node,d_node][t + time]
                 # regular opimization
+                print("t: ", t, "e: ", e, "o_node: ", o_node, "d_node: ", d_node, "time: ", env.G.edges[o_node,d_node]['time'][t + time])
                 dacc[d_node][t+env.G.edges[o_node,d_node]['time'][t + time]] += pax_flow[t,e] + rebal_flow[t,e] # adding one because of design decision to appear later
                 # charge station constraint
                 if d_node[1] > o_node[1] or (o_node[1] - env.scenario.energy_distance[o_node[0], d_node[0]] < d_node[1] and o_node[0] != d_node[0]):
