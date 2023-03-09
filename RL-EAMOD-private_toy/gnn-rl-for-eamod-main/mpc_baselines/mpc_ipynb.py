@@ -18,7 +18,7 @@ chargers = []
 for node in range(number_nodes):
     if node%2 ==1:
         chargers.append(node)
-f = open('../data/scenario_test1x10.json')
+f = open('../data/TrainingData/scenario_test1x10.json')
 data = json.load(f)
 tripAttr = data["demand"]
 reb_time = data["rebTime"]
