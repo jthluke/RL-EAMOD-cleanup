@@ -12,7 +12,7 @@ import gurobipy as gp
 import json
 
 # MPC exact
-number_nodes = 5
+number_nodes = 10
 number_charge_levels = 5
 chargers = []
 for node in range(number_nodes):
