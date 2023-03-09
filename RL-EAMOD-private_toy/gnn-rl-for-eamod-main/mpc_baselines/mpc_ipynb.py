@@ -12,13 +12,13 @@ import gurobipy as gp
 import json
 
 # MPC exact
-number_nodes = 10
+number_nodes = 5
 number_charge_levels = 5
 chargers = []
 for node in range(number_nodes):
     if node%2 ==1:
         chargers.append(node)
-f = open('../data/SF_5_clustered/SF_5.json')
+f = open('../data/scenario_test1x10.json')
 data = json.load(f)
 tripAttr = data["demand"]
 reb_time = data["rebTime"]
