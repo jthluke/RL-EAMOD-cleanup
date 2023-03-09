@@ -63,8 +63,8 @@ if args.toy:
     env = AMoD(scenario)
     tf = env.tf
 else:
-    problem_folder = 'SF_5_clustered'
-    file_path = os.path.join('..', 'data', problem_folder, 'SF_5.json')
+    problem_folder = 'NY_5'
+    file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     experiment = file_path +  '_mpc_horizon_' + str(mpc_horizon)
