@@ -24,7 +24,7 @@ tripAttr = data["demand"]
 reb_time = data["rebTime"]
 total_acc = data["totalAcc"]
 
-scenario = Scenario(spatial_nodes=number_nodes, charging_stations=chargers, number_charge_levels=number_charge_levels, sd=10, tripAttr = tripAttr, demand_ratio=1, reb_time=reb_time, total_acc = total_acc)
+scenario = Scenario(charging_stations=chargers, number_charge_levels=number_charge_levels, sd=10, tripAttr = tripAttr, demand_ratio=1, reb_time=reb_time, total_acc = total_acc)
 env = AMoD(scenario, beta=0.5)
 
 # set Gurobi environment
