@@ -100,7 +100,8 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                 charge_time = math.ceil(charge_diff/env.scenario.charge_levels_per_charge_step)
                 avg_price = np.mean(env.scenario.p_energy[time+t:time+t+charge_time])
                 charge_cost = avg_price*charge_diff*rebal_flow[t,e]
-            obj += (discount_factor**t) * pax_flow[t,e]*env.price[o_region,d_region][t + time] - env.scenario.operational_cost_per_timestep * (rebal_flow[t,e] + pax_flow[t,e]) * (env.G.edges[o_node,d_node]['time'][t + time]+env.scenario.time_normalizer - charge_time) - charge_cost
+            obj += (discount_factor**t) * pax_flow[t,e]
+            # *env.price[o_region,d_region][t + time] - env.scenario.operational_cost_per_timestep * (rebal_flow[t,e] + pax_flow[t,e]) * (env.G.edges[o_node,d_node]['time'][t + time]+env.scenario.time_normalizer - charge_time) - charge_cost
     m.setObjective(obj, gp.GRB.MAXIMIZE)
     m.optimize()
     assert m.status == 2
