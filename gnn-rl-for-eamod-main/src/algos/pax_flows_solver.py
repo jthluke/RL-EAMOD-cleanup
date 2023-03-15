@@ -11,7 +11,7 @@ class PaxFlowsSolver:
         self.cons_spatial_graph = {}
         self.cons_rebal_edges = {}
         t = self.env.time
-        self.m = gp.Model(env=env)
+        self.m = gp.Model(env=gurobi_env)
         self.flow = self.m.addMVar(shape=(len(
             self.env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow")
 
