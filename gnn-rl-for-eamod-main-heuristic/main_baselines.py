@@ -108,6 +108,8 @@ episode_rebalancing_cost = 0
 model.set_env(env)
 done = False
 step = 0
+
+pax_flows_solver = None
 while(not done):
     # take matching step (Step 1 in paper)
     if step == 0:
