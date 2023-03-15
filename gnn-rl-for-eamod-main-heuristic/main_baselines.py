@@ -12,6 +12,7 @@ import wandb
 from src.envs.amod_env import Scenario, AMoD
 from src.algos.a2c_gnn import A2C
 from src.algos.reb_flows_solver import RebalFlowSolver
+from src.algos.pax_flows_solver import PaxFlowsSolver
 from src.misc.utils import dictsum
 
 def create_scenario(json_file_path, energy_file_path, seed=10):
@@ -106,10 +107,19 @@ episode_rebalancing_cost = 0
 # obs = env.reset()
 model.set_env(env)
 done = False
+step = 0
 while(not done):
     # take matching step (Step 1 in paper)
-    obs, paxreward, done, info = env.pax_step()
+    if step == 0:
+        # initialize optimization problem in the first step
+        pax_flows_solver = PaxFlowsSolver(env=env,gurobi_env=gurobi_env)
+        step = 1
+    else:
+        pax_flows_solver.update_constraints()
+        pax_flows_solver.update_objective()
+    _, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver)
     episode_reward += paxreward
+
     # use GNN-RL policy (Step 2 in paper)
     action_rl = model.select_equal_action()
     # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
