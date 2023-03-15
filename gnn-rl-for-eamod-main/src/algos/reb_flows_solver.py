@@ -59,7 +59,9 @@ class RebalFlowSolver:
 
     def optimize(self):
         self.m.optimize()
-        assert self.m.status==2
+        if self.m.status == 3:
+            print("Optimization is infeasible.")
+        assert self.m.status == 2
         action = self.flow.X
         return action
         
