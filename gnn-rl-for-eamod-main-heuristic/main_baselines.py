@@ -58,7 +58,7 @@ experiment = args.baseline_type + '_baseline_testing_' + file_path
 energy_dist_path = os.path.join('data', problem_folder, 'energy_distance_3x2.npy')
 test_scenario = create_scenario(file_path, energy_dist_path)
 # env = AMoD(test_scenario, beta=args.beta)
-env = AMoD(test_scenario, beta=args.beta)
+env = AMoD(test_scenario)
 # Initialize A2C-GNN
 model = A2C(env=env).to(device)
 tf = env.tf
