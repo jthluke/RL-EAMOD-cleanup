@@ -141,7 +141,7 @@ while(not done):
     for n in env.nodes:
         assert desiredAcc[n] >= 0
     # solve minimum rebalancing distance problem (Step 3 in paper)
-    rebAction = RebalFlowSolver(env=env, gurobi_env=gurobi_env)
+    rebAction = RebalFlowSolver(env=env, desired_acc_spatial=desiredAcc, gurobi_env=gurobi_env)
     # Take action in environment
     new_obs, rebreward, done, info = env.reb_step(rebAction)
     episode_reward += rebreward
