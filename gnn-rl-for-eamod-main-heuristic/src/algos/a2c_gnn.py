@@ -219,6 +219,10 @@ class A2C(nn.Module):
     def select_equal_action(self):
         action = np.ones(self.env.number_nodes_spatial)/self.env.number_nodes_spatial
         return list(action)
+    
+    def select_equal_action_non_spatial(self):
+        action = np.ones(self.env.number_nodes)/self.env.number_nodes
+        return list(action)
 
     def training_step(self):
         R = 0
