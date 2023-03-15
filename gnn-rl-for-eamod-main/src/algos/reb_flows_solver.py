@@ -4,7 +4,7 @@ from gurobipy import quicksum
 
 
 class RebalFlowSolver:  
-    def __init__(self, env, desiredAcc, gurobi_env=None):
+    def __init__(self, env, desiredAcc, gurobi_env):
         # Initialize model
         self.cons_charge_graph1 = {}
         self.cons_charge_graph2 = {}
