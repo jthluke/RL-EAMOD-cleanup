@@ -133,7 +133,7 @@ while(not done):
     most_likely_node = np.argmax(action_rl)
     if missing_cars != 0:
         desiredAcc[env.nodes[most_likely_node]] += missing_cars   
-        total_desiredAcc = sum(desiredAcc[n] for n in env.nodes_spatial)
+        total_desiredAcc = sum(desiredAcc[n] for n in range(len(env.nodes_spatial)))
     assert total_desiredAcc == total_acc
     for n in env.nodes:
         assert desiredAcc[n] >= 0
