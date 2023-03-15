@@ -24,7 +24,10 @@ def create_scenario(json_file_path, energy_file_path, seed=10):
     spatial_nodes = data['spatialNodes']
     tf = data['episodeLength']
     number_charge_levels = data['chargelevels']
+
     # charge_time_per_level = data['chargeTime']
+    charge_time_per_level = data['chargeLevelsPerChargeStep']
+
     chargers = data['chargeLocations']
     cars_per_station_capacity = data['carsPerStationCapacity']
 
