@@ -123,8 +123,7 @@ while(not done):
     episode_reward += paxreward
 
     # use GNN-RL policy (Step 2 in paper)
-    # action_rl = model.select_equal_action()
-    action_rl = model.select_equal()
+    action_rl = model.select_equal_action()
     
     # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
     total_acc = sum(env.acc[n][env.time+1] for n in env.nodes_spatial)
