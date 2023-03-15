@@ -128,7 +128,7 @@ while(not done):
     # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
     total_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
     desiredAcc = {env.nodes[i]: int(action_rl[i] * dictsum(env.acc,env.time+1)) for i in range(len(env.nodes_spatial))} 
-    total_desiredAcc = sum(desiredAcc[n] for n in env.nodes_spatial)
+    total_desiredAcc = sum(desiredAcc[n] for n in range(len(env.nodes_spatial)))
     missing_cars = total_acc - total_desiredAcc
     most_likely_node = np.argmax(action_rl)
     if missing_cars != 0:
