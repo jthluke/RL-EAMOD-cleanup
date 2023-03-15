@@ -370,8 +370,7 @@ class AMoD:
         self.info['spatial_rebalancing_cost'] = 0
         # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
         if paxAction is None:
-            # paxAction = pax_flows_solver.optimize()
-            paxAction = PaxFlowsSolver.optimize(self)
+            paxAction = pax_flows_solver.optimize()
         self.paxAction = paxAction
         # serving passengers
         satisfied_demand_local = np.zeros(self.number_nodes_spatial)
