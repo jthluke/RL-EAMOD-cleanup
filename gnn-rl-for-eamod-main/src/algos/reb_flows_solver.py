@@ -27,7 +27,7 @@ class RebalFlowSolver:
         
         for r_idx in range(env.number_nodes_spatial):
             outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
-            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
+            # self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
         self.obj1 = 0
         self.obj2 = 0
         for n_idx in range(len(env.nodes)):
