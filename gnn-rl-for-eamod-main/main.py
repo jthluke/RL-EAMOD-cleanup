@@ -91,7 +91,7 @@ if args.toy:
     scale_factor = 0.01
     scale_price = 0.1
     model = A2C(env=env, T=T, lr_a=lr_a, lr_c=lr_c, grad_norm_clip_a=grad_norm_clip_a, grad_norm_clip_c=grad_norm_clip_c, seed=seed, scale_factor=scale_factor, scale_price=scale_price).to(device)
-    model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_50000.pth')
+    # model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_50000.pth')
     tf = env.tf
 else:
     # problem_folder = 'SF_5_clustered'
