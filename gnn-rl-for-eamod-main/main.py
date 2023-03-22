@@ -142,13 +142,13 @@ experiment += "_RL_approach_constraint"
 # gurobi_env.start()
 
 # set Gurobi environment Karthik
-gurobi_env = gp.Env(empty=True)
-gurobi = "Karthik"
-gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
-gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
-gurobi_env.setParam('LICENSEID', 849913)
-gurobi_env.setParam("OutputFlag",0)
-gurobi_env.start()
+# gurobi_env = gp.Env(empty=True)
+# gurobi = "Karthik"
+# gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
+# gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
+# gurobi_env.setParam('LICENSEID', 849913)
+# gurobi_env.setParam("OutputFlag",0)
+# gurobi_env.start()
 
 # set Gurobi environment Karthik2
 # gurobi_env = gp.Env(empty=True)
@@ -158,6 +158,15 @@ gurobi_env.start()
 # gurobi_env.setParam('LICENSEID', 799870)
 # gurobi_env.setParam("OutputFlag",0)
 # gurobi_env.start()
+
+# set Gurobi environment Karthik
+gurobi_env = gp.Env(empty=True)
+gurobi = "Karthik"
+gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
+gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
+gurobi_env.setParam('LICENSEID', 849913)
+gurobi_env.setParam("OutputFlag",0)
+gurobi_env.start()
 
 # set up wandb
 wandb.init(
