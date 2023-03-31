@@ -14,6 +14,7 @@ class RebalFlowSolver:
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
         self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-100, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
 
+        print(env.map_node_to_outgoing_edges)
         for n_idx in range(len(env.nodes)):
             n = env.nodes[n_idx]
             print(n)
