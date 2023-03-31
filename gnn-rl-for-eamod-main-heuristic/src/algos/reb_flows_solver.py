@@ -25,21 +25,21 @@ class RebalFlowSolver:
         for e_charging in env.charging_edges:
             self.m.addConstr(self.flow[e_charging] == 0.)
 
+        # Constraint 0: We can not have more vehicles flowing out of a node, than vehicles at the node
         for n_idx in range(len(env.nodes)):
             n = env.nodes[n_idx]
             outgoing_edges = env.map_node_to_outgoing_edges[n]
+            self.cons_charge_graph[n_idx] = self.m.addConstr(sum(self.flow[outgoing_edges]) <= env.acc[n][t + 1])
 
-            # Constraint 0: We can not have more vehicles flowing out of a node, than vehicles at the node
-            self.cons_charge_graph[n_idx] = self.m.addConstr(
-                sum(self.flow[outgoing_edges]) <= env.acc[n][t + 1])
+        # Constraint 1: should only use road edges to rebalance idle vehicles to match target distribution.
         for node_spatial in env.nodes_spatial:
             corresponing_road_edges_charge_graph_incoming = env.map_node_spatial_to_incoming_road_edges_charge_graph[
                 node_spatial]
             corresponing_road_edges_charge_graph_outgoing = env.map_node_spatial_to_outgoing_road_edges_charge_graph[
                 node_spatial]
-            # Constraint1: should only use road edges to rebalance idle vehicles to match target distribution.
             self.cons_spatial_graph[node_spatial] = self.m.addConstr(sum(self.flow[corresponing_road_edges_charge_graph_incoming]) - sum(self.flow[corresponing_road_edges_charge_graph_outgoing]) ==
                 desired_acc_spatial[node_spatial] - acc_spatial_with_charge[node_spatial]) 
+        
         self.obj = 0
         for e_idx in range(len(env.edges)):
             i, j = env.edges[e_idx]
