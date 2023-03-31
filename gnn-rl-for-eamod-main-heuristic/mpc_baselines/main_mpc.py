@@ -157,7 +157,7 @@ while(not done):
     else:
         timesteps = [0]
     for t in timesteps:
-        obs, reward1, done, info = env.pax_step(paxAction[t])    
+        obs, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)    
         obs, reward2, done, info = env.reb_step(rebAction[t])
         opt_rew.append(reward1+reward2) 
         served += info['served_demand']
