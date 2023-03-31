@@ -3,7 +3,7 @@ import argparse
 sys.path.append('../src')
 from src.envs.amod_env import Scenario, AMoD #, Star2Complete
 from src.misc.utils import mat2str, dictsum
-from mpc_baselines.MPC import MPC
+from MPC import MPC
 import time
 import os
 import subprocess
