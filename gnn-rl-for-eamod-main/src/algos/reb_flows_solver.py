@@ -14,6 +14,7 @@ class RebalFlowSolver:
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
         self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-100, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
 
+        print(env.nodes)
         for n_idx in range(len(env.nodes)):
             n = env.nodes[n_idx]
             outgoing_edges = env.map_node_to_outgoing_edges[n]
@@ -22,14 +23,8 @@ class RebalFlowSolver:
             # Constraint 1: We can not have more vehicles flowing out of a node, than vehicles at the node
             self.cons_charge_graph1[n_idx] = self.m.addConstr(sum(self.flow[outgoing_edges]) <= env.acc[n][t + 1])
 
-            print(n)
-            print(outgoing_edges)
-            print(incoming_edges)
-            print(env.acc[n][t + 1])
-            print(desiredAcc[n])
-
             # Constraint 2: We want to reach the target distribrution
-            self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1] ) 
+            self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
             
             # Constraint 3: We want can not charge more vehicles then we have charging spots
         
