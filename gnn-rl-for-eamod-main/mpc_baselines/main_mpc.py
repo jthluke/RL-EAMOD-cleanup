@@ -1,6 +1,6 @@
 import sys
 import argparse
-sys.path.insert(0, '../')
+sys.path.append('../')
 from src.envs.amod_env import Scenario, AMoD #, Star2Complete
 from src.misc.utils import mat2str, dictsum
 from mpc_baselines.MPC import MPC
