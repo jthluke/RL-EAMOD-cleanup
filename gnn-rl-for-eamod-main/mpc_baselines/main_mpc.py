@@ -1,6 +1,6 @@
 import sys
 import argparse
-sys.path.append('../src')
+sys.path.append('./src')
 from src.envs.amod_env import Scenario, AMoD #, Star2Complete
 from src.misc.utils import mat2str, dictsum
 from MPC import MPC
@@ -57,7 +57,7 @@ if args.toy:
     problem_folder = 'Toy'
     file_path = os.path.join('.', 'data', problem_folder, 'scenario_train1x1.json')
     experiment = file_path +  '_mpc_horizon_' + str(mpc_horizon)
-    energy_dist_path = os.path.join('..', 'data', problem_folder,  'energy_distance_1x1.npy')
+    energy_dist_path = os.path.join('.', 'data', problem_folder,  'energy_distance_1x1.npy')
     scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(scenario)
     tf = env.tf
@@ -65,9 +65,9 @@ else:
     # problem_folder = 'SF_5_clustered'
     # file_path = os.path.join('..', 'data', problem_folder, 'SF_5_short.json')
     problem_folder = 'NY_5'
-    file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
+    file_path = os.path.join('.', 'data', problem_folder, 'NY_5.json')
     experiment = file_path +  '_mpc_horizon_' + str(mpc_horizon)
-    energy_dist_path = os.path.join('..', 'data', problem_folder, 'energy_distance.npy')
+    energy_dist_path = os.path.join('.', 'data', problem_folder, 'energy_distance.npy')
     test_scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(test_scenario)
     tf = env.tf
