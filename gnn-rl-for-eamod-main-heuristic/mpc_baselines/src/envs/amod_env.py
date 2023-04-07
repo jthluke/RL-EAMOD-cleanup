@@ -575,8 +575,7 @@ class Scenario:
             self.spatial_nodes = spatial_nodes
             self.charging_stations = charging_stations
             self.cars_per_station_capacity = cars_per_station_capacity
-            self.cars_charging_per_station = np.zeros_like(
-                self.cars_per_station_capacity)
+            self.cars_charging_per_station = defaultdict(dict)
             self.number_charge_levels = number_charge_levels
             self.charge_levels_per_charge_step = charge_levels_per_charge_step
             self.energy_distance = energy_distance
