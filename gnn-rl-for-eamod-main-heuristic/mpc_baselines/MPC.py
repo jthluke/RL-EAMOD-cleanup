@@ -6,7 +6,7 @@ Created on Wed Aug  5 22:09:46 2020
 from collections import defaultdict
 import numpy as np
 import subprocess
-from mpc_baselines.MPC_gurobi import solve_mpc, solve_mpc_trilevel
+from MPC_gurobi import solve_mpc, solve_mpc_trilevel
 import os
 import networkx as nx
 from src.misc.utils import mat2str
