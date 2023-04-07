@@ -19,7 +19,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
         dacc[n] = defaultdict(int)
         acc[n] = defaultdict(int)
         acc[n][0] = env.acc[n][time]
-        for t in range(mpc_horizon):
+        for t in range(int(mpc_horizon*2)):
             dacc[n][t] = 0
     pax_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="pax_flow")
     rebal_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="rebal_flow")
