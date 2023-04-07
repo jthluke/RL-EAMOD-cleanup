@@ -28,7 +28,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
     for n in env.nodes_spatial:
         charging_cars_per_location[n] = defaultdict(float)
         for t in range(mpc_horizon):
-            charging_cars_per_location[n][t] = copy.copy(env.scenario.cars_charging_per_station[n][t+time+1])
+            charging_cars_per_location[n][t] = env.scenario.cars_charging_per_station[n]
     for t in range(mpc_horizon):
         for o in env.region:
             for d in env.region:
