@@ -2,7 +2,7 @@
 gurobipy
 # imgaug==0.2.5
 networkx==2.5
-numpy==1.21
+numpy==1.22
 wandb
 tensorflow==2.12.0
 tf-estimator-nightly==2.8.0.dev2021122109
