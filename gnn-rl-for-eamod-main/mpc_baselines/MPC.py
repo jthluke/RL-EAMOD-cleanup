@@ -6,7 +6,7 @@ Created on Wed Aug  5 22:09:46 2020
 from collections import defaultdict
 import numpy as np
 import subprocess
-from MPC_gurobi import solve_mpc
+from MPC_gurobi import solve_mpc, solve_mpc_trilevel
 import os
 import networkx as nx
 from src.misc.utils import mat2str
@@ -21,6 +21,10 @@ class MPC:
         
     def MPC_exact(self):
         paxAction, rebAction = solve_mpc(env=self.env, gurobi_env=self.gurobi_env, mpc_horizon=self.mpc_horizon)
+        return paxAction,rebAction
+    
+    def MPC_trilevel(self):
+        paxAction, rebAction = solve_mpc_trilevel(env=self.env, gurobi_env=self.gurobi_env, mpc_horizon=self.mpc_horizon)
         return paxAction,rebAction
     
     def bi_level_matching(self):
