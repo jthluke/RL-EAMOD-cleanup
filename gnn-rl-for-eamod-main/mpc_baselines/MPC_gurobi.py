@@ -75,6 +75,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                     for future_time_step in range(t,t+time_spent_charging):
                         charging_cars_per_location[o_node[0]][future_time_step] = charging_cars_per_location[o_node[0]][future_time_step] + rebal_flow[t,e] 
             
+        
         for n in env.nodes:
             outgoing_edges = env.map_node_to_outgoing_edges[n]
             acc[n][t+1] = acc[n][t] + dacc[n][t] - sum(rebal_flow[t, outgoing_edges]) - sum(pax_flow[t, outgoing_edges]) 
