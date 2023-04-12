@@ -364,6 +364,7 @@ class AMoD:
                 self.n_charging_vehicles_spatial[region][t] = 0.
 
 
+
 class Scenario:
     def __init__(self, EV=True, spatial_nodes=4, charging_stations=None, cars_per_station_capacity=None, number_charge_levels=10, charge_levels_per_charge_step=1, energy_distance=None, tf=60, sd=None, tripAttr=None,
                  demand_ratio=None, trip_length_preference=0.25, grid_travel_time=1, reb_time=None, total_acc=None, p_energy=None, time_granularity=0.5, operational_cost_per_timestep=0.5):
@@ -441,7 +442,7 @@ class Scenario:
 
             self.edges = list(self.G.edges)
             self.tf = tf
-            
+
             for o,d in self.edges:
                 for t in range(0,tf*2): # TODO: do not know why
                     if t in self.demand_input[o[0],d[0]] and self.demand_input[o[0],d[0]][t] > 0:

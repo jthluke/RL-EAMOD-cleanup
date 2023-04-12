@@ -658,11 +658,12 @@ class Scenario:
 
                         # only bottom 60%
                         cut_off_charge = int(1.*self.number_charge_levels)
+                        print("cutoff charge init", cut_off_charge)
                         number_of_used_charges = cut_off_charge
                         number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))*number_of_used_charges))
                         if c <= cut_off_charge:
                             self.G.nodes[(region,c)]['accInit'] = number_cars_per_node
-                            number_vehicles_distr += number_cars_per_node
+                            # number_vehicles_distr += number_cars_per_node
                             self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
                         else:
                             self.G.nodes[(region,c)]['accInit'] = 0
