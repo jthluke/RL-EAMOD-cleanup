@@ -329,6 +329,7 @@ class AMoD:
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
         self.reset_cars_charging()
+        print(self.scenario.cars_charging_per_station)
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
