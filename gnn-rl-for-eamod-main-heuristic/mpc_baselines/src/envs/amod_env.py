@@ -456,7 +456,7 @@ class AMoD:
                 self.info['charge_rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
-                self.scenario.cars_charging_per_station[i[0]] += self.rebAction[k]
+                self.scenario.cars_charging_per_station[i[0]][t+1] += self.rebAction[k]
                 self.n_charging_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
                 self.new_charging_vehicles[i[0]][t+1] += rebAction[k]
                 # added 1e-5 as tolerance because optimisation result is not exact
