@@ -322,12 +322,13 @@ class AMoD:
         self.acc_spatial = defaultdict(dict)
         self.n_rebal_vehicles_spatial = defaultdict(dict)
         self.n_customer_vehicles_spatial = defaultdict(dict)
-        self.reset_cars_charging()
+        
         self.dacc = defaultdict(dict)
         self.rebFlow = defaultdict(dict)
         self.paxFlow = defaultdict(dict)
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
+        self.reset_cars_charging()
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
