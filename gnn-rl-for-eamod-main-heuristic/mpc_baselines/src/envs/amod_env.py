@@ -594,21 +594,19 @@ class Scenario:
             self.G_spatial = nx.empty_graph()
             self.G_spatial = self.G_spatial.to_directed()
 
-            self.demand_input, self.p, self.rebTime = defaultdict(
-                dict), defaultdict(dict), defaultdict(dict)
+            self.demand_input, self.p, self.rebTime = defaultdict(dict), defaultdict(dict), defaultdict(dict)
             for item in tripAttr:
-                t, o, d, v, p = item['time_stamp'], item['origin'], item['destination'], item['demand'], item['price']
-                if (o, d) not in self.demand_input:
-                    self.demand_input[o, d], self.p[o, d] = defaultdict(
-                        float), defaultdict(float)
-                self.demand_input[o, d][t] += v*demand_ratio
-                self.p[o, d][t] += p*demand_ratio
-
+                t,o,d,v,p = item['time_stamp'], item['origin'], item['destination'], item['demand'], item['price']
+                if (o,d) not in self.demand_input:
+                    self.demand_input[o,d], self.p[o,d] = defaultdict(float), defaultdict(float)
+                self.demand_input[o,d][t] += v*demand_ratio
+                self.p[o,d][t] += p*demand_ratio
+            
             for item in reb_time:
-                hr, o, d, rt = item["time_stamp"], item["origin"], item["destination"], item["reb_time"]
-                for t in range(0, tf+1):
-                    self.rebTime[o, d][t] = int(round(rt))
-
+                hr,o,d,rt = item["time_stamp"], item["origin"], item["destination"], item["reb_time"]
+                for t in range(0,tf+1):
+                    # self.rebTime[o,d][t] = max(int(round(rt)),1) used to be this
+                    self.rebTime[o,d][t] = int(round(rt))
             # add charge edges
             self.add_charge_edges()
 
@@ -619,13 +617,13 @@ class Scenario:
             self.spatial_edges = list(self.G_spatial.edges)
             self.tf = tf
 
-            for o, d in self.edges:
-                for t in range(0, tf*2):
-                    if t in self.demand_input[o[0], d[0]] and self.demand_input[o[0], d[0]][t] > 0:
+            for o,d in self.edges:
+                for t in range(0,tf*2): # TODO: do not know why
+                    if t in self.demand_input[o[0],d[0]] and self.demand_input[o[0],d[0]][t] > 0:
                         continue
                     else:
-                        self.demand_input[o[0], d[0]][t] = 0
-                        self.p[o[0], d[0]][t] = 0
+                        self.demand_input[o[0],d[0]][t] = 0
+                        self.p[o[0],d[0]][t] = 0
 
             for item in total_acc:
                 hr, acc = item['hour'], item['acc']

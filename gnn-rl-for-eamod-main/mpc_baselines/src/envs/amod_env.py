@@ -142,6 +142,15 @@ class AMoD:
                 self.map_region_to_charge_edges[o_region].append(e)
                 self.charging_edges.append(e)
 
+    def create_node_maps(self):
+        self.map_spatial_node_to_charge_nodes = dict([])
+        for node_spatial in self.nodes_spatial:
+            self.map_spatial_node_to_charge_nodes[node_spatial] = []
+        for node_ind in range(self.number_nodes):
+            node = self.nodes[node_ind]
+            node_spatial = node[0]
+            self.map_spatial_node_to_charge_nodes[node_spatial].append(
+                node_ind)
 
     def create_edge_idx_and_weights(self):
         edge_idx = torch.tensor([[], []], dtype=torch.long)
@@ -302,10 +311,11 @@ class AMoD:
                 self.n_customer_vehicles_spatial[o[0]][t+1] -= self.paxFlow[o, d][t]
             
         self.time += 1
-        self.obs = (self.acc, self.time, self.dacc, self.demand) # use self.time to index the next time step
-        done = (self.tf == t+1) # if the episode is completed
+        # use self.time to index the next time step
+        self.obs = (self.acc, self.time, self.dacc, self.demand)
+        done = (self.tf == t+1)  # if the episode is completed
         return self.obs, self.reward, done, self.info
-    
+
     def reset(self, bool_sample_demand=True):
         # reset the episode
         self.acc = defaultdict(dict)
@@ -371,7 +381,9 @@ class Scenario:
             np.random.seed(self.sd)
         
         if EV == True: 
-            self.time_normalizer = 1 
+            # self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
+            # self.peak_hours = peak_hours
+            self.time_normalizer = 1
             self.time_granularity = time_granularity
             self.operational_cost_per_timestep = operational_cost_per_timestep
             self.spatial_nodes = spatial_nodes
@@ -407,8 +419,8 @@ class Scenario:
                     # self.rebTime[o,d][t] = max(int(round(rt)),1) used to be this
                     self.rebTime[o,d][t] = int(round(rt))
             # add charge edges
-            self.add_charge_edges()             
-            
+            self.add_charge_edges()
+
             # add road edges
             self.add_road_edges()
             
@@ -437,7 +449,6 @@ class Scenario:
                     else:
                         self.demand_input[o[0],d[0]][t] = 0
                         self.p[o[0],d[0]][t] = 0
-
 
             for item in total_acc:
                 hr, acc = item['hour'], item['acc']
