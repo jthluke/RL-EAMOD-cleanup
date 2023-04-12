@@ -418,7 +418,7 @@ class AMoD:
         self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
         done = False # if passenger matching is executed first
 
-        return self.obs, max(0,self.reward), done, self.info
+        return self.obs_spatial, max(0,self.reward), done, self.info
 
     # reb step
     def reb_step(self, rebAction):
@@ -440,13 +440,20 @@ class AMoD:
             if rebAction[k] < 1e-3:
                 continue
             self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
-            if self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] == None:
-                self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] = self.rebAction[k]
-            else:
-                self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] += self.rebAction[k]
-            self.dacc[j][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-            self.dacc_spatial[j[0]][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+
+            self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.rebAction[k]
+            self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
+            self.dacc_spatial[j[0]][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
             self.acc[i][t+1] -= self.rebAction[k]
+
+            # if self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] == None:
+            #     self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] = self.rebAction[k]
+            # else:
+            #     self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] += self.rebAction[k]
+            # self.dacc[j][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            # self.dacc_spatial[j[0]][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            # self.acc[i][t+1] -= self.rebAction[k]
+
             self.acc_spatial[i[0]][t+1] -= self.rebAction[k]
             # charging edge
             if i[1] < j[1] and self.rebAction[k] > 0 and i[0] == j[0]:
