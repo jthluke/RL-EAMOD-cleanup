@@ -391,9 +391,9 @@ class AMoD:
             self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
             self.servedDemand[i_region,j_region][t] += self.paxAction[k]
 
-            new_customer_vehicles += self.paxAction[k]
+            # new_customer_vehicles += self.paxAction[k]
             satisfied_demand[i_region] += self.paxAction[k]
-            self.satisfied_demand[i[0]][t+1] += self.paxAction[k]
+            # self.satisfied_demand[i[0]][t+1] += self.paxAction[k]
 
             self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
             self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
@@ -418,7 +418,7 @@ class AMoD:
         self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
         done = False # if passenger matching is executed first
 
-        return self.obs_spatial, max(0,self.reward), done, self.info
+        return self.obs, max(0,self.reward), done, self.info
 
     # reb step
     def reb_step(self, rebAction):
