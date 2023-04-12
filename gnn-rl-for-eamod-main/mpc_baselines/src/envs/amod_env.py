@@ -351,7 +351,7 @@ class AMoD:
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         self.reward = 0
         return self.obs
-
+    
     def reset_cars_charging(self):
         self.scenario.cars_charging_per_station = defaultdict(dict)
         self.n_charging_vehicles_spatial = defaultdict(dict)
@@ -361,9 +361,8 @@ class AMoD:
             for t in range(self.scenario.tf):
                 self.scenario.cars_charging_per_station[region][t] = 0.
                 self.n_charging_vehicles_spatial[region][t] = 0.
-   
-    
-    
+
+
 class Scenario:
     def __init__(self, EV=True, spatial_nodes=4, charging_stations=None, cars_per_station_capacity=None, number_charge_levels=10, charge_levels_per_charge_step=1, energy_distance=None, tf=60, sd=None, tripAttr=None,
                  demand_ratio=None, trip_length_preference=0.25, grid_travel_time=1, reb_time=None, total_acc=None, p_energy=None, time_granularity=0.5, operational_cost_per_timestep=0.5):

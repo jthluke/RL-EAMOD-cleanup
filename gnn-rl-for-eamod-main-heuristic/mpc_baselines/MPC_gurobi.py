@@ -79,11 +79,11 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                     
                     time_spent_charging = math.ceil(change_dist/env.scenario.charge_levels_per_charge_step)
                     # add plus one because range creates values from [begin,end)
-                    # for future_time_step in range(t,t+time_spent_charging):
-                    #     charging_cars_per_location[o_node[0]][future_time_step] = charging_cars_per_location[o_node[0]][future_time_step] + rebal_flow[t,e] 
-                    
-                    for future_time_step in range(t,t+env.G.edges[o_node,d_node]['time'][t + time]+env.scenario.time_normalizer):
+                    for future_time_step in range(t,t+time_spent_charging):
                         charging_cars_per_location[o_node[0]][future_time_step] = charging_cars_per_location[o_node[0]][future_time_step] + rebal_flow[t,e] 
+                    
+                    # for future_time_step in range(t,t+env.G.edges[o_node,d_node]['time'][t + time]+env.scenario.time_normalizer):
+                        # charging_cars_per_location[o_node[0]][future_time_step] = charging_cars_per_location[o_node[0]][future_time_step] + rebal_flow[t,e] 
         
         for n in env.nodes:
             outgoing_edges = env.map_node_to_outgoing_edges[n]
