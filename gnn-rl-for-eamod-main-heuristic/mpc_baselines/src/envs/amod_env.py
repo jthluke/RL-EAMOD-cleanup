@@ -371,10 +371,10 @@ class AMoD:
         self.info['spatial_rebalancing_cost'] = 0
         # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
         if paxAction is None:
-            paxAction = pax_flows_solver.optimize()
+           paxAction = pax_flows_solver.optimize()
         self.paxAction = paxAction
         # serving passengers
-        satisfied_demand_local = np.zeros(self.number_nodes_spatial)
+        satisfied_demand = np.zeros(self.number_nodes_spatial)
         total_demand = np.zeros(self.number_nodes_spatial)
         for origin in range(self.number_nodes_spatial):
             for destination in range(self.number_nodes_spatial):
@@ -389,34 +389,36 @@ class AMoD:
             assert paxAction[k] < self.acc[i][t+1] + 1e-3
             assert paxAction[k] >= 0
             self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
-            self.servedDemand[i_region, j_region][t] += self.paxAction[k]
-            satisfied_demand_local[i_region] += self.paxAction[k]
-            self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] = self.paxAction[k]
-            self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
+            self.servedDemand[i_region,j_region][t] += self.paxAction[k]
+
+            new_customer_vehicles += self.paxAction[k]
+            satisfied_demand[i_region] += self.paxAction[k]
+            self.satisfied_demand[i[0]][t+1] += self.paxAction[k]
+
+            self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
+            self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
             self.acc[i][t+1] -= self.paxAction[k]
             self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
             self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
-            self.satisfied_demand[i[0]][t+1] += self.paxAction[k]
-            new_customer_vehicles += self.paxAction[k]
             self.info['served_demand'] += self.paxAction[k]
-            self.dacc[j][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
             self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
-            self.info['revenue'] += self.paxAction[k] * (self.price[i_region, j_region][t])
+            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
+            self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
 
         test_spatial_acc_count = np.zeros(self.number_nodes_spatial)
         for n in self.nodes:
             test_spatial_acc_count[n[0]] += self.acc[n][t+1]
         for region in self.nodes_spatial:
             assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) < 1e-5
-            assert satisfied_demand_local[region] - total_demand[region] < 1e-5
+            assert satisfied_demand[region] - total_demand[region] < 1e-5
 
         # for acc, the time index would be t+1, but for demand, the time index would be t
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
-        done = False  # if passenger matching is executed first
+        done = False # if passenger matching is executed first
 
-        return self.obs_spatial, max(0, self.reward), done, self.info
+        return self.obs, max(0,self.reward), done, self.info
 
     # reb step
     def reb_step(self, rebAction):

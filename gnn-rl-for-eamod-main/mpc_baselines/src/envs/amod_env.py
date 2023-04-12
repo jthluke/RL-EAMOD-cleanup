@@ -67,6 +67,7 @@ class AMoD:
             self.n_charging_vehicles_spatial = defaultdict(dict)
             self.n_rebal_vehicles_spatial = defaultdict(dict)
             self.n_customer_vehicles_spatial = defaultdict(dict)
+            
             # number of vehicles arriving at each spatial node, key: i - node, t - time
             self.dacc_spatial = defaultdict(dict)
             # number of rebalancing vehicles, key: (i,j) - (origin, destination), t - time
@@ -172,61 +173,68 @@ class AMoD:
 
     # pax step
     def pax_step(self, paxAction=None, pax_flows_solver=None):
-       t = self.time
-       self.reward = 0
-       new_customer_vehicles = 0
-       for n in self.nodes:
+        t = self.time
+        self.reward = 0
+        new_customer_vehicles = 0
+        for n in self.nodes:
             self.acc[n][t+1] = self.acc[n][t]
-       for n_spatial in self.nodes_spatial:
+        for n_spatial in self.nodes_spatial:
             self.acc_spatial[n_spatial][t+1] = self.acc_spatial[n_spatial][t]
             assert self.acc_spatial[n_spatial][t] >= -1e-8
             self.n_charging_vehicles_spatial[n_spatial][t+1] = self.n_charging_vehicles_spatial[n_spatial][t]
+            # self.new_charging_vehicles[n_spatial][t+1] = 0
             assert self.n_charging_vehicles_spatial[n_spatial][t] >= -1e-8
             self.n_rebal_vehicles_spatial[n_spatial][t+1] = self.n_rebal_vehicles_spatial[n_spatial][t]
+            # self.new_rebalancing_vehicles[n_spatial][t+1] = 0
             assert self.n_rebal_vehicles_spatial[n_spatial][t] >= -1e-8
             self.n_customer_vehicles_spatial[n_spatial][t+1] = self.n_customer_vehicles_spatial[n_spatial][t]
             assert self.n_customer_vehicles_spatial[n_spatial][t] >= -1e-8
-       self.info['served_demand'] = 0 # initialize served demand
-       self.info["operating_cost"] = 0 # initialize operating cost
-       self.info['revenue'] = 0
-       self.info['rebalancing_cost'] = 0
-       if paxAction is None:  # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
+            self.satisfied_demand[n_spatial][t+1] = 0
+        
+        self.info['served_demand'] = 0  # initialize served demand
+        self.info["operating_cost"] = 0  # initialize operating cost
+        self.info['revenue'] = 0
+        self.info['rebalancing_cost'] = 0
+        # self.info['charge_rebalancing_cost'] = 0
+        # self.info['spatial_rebalancing_cost'] = 0
+        # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
+        if paxAction is None:
            paxAction = pax_flows_solver.optimize()
-       self.paxAction = paxAction
-       # serving passengers
-       satisfied_demand = np.zeros(self.number_nodes_spatial)
-       total_demand = np.zeros(self.number_nodes_spatial)
-       for origin in range(self.number_nodes_spatial):
+        self.paxAction = paxAction
+        # serving passengers
+        satisfied_demand = np.zeros(self.number_nodes_spatial)
+        total_demand = np.zeros(self.number_nodes_spatial)
+        for origin in range(self.number_nodes_spatial):
             for destination in range(self.number_nodes_spatial):
                 total_demand[origin] += self.demand[origin, destination][t]
+        for k in range(len(self.edges)):
+            i, j = self.edges[k]
+            i_region = i[0]
+            j_region = j[0]
+            if (i_region, j_region) not in self.demand or t not in self.demand[i_region, j_region] or self.paxAction[k] < 1e-3 or i[1] < j[1]:
+                continue
+            # I moved the min operator above, since we want paxFlow to be consistent with paxAction
+            assert paxAction[k] < self.acc[i][t+1] + 1e-3
+            assert paxAction[k] >= 0
+            self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
+            self.servedDemand[i_region,j_region][t] += self.paxAction[k]
 
-       for k in range(len(self.edges)):
-           i,j = self.edges[k]
-           i_region = i[0]
-           j_region = j[0]
-           if (i_region,j_region) not in self.demand or t not in self.demand[i_region,j_region] or self.paxAction[k]<1e-3 or i[1]<j[1]:
-               continue
-           # I moved the min operator above, since we want paxFlow to be consistent with paxAction
-           assert paxAction[k] < self.acc[i][t+1] + 1e-3
-           assert paxAction[k] >= 0
-           self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
-           self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
-           satisfied_demand[i_region] += self.paxAction[k]
-           self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
-           self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
-           self.acc[i][t+1] -= self.paxAction[k]
-           self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
-           self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
-           self.info['served_demand'] += self.paxAction[k]
-           self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-           self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-           self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
-           self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
-       
-       test_spatial_acc_count = np.zeros(self.number_nodes_spatial)
-       for n in self.nodes:
+            satisfied_demand[i_region] += self.paxAction[k]
+            self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
+            self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
+            self.acc[i][t+1] -= self.paxAction[k]
+            self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
+            self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
+            self.info['served_demand'] += self.paxAction[k]
+            self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
+            self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
+            self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
+
+        test_spatial_acc_count = np.zeros(self.number_nodes_spatial)
+        for n in self.nodes:
             test_spatial_acc_count[n[0]] += self.acc[n][t+1]
-       for region in self.nodes_spatial:
+        for region in self.nodes_spatial:
             assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) < 1e-5
             assert satisfied_demand[region] - total_demand[region] < 1e-5
 
@@ -235,7 +243,7 @@ class AMoD:
         self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
         done = False # if passenger matching is executed first
 
-       return self.obs, max(0,self.reward), done, self.info
+        return self.obs, max(0,self.reward), done, self.info
 
     # reb step
     def reb_step(self, rebAction):
