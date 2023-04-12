@@ -460,7 +460,7 @@ class AMoD:
                 self.n_charging_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
                 self.new_charging_vehicles[i[0]][t+1] += rebAction[k]
                 # added 1e-5 as tolerance because optimisation result is not exact
-                assert self.scenario.cars_charging_per_station[i[0]] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
+                assert self.scenario.cars_charging_per_station[i[0]][t+1] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
             # road edge
             elif self.rebAction[k] > 0:
                 assert i[0] != j[0] or i == j
