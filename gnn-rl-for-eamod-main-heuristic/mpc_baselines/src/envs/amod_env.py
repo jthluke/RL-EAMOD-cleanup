@@ -91,6 +91,7 @@ class AMoD:
             self.create_edge_maps()
             self.create_node_maps()
             self.create_edge_idx_and_weights()
+            self.reset_cars_charging()
 
             for i, j in self.G.edges:
                 self.rebFlow[i, j] = defaultdict(float)
@@ -523,7 +524,6 @@ class AMoD:
 
         # self.scenario.cars_charging_per_station = np.zeros_like(self.scenario.cars_per_station_capacity)
         self.reset_cars_charging()
-        print(self.scenario.cars_charging_per_station)
 
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
