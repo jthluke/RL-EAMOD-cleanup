@@ -65,9 +65,11 @@ class AMoD:
             # number of vehicles within each spatial node, key: i - node, t - time
             self.acc_spatial = defaultdict(dict)
             self.n_charging_vehicles_spatial = defaultdict(dict)
+            self.new_charging_vehicles = defaultdict(dict)
             self.n_rebal_vehicles_spatial = defaultdict(dict)
             self.n_customer_vehicles_spatial = defaultdict(dict)
-            
+            self.satisfied_demand = defaultdict(dict)
+            self.new_rebalancing_vehicles = defaultdict(dict)
             # number of vehicles arriving at each spatial node, key: i - node, t - time
             self.dacc_spatial = defaultdict(dict)
             # number of rebalancing vehicles, key: (i,j) - (origin, destination), t - time
@@ -81,7 +83,13 @@ class AMoD:
             self.charging_edges = None  # edges only used for rebal
             self.map_node_to_outgoing_edges = None  # maps node to outgoing edges
             self.map_node_to_incoming_edges = None  # maps node to incoming edges
+            # maps spatial node to outgoing edges in graph with charge
+            self.map_node_spatial_to_outgoing_road_edges_charge_graph = None
+            # maps spatial node to incoming edges in graph with charge
+            self.map_node_spatial_to_incoming_road_edges_charge_graph = None
+            self.map_spatial_node_to_charge_nodes = None  # maps spatial node to charge nodes
             self.create_edge_maps()
+            self.create_node_maps()
             self.create_edge_idx_and_weights()
             self.reset_cars_charging()
 
@@ -95,8 +103,11 @@ class AMoD:
             for n in self.nodes_spatial:
                 self.acc_spatial[n][0] = self.G_spatial.nodes[n]['accInit']
                 self.n_charging_vehicles_spatial[n][0] = 0
+                self.new_charging_vehicles[n][0] = 0
                 self.n_rebal_vehicles_spatial[n][0] = 0
+                self.new_rebalancing_vehicles[n][0] = 0
                 self.n_customer_vehicles_spatial[n][0] = 0
+                self.satisfied_demand[n][0] = 0
                 self.dacc_spatial[n] = defaultdict(float)
             self.servedDemand = defaultdict(dict)
             for i, j in self.demand:
@@ -116,16 +127,22 @@ class AMoD:
     def create_edge_maps(self):
         self.map_o_d_regions_to_pax_edges = dict([])
         self.charging_edges = []
-        self.map_region_to_charge_edges = dict([])
         self.map_node_to_outgoing_edges = dict([])
         self.map_node_to_incoming_edges = dict([])
+        self.map_node_spatial_to_outgoing_road_edges_charge_graph = dict([])
+        self.map_node_spatial_to_incoming_road_edges_charge_graph = dict([])
 
         for node in self.nodes:
             self.map_node_to_incoming_edges[node] = []
             self.map_node_to_outgoing_edges[node] = []
 
+        for node_spatial in self.nodes_spatial:
+            self.map_node_spatial_to_incoming_road_edges_charge_graph[node_spatial] = [
+            ]
+            self.map_node_spatial_to_outgoing_road_edges_charge_graph[node_spatial] = [
+            ]
+
         for o_region in self.region:
-            self.map_region_to_charge_edges[o_region] = []
             for d_region in self.region:
                 self.map_o_d_regions_to_pax_edges[(o_region, d_region)] = []
 
@@ -137,10 +154,13 @@ class AMoD:
             d_region, d_charge = d
             energy_distance = self.scenario.energy_distance[o_region, d_region]
             if (o_charge - d_charge) == energy_distance:
+                self.map_node_spatial_to_outgoing_road_edges_charge_graph[o_region].append(
+                    e)
+                self.map_node_spatial_to_incoming_road_edges_charge_graph[d_region].append(
+                    e)
                 self.map_o_d_regions_to_pax_edges[(
                     o_region, d_region)].append(e)
             else:
-                self.map_region_to_charge_edges[o_region].append(e)
                 self.charging_edges.append(e)
 
     def create_node_maps(self):
@@ -171,6 +191,158 @@ class AMoD:
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         self.gcn_edge_idx = edge_idx
 
+    def apply_charging_heurstic(self, heuristic: str):
+        if heuristic == 'empty_to_full':
+            return self.empty_to_full_charge()
+        elif heuristic == 'off_peak_charging':
+            return self.increased_charging_off_peaks()
+        elif heuristic == 'off_peak_one_step':
+            return self.increased_charging_off_peaks_one_step()
+        elif heuristic == "relative_charging":
+            return self.increased_charging_off_peaks_one_step_relative()
+        else:
+            print("Enter valid heuristic")
+            assert False
+
+    # only cars at locations with chargers will be charged
+    def empty_to_full_charge(self):
+        charging_heuristic_reward = 0
+        for region in self.nodes_spatial:
+            for c in range(self.scenario.avg_energy_dist):
+                n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
+                if self.acc[(region, c)][self.time+1] > 0 and n_available_chargers > 0:
+                    target_charge = self.scenario.number_charge_levels-1
+                    charge_time = math.ceil((target_charge-c)/self.scenario.charge_levels_per_charge_step) - self.scenario.time_normalizer
+                    n_new_charging_vehicles = min(self.acc[(region, c)][self.time+1], n_available_chargers)
+                    avg_energy_price = np.mean(
+                        self.scenario.p_energy[self.time:self.time+charge_time + self.scenario.time_normalizer])
+                    charging_heuristic_reward -= n_new_charging_vehicles * (target_charge-c) * avg_energy_price
+                    if (self.time+charge_time) not in self.rebFlow[(region, c), (region, target_charge)].keys():
+                        self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] = 0
+                    self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] += n_new_charging_vehicles
+                    self.scenario.cars_charging_per_station[region] += n_new_charging_vehicles
+                    self.acc[(region, c)][self.time+1] -= n_new_charging_vehicles
+                    self.acc_spatial[region][self.time+1] -= n_new_charging_vehicles
+                    self.n_charging_vehicles_spatial[region][self.time+1] += n_new_charging_vehicles
+                    self.new_charging_vehicles[region][self.time+1] += n_new_charging_vehicles
+                
+        return charging_heuristic_reward
+
+    # only cars at locations with chargers will be charged
+    def empty_to_one_step(self):
+        charging_heuristic_reward = 0
+        for region in self.nodes_spatial:
+            for c in range(self.scenario.avg_energy_dist):
+                n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
+                if self.acc[(region, c)][self.time+1] > 0 and n_available_chargers > 0:
+                    target_charge = min(self.scenario.number_charge_levels-1, c+self.scenario.charge_levels_per_charge_step)
+                    charge_time = math.ceil((target_charge-c)/self.scenario.charge_levels_per_charge_step) - self.scenario.time_normalizer
+                    n_new_charging_vehicles = min(self.acc[(region, c)][self.time+1], n_available_chargers)
+                    avg_energy_price = np.mean(
+                        self.scenario.p_energy[self.time:self.time+charge_time + self.scenario.time_normalizer])
+                    charging_heuristic_reward -= n_new_charging_vehicles * (target_charge-c) * avg_energy_price
+                    if (self.time+charge_time) not in self.rebFlow[(region, c), (region, target_charge)].keys():
+                        self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] = 0
+                    self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] += n_new_charging_vehicles
+                    self.scenario.cars_charging_per_station[region] += n_new_charging_vehicles
+                    self.acc[(region, c)][self.time+1] -= n_new_charging_vehicles
+                    self.acc_spatial[region][self.time+1] -= n_new_charging_vehicles
+                    self.n_charging_vehicles_spatial[region][self.time+1] += n_new_charging_vehicles
+                    self.new_charging_vehicles[region][self.time+1] += n_new_charging_vehicles
+                
+        return charging_heuristic_reward
+
+    def increased_charging_off_peaks(self):
+        # increase charging during Mid day low (charge bottom 30%)
+        charging_heuristic_reward = 0
+        hour = int(self.time * self.scenario.time_granularity)
+        if hour not in self.scenario.peak_hours:
+            # we want to charge as many vehicles as possible in the bottom third of charge, starting with the lowest charges
+            charge_limit = math.ceil(self.scenario.number_charge_levels*0.3)
+            for c in range(charge_limit):
+                for region in self.nodes_spatial:
+                    n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
+                    if self.acc[(region, c)][self.time+1] > 0 and n_available_chargers > 0:
+                        target_charge = self.scenario.number_charge_levels - 1
+                        charge_diff = target_charge - c
+                        charge_time = math.ceil(charge_diff/self.scenario.charge_levels_per_charge_step) - self.scenario.time_normalizer
+                        n_new_charging_vehicles = min(self.acc[(region, c)][self.time+1], n_available_chargers)
+                        avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time+self.scenario.time_normalizer])
+                        charging_heuristic_reward -= n_new_charging_vehicles * charge_diff * avg_energy_price
+                        if (self.time+charge_time) not in self.rebFlow[(region, c), (region, target_charge)].keys():
+                            self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] = 0
+                        self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] += n_new_charging_vehicles
+                        self.scenario.cars_charging_per_station[region] += n_new_charging_vehicles
+                        self.acc[(region, c)][self.time+1] -= n_new_charging_vehicles
+                        self.acc_spatial[region][self.time+1] -= n_new_charging_vehicles
+                        self.n_charging_vehicles_spatial[region][self.time+1] += n_new_charging_vehicles
+                        self.new_charging_vehicles[region][self.time+1] += n_new_charging_vehicles
+            return charging_heuristic_reward
+        else:
+            return self.empty_to_full_charge()
+
+    def increased_charging_off_peaks_one_step(self):
+        # increase charging during Mid day low (charge bottom 30%)
+        charging_heuristic_reward = 0
+        hour = int(self.time * self.scenario.time_granularity)
+        if hour not in self.scenario.peak_hours:
+            # we want to charge as many vehicles as possible in the bottom third of charge, starting with the lowest charges
+            charge_limit = math.ceil(self.scenario.number_charge_levels*0.3)
+            for c in range(charge_limit):
+                for region in self.nodes_spatial:
+                    n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
+                    if self.acc[(region, c)][self.time+1] > 0 and n_available_chargers > 0:
+                        target_charge = min(self.scenario.number_charge_levels - 1, c+self.scenario.charge_levels_per_charge_step)
+                        charge_diff = target_charge - c
+                        charge_time = math.ceil(charge_diff/self.scenario.charge_levels_per_charge_step) - self.scenario.time_normalizer
+                        n_new_charging_vehicles = min(self.acc[(region, c)][self.time+1], n_available_chargers)
+                        avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time+self.scenario.time_normalizer])
+                        charging_heuristic_reward -= n_new_charging_vehicles * charge_diff * avg_energy_price
+                        if (self.time+charge_time) not in self.rebFlow[(region, c), (region, target_charge)].keys():
+                            self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] = 0
+                        self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] += n_new_charging_vehicles
+                        self.scenario.cars_charging_per_station[region] += n_new_charging_vehicles
+                        self.acc[(region, c)][self.time+1] -= n_new_charging_vehicles
+                        self.acc_spatial[region][self.time+1] -= n_new_charging_vehicles
+                        self.n_charging_vehicles_spatial[region][self.time+1] += n_new_charging_vehicles
+                        self.new_charging_vehicles[region][self.time+1] += n_new_charging_vehicles
+            return charging_heuristic_reward
+        else:
+            return self.empty_to_one_step()
+
+    def increased_charging_off_peaks_one_step_relative(self):
+        # increase charging during Mid day low (charge bottom 30%) of vehicles
+        charging_heuristic_reward = 0
+        hour = int(self.time * self.scenario.time_granularity)
+        remaining_available_vehicles_for_charging = np.zeros(self.number_nodes_spatial)
+        for region in self.nodes_spatial:
+            remaining_available_vehicles_for_charging[region] = 0.3*self.acc_spatial[region][self.time+1]
+        if hour not in self.scenario.peak_hours:
+            # we want to charge as many vehicles as possible in the bottom third of vehicles, starting with the lowest charges
+            for region in self.nodes_spatial:
+                for c in range(self.scenario.number_charge_levels):
+                    n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
+                    if self.acc[(region, c)][self.time+1] > 0 and n_available_chargers > 0 and remaining_available_vehicles_for_charging[region] > 0:
+                        target_charge = min(self.scenario.number_charge_levels - 1, c+self.scenario.charge_levels_per_charge_step)
+                        charge_diff = target_charge - c
+                        charge_time = math.ceil(charge_diff/self.scenario.charge_levels_per_charge_step) - self.scenario.time_normalizer
+                        n_new_charging_vehicles = min(self.acc[(region, c)][self.time+1], n_available_chargers, remaining_available_vehicles_for_charging[region])
+                        avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time+self.scenario.time_normalizer])
+                        charging_heuristic_reward -= n_new_charging_vehicles * charge_diff * avg_energy_price
+                        if (self.time+charge_time) not in self.rebFlow[(region, c), (region, target_charge)].keys():
+                            self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] = 0
+                        self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] += n_new_charging_vehicles
+                        self.scenario.cars_charging_per_station[region] += n_new_charging_vehicles
+                        self.acc[(region, c)][self.time+1] -= n_new_charging_vehicles
+                        self.acc_spatial[region][self.time+1] -= n_new_charging_vehicles
+                        self.n_charging_vehicles_spatial[region][self.time+1] += n_new_charging_vehicles
+                        self.new_charging_vehicles[region][self.time+1] += n_new_charging_vehicles
+                        remaining_available_vehicles_for_charging[region] -= n_new_charging_vehicles
+            return charging_heuristic_reward
+        else:
+            return self.empty_to_one_step()
+
+
     # pax step
     def pax_step(self, paxAction=None, pax_flows_solver=None):
         t = self.time
@@ -182,21 +354,21 @@ class AMoD:
             self.acc_spatial[n_spatial][t+1] = self.acc_spatial[n_spatial][t]
             assert self.acc_spatial[n_spatial][t] >= -1e-8
             self.n_charging_vehicles_spatial[n_spatial][t+1] = self.n_charging_vehicles_spatial[n_spatial][t]
-            # self.new_charging_vehicles[n_spatial][t+1] = 0
+            self.new_charging_vehicles[n_spatial][t+1] = 0
             assert self.n_charging_vehicles_spatial[n_spatial][t] >= -1e-8
             self.n_rebal_vehicles_spatial[n_spatial][t+1] = self.n_rebal_vehicles_spatial[n_spatial][t]
-            # self.new_rebalancing_vehicles[n_spatial][t+1] = 0
+            self.new_rebalancing_vehicles[n_spatial][t+1] = 0
             assert self.n_rebal_vehicles_spatial[n_spatial][t] >= -1e-8
             self.n_customer_vehicles_spatial[n_spatial][t+1] = self.n_customer_vehicles_spatial[n_spatial][t]
             assert self.n_customer_vehicles_spatial[n_spatial][t] >= -1e-8
-            # self.satisfied_demand[n_spatial][t+1] = 0
+            self.satisfied_demand[n_spatial][t+1] = 0
         
         self.info['served_demand'] = 0  # initialize served demand
         self.info["operating_cost"] = 0  # initialize operating cost
         self.info['revenue'] = 0
         self.info['rebalancing_cost'] = 0
-        # self.info['charge_rebalancing_cost'] = 0
-        # self.info['spatial_rebalancing_cost'] = 0
+        self.info['charge_rebalancing_cost'] = 0
+        self.info['spatial_rebalancing_cost'] = 0
         # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
         if paxAction is None:
            paxAction = pax_flows_solver.optimize()
@@ -219,7 +391,10 @@ class AMoD:
             self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
             self.servedDemand[i_region,j_region][t] += self.paxAction[k]
 
+            new_customer_vehicles += self.paxAction[k]
             satisfied_demand[i_region] += self.paxAction[k]
+            self.satisfied_demand[i[0]][t+1] += self.paxAction[k]
+
             self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
             self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
             self.acc[i][t+1] -= self.paxAction[k]
@@ -243,7 +418,7 @@ class AMoD:
         self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
         done = False # if passenger matching is executed first
 
-        return self.obs, max(0,self.reward), done, self.info
+        return self.obs_spatial, max(0,self.reward), done, self.info
 
     # reb step
     def reb_step(self, rebAction):
@@ -265,11 +440,13 @@ class AMoD:
             if rebAction[k] < 1e-3:
                 continue
             self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
-            
-            self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.rebAction[k]
-            self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-            self.dacc_spatial[j[0]][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-            self.acc[i][t+1] -= self.rebAction[k] 
+            if self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] == None:
+                self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] = self.rebAction[k]
+            else:
+                self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] += self.rebAction[k]
+            self.dacc[j][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            self.dacc_spatial[j[0]][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            self.acc[i][t+1] -= self.rebAction[k]
             self.acc_spatial[i[0]][t+1] -= self.rebAction[k]
             # charging edge
             if i[1] < j[1] and self.rebAction[k] > 0 and i[0] == j[0]:
@@ -280,26 +457,11 @@ class AMoD:
                 self.info['charge_rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
-                # we have to add plus one because charging starts in the next timestep
-                for future_time in range(t+1, t+charge_time+1):
-                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
-                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
-                    self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
-            # road and charging edge
-            elif i[1] - self.scenario.energy_distance[i[0], j[0]] < j[1] and i[0] != j[0] and self.rebAction[k] > 0:
-                self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
-                charge_difference = j[1] - i[1] + self.scenario.energy_distance[i[0], j[0]]
-                charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
-                avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
-                self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k] + avg_energy_price * self.rebAction[k]*charge_difference
-                # we have to add plus one because charging starts in the next timestep
-                for future_time in range(t+1, t+charge_time+1):
-                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
-                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
-                    self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
-                self.reward -= avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                self.scenario.cars_charging_per_station[i[0]][t+1] += self.rebAction[k]
+                self.n_charging_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
+                self.new_charging_vehicles[i[0]][t+1] += rebAction[k]
+                # added 1e-5 as tolerance because optimisation result is not exact
+                assert self.scenario.cars_charging_per_station[i[0]][t+1] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
             # road edge
             elif self.rebAction[k] > 0:
                 # assert i[0] != j[0] or i == j
@@ -310,7 +472,6 @@ class AMoD:
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.reward -= (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
         # arrival for the next time step, executed in the last state of a time step
-        # this makes the code slightly different from the previous version, where the following codes are executed between matching and rebalancing  
         for k in range(len(self.edges)):
             o, d = self.edges[k]
             if (o, d) in self.rebFlow and t in self.rebFlow[o, d]:
@@ -330,7 +491,17 @@ class AMoD:
                 self.acc[d][t+1] += self.paxFlow[o, d][t]
                 self.acc_spatial[d[0]][t+1] += self.paxFlow[o, d][t]
                 self.n_customer_vehicles_spatial[o[0]][t+1] -= self.paxFlow[o, d][t]
-            
+        
+        # improve implementation, should not be hardcoded from data
+        # hour = (t+1) * self.scenario.time_granularity + 8
+        # # peak demand starts at 16h
+        # if hour == 15:
+        #     new_vehicles_per_node = int(self.scenario.additional_vehicles_peak_demand/self.number_nodes_spatial)
+        #     for node_spatial in self.nodes_spatial:
+        #         self.acc[(node_spatial, self.scenario.number_charge_levels-1)][t+1] += new_vehicles_per_node
+        #         self.acc_spatial[node_spatial][t+1] += new_vehicles_per_node
+
+
         self.time += 1
         # use self.time to index the next time step
         self.obs = (self.acc, self.time, self.dacc, self.demand)
@@ -341,14 +512,19 @@ class AMoD:
         # reset the episode
         self.acc = defaultdict(dict)
         self.acc_spatial = defaultdict(dict)
+        self.n_charging_vehicles_spatial = defaultdict(dict)
+        self.new_charging_vehicles = defaultdict(dict)
         self.n_rebal_vehicles_spatial = defaultdict(dict)
+        self.new_rebalancing_vehicles = defaultdict(dict)
         self.n_customer_vehicles_spatial = defaultdict(dict)
-        
+        self.satisfied_demand = defaultdict(dict)
         self.dacc = defaultdict(dict)
         self.rebFlow = defaultdict(dict)
         self.paxFlow = defaultdict(dict)
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
+
+        # self.scenario.cars_charging_per_station = np.zeros_like(self.scenario.cars_per_station_capacity)
         self.reset_cars_charging()
 
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
@@ -367,8 +543,12 @@ class AMoD:
         for n_spatial in self.nodes_spatial:
             self.acc_spatial[n_spatial][0] = self.G_spatial.nodes[n_spatial]['accInit']
             self.dacc_spatial[n_spatial] = defaultdict(float)
+            self.n_charging_vehicles_spatial[n_spatial][0] = 0
+            self.new_charging_vehicles[n_spatial][0] = 0
             self.n_rebal_vehicles_spatial[n_spatial][0] = 0
+            self.new_rebalancing_vehicles[n_spatial][0] = 0
             self.n_customer_vehicles_spatial[n_spatial][0] = 0
+            self.satisfied_demand[n_spatial][0] = 0
         for i, j in self.demand:
             self.servedDemand[i, j] = defaultdict(float)
         self.obs = (self.acc, self.time, self.dacc, self.demand)
@@ -388,11 +568,11 @@ class AMoD:
 
 
 class Scenario:
-    def __init__(self, EV=True, spatial_nodes=4, charging_stations=None, cars_per_station_capacity=None, number_charge_levels=10, charge_levels_per_charge_step=1, energy_distance=None, tf=60, sd=None, tripAttr=None,
-                 demand_ratio=None, trip_length_preference=0.25, grid_travel_time=1, reb_time=None, total_acc=None, p_energy=None, time_granularity=0.5, operational_cost_per_timestep=0.5):
+    def __init__(self, EV=True, spatial_nodes=4, charging_stations=None, cars_per_station_capacity=None, number_charge_levels=10, charge_levels_per_charge_step=1, energy_distance=None, tf=60, sd=None, tripAttr=None, peak_hours=[],
+                 demand_ratio=None, trip_length_preference=0.25, grid_travel_time=1, alpha=0.2, reb_time=None, total_acc=None, additional_vehicles_peak_demand=0, p_energy=None, time_granularity=0.5, operational_cost_per_timestep=0.5):
         # trip_length_preference: positive - more shorter trips, negative - more longer trips
         # grid_travel_time: travel time between grids
-        # demand_input： list - total demand out of each nodes, 
+        # demand_input： list - total demand out of each nodes,
         #          float/int - total demand out of each nodes satisfies uniform distribution on [0, demand_input]
         #          dict/defaultdict - total demand between pairs of regions
         # demand_input will be converted to a variable static_demand to represent the demand between each pair of nodes
@@ -405,7 +585,7 @@ class Scenario:
 
         if EV == True:
             # self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
-            # self.peak_hours = peak_hours
+            self.peak_hours = peak_hours
             self.time_normalizer = 1
             self.time_granularity = time_granularity
             self.operational_cost_per_timestep = operational_cost_per_timestep
@@ -416,10 +596,13 @@ class Scenario:
             self.number_charge_levels = number_charge_levels
             self.charge_levels_per_charge_step = charge_levels_per_charge_step
             self.energy_distance = energy_distance
+            self.avg_energy_dist = math.ceil(np.mean(energy_distance))
+            self.max_energy_distance = int(np.max(energy_distance))
             self.p_energy = np.array(p_energy)  # price of energy in $/kWh
             self.intermediate_charging_station = defaultdict(dict)
             self.time = 0  # current time
             self.is_json = False
+            self.alpha = alpha
             self.trip_length_preference = trip_length_preference
             self.grid_travel_time = grid_travel_time
             self.tf = tf
@@ -446,23 +629,9 @@ class Scenario:
 
             # add road edges
             self.add_road_edges()
-            
-            # add artificial edges
-            for o_node in list(self.G.nodes):
-                for d_node in list(self.G.nodes):
-                    o_region = o_node[0]
-                    o_charge = o_node[1]
-                    d_region = d_node[0]
-                    d_charge = d_node[1]
-                    energy_dist = self.energy_distance[o_region,d_region]
-                    if o_region == d_region or o_charge - energy_dist >= d_charge: # We already created charge edges and regular road edges
-                        continue
-                    # edges from a charging station
-                    elif self.charging_stations[o_region]:
-                        if (d_charge <= self.number_charge_levels-1 - energy_dist):
-                            self.add_artificial_edges_from_or_to_station(o_node, d_node)
 
             self.edges = list(self.G.edges)
+            self.spatial_edges = list(self.G_spatial.edges)
             self.tf = tf
 
             for o,d in self.edges:
@@ -478,19 +647,18 @@ class Scenario:
                 number_vehicles_distr = 0
                 for region in self.G_spatial.nodes:
                     self.G_spatial.nodes[region]['accInit'] = int(0)
-                    # TODO: uncommment
-                    # for c in range(self.number_charge_levels):
-                    #     cut_off_charge = int(0.5*self.number_charge_levels)
-                    #     print("cutoff charge init", cut_off_charge)
-                    #     number_of_used_charges = (self.number_charge_levels-cut_off_charge)
-                    #     number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))*number_of_used_charges))
-                    #     if c >= cut_off_charge:
-                    #         self.G.nodes[(region,c)]['accInit'] = number_cars_per_node
-                    #         self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
-                    #     else:
-                    #         self.G.nodes[(region,c)]['accInit'] = 0
-                    # only bottom 60%
                     for c in range(self.number_charge_levels):
+                        # cut_off_charge = int(0.5*self.number_charge_levels)
+                        # number_of_used_charges = (self.number_charge_levels-cut_off_charge)
+                        # number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))*number_of_used_charges))
+                        # if c >= cut_off_charge:
+                        #     self.G.nodes[(region,c)]['accInit'] = number_cars_per_node
+                        #     number_vehicles_distr += number_cars_per_node
+                        #     self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
+                        # else:
+                        #     self.G.nodes[(region,c)]['accInit'] = 0
+
+                        # only bottom 60%
                         cut_off_charge = int(1.*self.number_charge_levels)
                         print("cutoff charge init", cut_off_charge)
                         number_of_used_charges = cut_off_charge
@@ -501,17 +669,7 @@ class Scenario:
                             self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
                         else:
                             self.G.nodes[(region,c)]['accInit'] = 0
-                print(acc, number_vehicles_distr)
-                    # TODO: delete
-                    # for c in range(self.number_charge_levels):
-                    #     number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))))
-                    #     if c == number_charge_levels - 1:
-                    #         self.G.nodes[(region,c)]['accInit'] = number_cars_per_node
-                    #         self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
-                    #     else:
-                    #         self.G.nodes[(region,c)]['accInit'] = 0
-
-                        
+                print(acc, number_vehicles_distr)   
                 break  # only need the first time step, if I want variable acc, I need to change this
             self.tripAttr = self.get_random_demand() # randomly generated demand
 
@@ -555,24 +713,6 @@ class Scenario:
                     for t in range(0, self.tf+1):
                         self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
 
-    def add_artificial_edges_from_or_to_station(self, o_node: tuple, d_node: tuple):
-        o_region = o_node[0]
-        d_region = d_node[0]
-        target_energy = d_node[1] + self.energy_distance[o_region,d_region]
-        energy_dist = (target_energy - o_node[1])
-        if energy_dist % self.charge_levels_per_charge_step != 0:
-            return
-        energy_time = math.ceil(energy_dist/self.charge_levels_per_charge_step)
-        self.G.add_edge(o_node, d_node)
-        self.G.edges[o_node, d_node]['time'] = dict()
-        for t in range(0,self.tf+1):
-            if t+energy_time < self.tf:
-                spatial_time = self.rebTime[o_region, d_region][t+energy_time]
-            else:
-                spatial_time = self.rebTime[o_region, d_region][t]
-            total_distance = spatial_time + energy_time
-            self.G.edges[o_node,d_node]['time'][t] = math.ceil(total_distance) - self.time_normalizer
-        
     def get_random_demand(self, bool_random = True):
         # generate demand and price
         # reset = True means that the function is called in the reset() method of AMoD enviroment,
