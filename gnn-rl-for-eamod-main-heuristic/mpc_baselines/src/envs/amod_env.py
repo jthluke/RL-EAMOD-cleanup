@@ -522,12 +522,8 @@ class AMoD:
         self.price = defaultdict(dict)  # price
 
         # self.scenario.cars_charging_per_station = np.zeros_like(self.scenario.cars_per_station_capacity)
-        self.scenario.cars_charging_per_station = defaultdict(dict)
-        for region in range(self.scenario.spatial_nodes):
-            self.scenario.cars_charging_per_station[region] = defaultdict(float)
-            for t in range(self.scenario.tf):
-                self.scenario.cars_charging_per_station[region][t] = 0.
-        
+        self.reset_cars_charging()
+
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
@@ -555,6 +551,16 @@ class AMoD:
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         self.reward = 0
         return self.obs
+    
+    def reset_cars_charging(self):
+        self.scenario.cars_charging_per_station = defaultdict(dict)
+        self.n_charging_vehicles_spatial = defaultdict(dict)
+        for region in range(self.scenario.spatial_nodes):
+            self.scenario.cars_charging_per_station[region] = defaultdict(float)
+            self.n_charging_vehicles_spatial[region] = defaultdict(float)
+            for t in range(self.scenario.tf):
+                self.scenario.cars_charging_per_station[region][t] = 0.
+                self.n_charging_vehicles_spatial[region][t] = 0.
 
 
 
