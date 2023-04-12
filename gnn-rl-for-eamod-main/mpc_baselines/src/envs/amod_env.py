@@ -353,7 +353,7 @@ class AMoD:
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         self.reward = 0
         return self.obs
-    
+
     def reset_cars_charging(self):
         self.scenario.cars_charging_per_station = defaultdict(dict)
         self.n_charging_vehicles_spatial = defaultdict(dict)
