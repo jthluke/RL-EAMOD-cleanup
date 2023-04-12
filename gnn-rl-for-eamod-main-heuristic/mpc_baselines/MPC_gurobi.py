@@ -71,9 +71,13 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                 #     assert o_node[0]==d_node[0]
 
                     # Constraint: no more charging vehicles than there are charging stations
-                    # m.addConstr(
-                    #     charging_cars_per_location[o_node[0]][t] + rebal_flow[t,e] <= env.scenario.cars_per_station_capacity[o_node[0]]
-                    # )
+                    print(charging_cars_per_location[o_node[0]][t])
+                    print(rebal_flow[t,e])
+                    print(env.scenario.cars_per_station_capacity[o_node[0]])
+                    print("gap")
+                    m.addConstr(
+                        charging_cars_per_location[o_node[0]][t] + rebal_flow[t,e] <= env.scenario.cars_per_station_capacity[o_node[0]]
+                    )
 
                     if d_node[1] > o_node[1] and o_node[0] == d_node[0]:
                         change_dist = d_node[1] - o_node[1]
