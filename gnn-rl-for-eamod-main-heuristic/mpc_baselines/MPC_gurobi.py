@@ -31,7 +31,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
         charging_cars_per_location[n] = defaultdict(float)
         for t in range(mpc_horizon):
             # charging_cars_per_location[n][t] = copy.copy(env.scenario.cars_charging_per_station[n][t+time+1])
-            charging_cars_per_location[n][t] = env.scenario.cars_charging_per_station[n]
+            charging_cars_per_location[n][t] = env.scenario.cars_charging_per_station[n][t + time + 1]
     for t in range(mpc_horizon):
         for o in env.region:
             for d in env.region:
@@ -71,13 +71,6 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                 #     assert o_node[0]==d_node[0]
 
                     # Constraint: no more charging vehicles than there are charging stations
-                    print(charging_cars_per_location[o_node[0]][t])
-                    print("line")
-                    print(rebal_flow[t,e])
-                    print("line")
-                    print(env.scenario.cars_per_station_capacity[o_node[0]])
-                    print("line")
-                    print("gap")
                     m.addConstr(
                         charging_cars_per_location[o_node[0]][t] + rebal_flow[t,e] <= env.scenario.cars_per_station_capacity[o_node[0]]
                     )
