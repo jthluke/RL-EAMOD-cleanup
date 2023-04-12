@@ -72,8 +72,11 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
 
                     # Constraint: no more charging vehicles than there are charging stations
                     print(charging_cars_per_location[o_node[0]][t])
+                    print("line")
                     print(rebal_flow[t,e])
+                    print("line")
                     print(env.scenario.cars_per_station_capacity[o_node[0]])
+                    print("line")
                     print("gap")
                     m.addConstr(
                         charging_cars_per_location[o_node[0]][t] + rebal_flow[t,e] <= env.scenario.cars_per_station_capacity[o_node[0]]
