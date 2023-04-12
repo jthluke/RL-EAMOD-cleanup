@@ -584,7 +584,7 @@ class Scenario:
             np.random.seed(self.sd)
 
         if EV == True:
-            self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
+            # self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
             self.peak_hours = peak_hours
             self.time_normalizer = 1
             self.time_granularity = time_granularity
