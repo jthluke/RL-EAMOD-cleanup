@@ -189,7 +189,7 @@ class AMoD:
             assert self.n_rebal_vehicles_spatial[n_spatial][t] >= -1e-8
             self.n_customer_vehicles_spatial[n_spatial][t+1] = self.n_customer_vehicles_spatial[n_spatial][t]
             assert self.n_customer_vehicles_spatial[n_spatial][t] >= -1e-8
-            self.satisfied_demand[n_spatial][t+1] = 0
+            # self.satisfied_demand[n_spatial][t+1] = 0
         
         self.info['served_demand'] = 0  # initialize served demand
         self.info["operating_cost"] = 0  # initialize operating cost
@@ -350,6 +350,7 @@ class AMoD:
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
         self.reset_cars_charging()
+
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
@@ -401,8 +402,8 @@ class Scenario:
         self.EV = EV
         if sd != None:
             np.random.seed(self.sd)
-        
-        if EV == True: 
+
+        if EV == True:
             # self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
             # self.peak_hours = peak_hours
             self.time_normalizer = 1

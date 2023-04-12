@@ -440,19 +440,13 @@ class AMoD:
             if rebAction[k] < 1e-3:
                 continue
             self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
-
-            self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.rebAction[k]
-            self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-            self.dacc_spatial[j[0]][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-            self.acc[i][t+1] -= self.rebAction[k] 
-
-            # if self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] == None:
-            #     self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] = self.rebAction[k]
-            # else:
-            #     self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] += self.rebAction[k]
-            # self.dacc[j][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-            # self.dacc_spatial[j[0]][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-            # self.acc[i][t+1] -= self.rebAction[k]
+            if self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] == None:
+                self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] = self.rebAction[k]
+            else:
+                self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]] += self.rebAction[k]
+            self.dacc[j][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            self.dacc_spatial[j[0]][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+            self.acc[i][t+1] -= self.rebAction[k]
             self.acc_spatial[i[0]][t+1] -= self.rebAction[k]
             # charging edge
             if i[1] < j[1] and self.rebAction[k] > 0 and i[0] == j[0]:
@@ -463,33 +457,11 @@ class AMoD:
                 self.info['charge_rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
-                # self.scenario.cars_charging_per_station[i[0]][t+1] += self.rebAction[k]
-                # self.n_charging_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
-                # self.new_charging_vehicles[i[0]][t+1] += rebAction[k]
-                # # added 1e-5 as tolerance because optimisation result is not exact
-                # assert self.scenario.cars_charging_per_station[i[0]][t+1] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
-
-                # we have to add plus one because charging starts in the next timestep
-                for future_time in range(t+1, t+charge_time+1):
-                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
-                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
-                    self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
-            # road and charging edge
-            elif i[1] - self.scenario.energy_distance[i[0], j[0]] < j[1] and i[0] != j[0] and self.rebAction[k] > 0:
-                self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
-                charge_difference = j[1] - i[1] + self.scenario.energy_distance[i[0], j[0]]
-                charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
-                avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
-                self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k] + avg_energy_price * self.rebAction[k]*charge_difference
-                # we have to add plus one because charging starts in the next timestep
-                for future_time in range(t+1, t+charge_time+1):
-                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
-                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
-                    self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
-                self.reward -= avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                
+                self.scenario.cars_charging_per_station[i[0]][t+1] += self.rebAction[k]
+                self.n_charging_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
+                self.new_charging_vehicles[i[0]][t+1] += rebAction[k]
+                # added 1e-5 as tolerance because optimisation result is not exact
+                assert self.scenario.cars_charging_per_station[i[0]][t+1] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
             # road edge
             elif self.rebAction[k] > 0:
                 # assert i[0] != j[0] or i == j
@@ -612,7 +584,7 @@ class Scenario:
             np.random.seed(self.sd)
 
         if EV == True:
-            # self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
+            self.additional_vehicles_peak_demand = additional_vehicles_peak_demand
             self.peak_hours = peak_hours
             self.time_normalizer = 1
             self.time_granularity = time_granularity
