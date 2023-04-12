@@ -23,8 +23,8 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
             dacc[n][t] = 0
     pax_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="pax_flow")
     rebal_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="rebal_flow")
-    # charging_cars_per_location = np.repeat(env.scenario.cars_charging_per_station,mpc_horizon).reshape(env.number_nodes_spatial,mpc_horizon).T
-    charging_cars_per_location = defaultdict(dict)
+    charging_cars_per_location = np.repeat(env.scenario.cars_charging_per_station,mpc_horizon).reshape(env.number_nodes_spatial,mpc_horizon).T
+    # charging_cars_per_location = defaultdict(dict)
     for n in env.nodes_spatial:
         charging_cars_per_location[n] = defaultdict(float)
         for t in range(mpc_horizon):
