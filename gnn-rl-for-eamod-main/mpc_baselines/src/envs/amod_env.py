@@ -230,24 +230,29 @@ class AMoD:
             assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) < 1e-5
             assert satisfied_demand[region] - total_demand[region] < 1e-5
 
-       self.obs = (self.acc, self.time, self.dacc, self.demand) # for acc, the time index would be t+1, but for demand, the time index would be t
-       self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
-       done = False # if passenger matching is executed first
+        # for acc, the time index would be t+1, but for demand, the time index would be t
+        self.obs = (self.acc, self.time, self.dacc, self.demand)
+        self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
+        done = False # if passenger matching is executed first
 
        return self.obs, max(0,self.reward), done, self.info
-    
+
     # reb step
     def reb_step(self, rebAction):
         t = self.time
-        self.reward = 0 # reward is calculated from before this to the next rebalancing, we may also have two rewards, one for pax matching and one for rebalancing
-        
-        self.rebAction = rebAction      
+        self.reward = 0  # reward is calculated from before this to the next rebalancing, we may also have two rewards, one for pax matching and one for rebalancing
+
+        self.rebAction = rebAction
         # rebalancing
         for k in range(len(self.edges)):
-            i,j = self.edges[k]    
-            if (i,j) not in self.G.edges:
+            i, j = self.edges[k]
+            if (i, j) not in self.G.edges:
                 assert False
             # update the number of vehicles
+            if not rebAction[k] < self.acc[i][t+1] + 1e-3:
+                print("Nodes", i,j)
+                print("Values", rebAction[k], self.acc[i][t+1])
+                print("k", k)
             assert rebAction[k] < self.acc[i][t+1] + 1e-3
             if rebAction[k] < 1e-3:
                 continue
@@ -258,11 +263,12 @@ class AMoD:
             self.acc[i][t+1] -= self.rebAction[k] 
             self.acc_spatial[i[0]][t+1] -= self.rebAction[k]
             # charging edge
-            if i[1] < j[1] and self.rebAction[k] > 0 and i[0]==j[0]:
+            if i[1] < j[1] and self.rebAction[k] > 0 and i[0] == j[0]:
                 charge_difference = j[1] - i[1]
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
                 self.info['rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
+                self.info['charge_rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
                 # we have to add plus one because charging starts in the next timestep
@@ -287,7 +293,9 @@ class AMoD:
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
             # road edge
             elif self.rebAction[k] > 0:
+                # assert i[0] != j[0] or i == j
                 self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
+                # self.new_rebalancing_vehicles[i[0]][t+1] += self.rebAction[k]
                 self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
@@ -301,7 +309,11 @@ class AMoD:
                 self.acc_spatial[d[0]][t+1] += self.rebFlow[o, d][t]
                 # check if charging capacity has freed up
                 if d[1] > o[1] and o[0] == d[0]:
-                    continue
+                    # charging should only happen at one location
+                    continue 
+                    # assert o[0] == d[0]
+                    # self.scenario.cars_charging_per_station[o[0]][t+1] -= self.rebFlow[o, d][t]
+                    # self.n_charging_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
                 else:
                     self.n_rebal_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
 

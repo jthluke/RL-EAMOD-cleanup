@@ -447,8 +447,7 @@ class AMoD:
             self.acc[i][t+1] -= self.rebAction[k]
             self.acc_spatial[i[0]][t+1] -= self.rebAction[k]
             # charging edge
-            if i[1] < j[1] and self.rebAction[k] > 0:
-                assert i[0] == j[0]
+            if i[1] < j[1] and self.rebAction[k] > 0 and i[0] == j[0]:
                 charge_difference = j[1] - i[1]
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
@@ -463,13 +462,13 @@ class AMoD:
                 assert self.scenario.cars_charging_per_station[i[0]][t+1] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
             # road edge
             elif self.rebAction[k] > 0:
-                assert i[0] != j[0] or i == j
+                # assert i[0] != j[0] or i == j
                 self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
-                self.new_rebalancing_vehicles[i[0]][t+1] += self.rebAction[k]
-                self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                self.reward -= (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                # self.new_rebalancing_vehicles[i[0]][t+1] += self.rebAction[k]
+                self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                self.reward -= (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
         # arrival for the next time step, executed in the last state of a time step
         for k in range(len(self.edges)):
             o, d = self.edges[k]
@@ -477,7 +476,7 @@ class AMoD:
                 self.acc[d][t+1] += self.rebFlow[o, d][t]
                 self.acc_spatial[d[0]][t+1] += self.rebFlow[o, d][t]
                 # check if charging capacity has freed up
-                if d[1] > o[1]:
+                if d[1] > o[1] and o[0] == d[0]:
                     # charging should only happen at one location
                     continue 
                     # assert o[0] == d[0]
