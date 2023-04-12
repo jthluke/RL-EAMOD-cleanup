@@ -453,6 +453,7 @@ class Scenario:
 
             for item in total_acc:
                 hr, acc = item['hour'], item['acc']
+                number_vehicles_distr = 0
                 for region in self.G_spatial.nodes:
                     self.G_spatial.nodes[region]['accInit'] = int(0)
                     # TODO: uncommment
@@ -474,9 +475,11 @@ class Scenario:
                         number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))*number_of_used_charges))
                         if c <= cut_off_charge:
                             self.G.nodes[(region,c)]['accInit'] = number_cars_per_node
+                            number_vehicles_distr += number_cars_per_node
                             self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
                         else:
                             self.G.nodes[(region,c)]['accInit'] = 0
+                print(acc, number_vehicles_distr)
                     # TODO: delete
                     # for c in range(self.number_charge_levels):
                     #     number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))))
@@ -507,9 +510,9 @@ class Scenario:
                     self.G.edges[(l, c1), (l, c2)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
-    
+
     def add_road_edges(self):
-         for o in range(self.spatial_nodes):
+        for o in range(self.spatial_nodes):
             for d in range(self.spatial_nodes):
                 self.G_spatial.add_edge(o, d)
                 self.G_spatial.edges[o, d]['time'] = dict()

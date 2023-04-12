@@ -479,9 +479,10 @@ class AMoD:
                 # check if charging capacity has freed up
                 if d[1] > o[1]:
                     # charging should only happen at one location
-                    assert o[0] == d[0]
-                    self.scenario.cars_charging_per_station[o[0]][t+1] -= self.rebFlow[o, d][t]
-                    self.n_charging_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
+                    continue 
+                    # assert o[0] == d[0]
+                    # self.scenario.cars_charging_per_station[o[0]][t+1] -= self.rebFlow[o, d][t]
+                    # self.n_charging_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
                 else:
                     self.n_rebal_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
 
@@ -663,14 +664,13 @@ class Scenario:
                         number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))*number_of_used_charges))
                         if c <= cut_off_charge:
                             self.G.nodes[(region,c)]['accInit'] = number_cars_per_node
-                            # number_vehicles_distr += number_cars_per_node
+                            number_vehicles_distr += number_cars_per_node
                             self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
                         else:
                             self.G.nodes[(region,c)]['accInit'] = 0
                 print(acc, number_vehicles_distr)   
                 break  # only need the first time step, if I want variable acc, I need to change this
-
-            self.tripAttr = self.get_random_demand()  # randomly generated demand
+            self.tripAttr = self.get_random_demand() # randomly generated demand
 
     def add_charge_edges(self):
         for l in range(self.spatial_nodes):
@@ -696,8 +696,7 @@ class Scenario:
                 self.G_spatial.add_edge(o, d)
                 self.G_spatial.edges[o, d]['time'] = dict()
                 for t in range(0, self.tf+1):
-                    self.G_spatial.edges[o, d]['time'][t] = math.ceil(
-                        self.rebTime[o, d][t]) - self.time_normalizer
+                    self.G_spatial.edges[o, d]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
                 for c in reversed(range(self.number_charge_levels)):
                     # removes top and bottom node for nodes without charge stations -> removes infeasible edges
                     target_charge = int(c - self.energy_distance[o, d])
@@ -711,8 +710,7 @@ class Scenario:
                     self.G.add_edge((o, c), (d, target_charge))
                     self.G.edges[(o, c), (d, target_charge)]['time'] = dict()
                     for t in range(0, self.tf+1):
-                        self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(
-                            self.rebTime[o, d][t]) - self.time_normalizer
+                        self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
 
     def get_random_demand(self, bool_random = True):
         # generate demand and price
