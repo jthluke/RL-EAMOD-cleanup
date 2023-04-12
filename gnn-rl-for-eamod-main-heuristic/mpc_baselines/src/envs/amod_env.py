@@ -480,7 +480,7 @@ class AMoD:
                 if d[1] > o[1]:
                     # charging should only happen at one location
                     assert o[0] == d[0]
-                    self.scenario.cars_charging_per_station[o[0]] -= self.rebFlow[o, d][t]
+                    self.scenario.cars_charging_per_station[o[0]][t+1] -= self.rebFlow[o, d][t]
                     self.n_charging_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
                 else:
                     self.n_rebal_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
