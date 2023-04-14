@@ -125,7 +125,7 @@ else:
     scale_factor = 0.0001
     scale_price = 0.1
     model = A2C(env=env, T=T, lr_a=lr_a, lr_c=lr_c, grad_norm_clip_a=grad_norm_clip_a, grad_norm_clip_c=grad_norm_clip_c, seed=seed, scale_factor=scale_factor, scale_price=scale_price).to(device)
-    # model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_final.pth')
+    model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_final.pth')
     tf = env.tf
 if use_equal_distr_baseline:
     experiment = 'uniform_distr_baseline_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
@@ -215,7 +215,7 @@ if test:
     rebal_costs_np = np.zeros(n_episodes)
     epoch_times = np.zeros(n_episodes)
 else:
-    model.train() #set model in train mode
+    model.train() # set model in train mode
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
     for destination in env.nodes_spatial:
@@ -225,7 +225,7 @@ for region in env.nodes_spatial:
 for i_episode in epochs:
     desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
     bool_random_random_demand = not test # only use random demand during training
-    obs = env.reset(bool_random_random_demand) #initialize environment
+    obs = env.reset(bool_random_random_demand) # initialize environment
     episode_reward = 0
     episode_served_demand = 0
     episode_rebalancing_cost = 0
