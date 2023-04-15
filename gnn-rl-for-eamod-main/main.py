@@ -278,9 +278,6 @@ for i_episode in epochs:
         # track performance over episode
         episode_served_demand += info_pax['served_demand']
         episode_rebalancing_cost += info_reb['rebalancing_cost']
-
-        episode_spatial_rebalancing_cost = info_reb['spatial_rebalancing_cost']
-
         # stop episode if terminating conditions are met
         if done:
             break
@@ -289,7 +286,7 @@ for i_episode in epochs:
         a_loss, v_loss, mean_value, mean_concentration, mean_std, mean_log_prob, std_log_prob = model.training_step()
 
     # Send current statistics to screen was episode_reward, episode_served_demand, episode_rebalancing_cost
-    epochs.set_description(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | SReb. Cost: {episode_spatial_rebalancing_cost:.2f} | Time: {time.time()-time_start:.2f}")
+    epochs.set_description(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
     # Send current statistics to wandb
     for spatial_node in range(env.scenario.spatial_nodes):
         wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
@@ -315,7 +312,6 @@ for i_episode in epochs:
         wandb.save(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial.p")
         best_reward = episode_reward
         best_rebal_cost = episode_rebalancing_cost
-        best_sp_rebal_cost = episode_spatial_rebalancing_cost
         best_served_demand  = episode_served_demand
     if test:
         rewards_np[i_episode] = episode_reward
