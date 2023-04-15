@@ -250,7 +250,9 @@ class AMoD:
             # charging edge
             if i[1] < j[1] and self.rebAction[k] > 0 and i[0]==j[0]:
                 charge_difference = j[1] - i[1]
+                assert charge_difference > 0
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
+                assert charge_difference > 0
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
                 self.info['rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward

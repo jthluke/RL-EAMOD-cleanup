@@ -180,7 +180,7 @@ wandb.init(
         "number_spatial_nodes": env.scenario.spatial_nodes,
         "dataset": file_path,
         "episodes": args.max_episodes,
-        "number_vehicles_per_node_init": env.G.nodes[(0,env.scenario.number_charge_levels-1)]['accInit'],
+        "number_vehicles_per_node_init": env.G.nodes[(0,1)]['accInit'],
         "charging_stations": list(env.scenario.charging_stations),
         "charging_station_capacities": list(env.scenario.cars_per_station_capacity),
         "learning_rate_actor": lr_a,
