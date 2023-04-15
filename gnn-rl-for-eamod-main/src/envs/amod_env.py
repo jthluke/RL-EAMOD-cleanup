@@ -252,8 +252,9 @@ class AMoD:
                 charge_difference = j[1] - i[1]
                 assert charge_difference > 0
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
-                assert charge_difference > 0
+                assert charge_time > 0
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
+                assert avg_energy_price > 0
                 self.info['rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
@@ -266,8 +267,11 @@ class AMoD:
             elif i[1] - self.scenario.energy_distance[i[0], j[0]] < j[1] and i[0] != j[0] and self.rebAction[k] > 0:
                 self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
                 charge_difference = j[1] - i[1] + self.scenario.energy_distance[i[0], j[0]]
+                assert charge_difference > 0
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
+                assert charge_time > 0
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
+                assert avg_energy_price > 0
     
                 self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
