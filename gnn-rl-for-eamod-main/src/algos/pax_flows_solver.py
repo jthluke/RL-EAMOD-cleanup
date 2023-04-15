@@ -33,7 +33,7 @@ class PaxFlowsSolver:
         self.cons_rebal_edges[0] = self.m.addConstr(
             sum(self.flow[self.env.charging_edges]) == 0
         )
-        # objective function
+        # objective function: maximize profit
         obj = 0
         for i in range(len(self.env.edges)):
             edge = self.env.edges[i]
