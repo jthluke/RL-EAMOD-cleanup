@@ -266,11 +266,11 @@ class AMoD:
                 charge_difference = j[1] - i[1] + self.scenario.energy_distance[i[0], j[0]]
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
-                print("avg_energy_price", avg_energy_price)
-                print("charge_time", charge_time)
+    
                 self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k] + avg_energy_price * self.rebAction[k]*charge_difference
+                
                 # we have to add plus one because charging starts in the next timestep
                 for future_time in range(t+1, t+charge_time+1):
                     self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
@@ -280,9 +280,11 @@ class AMoD:
             # road edge
             elif self.rebAction[k] > 0:
                 self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
+
                 self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                
                 self.reward -= (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
         # arrival for the next time step, executed in the last state of a time step
         # this makes the code slightly different from the previous version, where the following codes are executed between matching and rebalancing  
