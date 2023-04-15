@@ -264,12 +264,12 @@ for i_episode in epochs:
         # solve minimum rebalancing distance problem (Step 3 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
-            print("running rebalancing solver")
             rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
         else:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
+        print(rebAction)
 
         # Take action in environment
         new_obs, rebreward, done, info_reb = env.reb_step(rebAction)
