@@ -15,7 +15,7 @@ import time
 
 from src.envs.amod_env import Scenario, AMoD
 from src.algos.a2c_gnn import A2C
-# from src.algos.reb_flow_solver import solveRebFlow
+from src.algos.reb_flow_solver import solveRebFlow
 from src.misc.utils import dictsum
 
 def create_scenario(json_file_path, energy_file_path, seed=10):
@@ -207,7 +207,6 @@ n_episodes = args.max_episodes #set max number of training episodes
 T = tf #set episode length
 epochs = trange(n_episodes) #epoch iterator
 best_reward = -10000
-
 if test:
     rewards_np = np.zeros(n_episodes)
     served_demands_np = np.zeros(n_episodes)
@@ -215,17 +214,16 @@ if test:
     rebal_costs_np = np.zeros(n_episodes)
     epoch_times = np.zeros(n_episodes)
 else:
-    model.train() # set model in train mode
+    model.train() #set model in train mode
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
     for destination in env.nodes_spatial:
         for t in range(env.tf):
             total_demand_per_spatial_node[region] += env.demand[region,destination][t]
-
 for i_episode in epochs:
     desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
     bool_random_random_demand = not test # only use random demand during training
-    obs = env.reset(bool_random_random_demand) # initialize environment
+    obs = env.reset(bool_random_random_demand) #initialize environment
     episode_reward = 0
     episode_served_demand = 0
     episode_rebalancing_cost = 0
