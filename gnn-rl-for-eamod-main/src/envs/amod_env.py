@@ -266,6 +266,8 @@ class AMoD:
                 charge_difference = j[1] - i[1] + self.scenario.energy_distance[i[0], j[0]]
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
                 avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
+                print("avg_energy_price", avg_energy_price)
+                print("charge_time", charge_time)
                 self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k] + avg_energy_price * self.rebAction[k]*charge_difference
