@@ -24,12 +24,12 @@ class RebalFlowSolver:
 
             # Constraint 2: We want to reach the target distribrution
             self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
-            print(env.acc)
             
             # Constraint 3: We want can not charge more vehicles then we have charging spots
         for r_idx in range(env.number_nodes_spatial):
             outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
-            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
+            # self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
+            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(env.n_charging_vehicles_spatial[r_idx][t+1] <= env.scenario.cars_per_station_capacity[r_idx])
         
         self.obj1 = 0
         self.obj2 = 0

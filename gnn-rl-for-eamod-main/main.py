@@ -269,6 +269,7 @@ for i_episode in epochs:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
+        print(rebAction)
 
         # Take action in environment
         new_obs, rebreward, done, info_reb = env.reb_step(rebAction)
