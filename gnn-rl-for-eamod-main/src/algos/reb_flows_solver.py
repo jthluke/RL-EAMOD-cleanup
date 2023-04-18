@@ -46,8 +46,8 @@ class RebalFlowSolver:
         acc_checksum = 0
         for n_idx in range(len(env.nodes)):
             node_charge = env.nodes[n_idx]
-            desired_acc_checksum += env.acc[node_charge]
-            acc_checksum += desired_acc[node_charge]
+            desired_acc_checksum += desired_acc[node_charge]
+            acc_checksum += env.acc[node_charge][env.time + 1]
             self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
             self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
         assert abs(desired_acc_checksum - acc_checksum) < 1e-5
