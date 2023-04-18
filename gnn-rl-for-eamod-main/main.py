@@ -261,8 +261,9 @@ for i_episode in epochs:
             assert desired_acc[n] >= 0
         for n in env.nodes:
             desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
-            print("current_acc", env.acc[n][env.time])
-            print("desired_acc", desired_acc[n])
+            # the check below shows that current_acc is indeed different from desired_acc
+                # print("current_acc", env.acc[n][env.time])
+                # print("desired_acc", desired_acc[n])
         # solve minimum rebalancing distance problem (Step 3 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
@@ -271,6 +272,8 @@ for i_episode in epochs:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
+        print(rebAction)
+        # currently, rebAction is not returning a rebalancing action - hence, there is an error with rebal_flow_solver
 
         # Take action in environment
         new_obs, rebreward, done, info_reb = env.reb_step(rebAction)

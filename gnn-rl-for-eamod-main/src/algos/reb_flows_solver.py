@@ -26,9 +26,9 @@ class RebalFlowSolver:
             self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
             
             # Constraint 3: We want can not charge more vehicles then we have charging spots
-        for r_idx in range(env.number_nodes_spatial):
-            outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
-            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
+        # for r_idx in range(env.number_nodes_spatial):
+        #     outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
+        #     self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
             # self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(env.n_charging_vehicles_spatial[r_idx][t+1] <= env.scenario.cars_per_station_capacity[r_idx])
         
         self.obj1 = 0
@@ -56,7 +56,7 @@ class RebalFlowSolver:
         self.m.update()
         
     def update_objective(self, env):
-        self.obj2 = quicksum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0],env.edges[e_idx][1]]['time'][env.time + 1]+env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep) for e_idx in range(len(env.edges)))
+        self.obj2 = sum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep) for e_idx in range(len(env.edges)))
         self.m.setObjective(self.obj1+self.obj2, gp.GRB.MINIMIZE)
         self.m.update()
 
