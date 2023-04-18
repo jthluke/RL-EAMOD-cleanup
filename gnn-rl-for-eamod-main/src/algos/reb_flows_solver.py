@@ -21,6 +21,8 @@ class RebalFlowSolver:
 
             # Constraint 1: We can not have more vehicles flowing out of a node, than vehicles at the node
             self.cons_charge_graph1[n_idx] = self.m.addConstr(sum(self.flow[outgoing_edges]) <= env.acc[n][t + 1])
+            print(sum(self.flow[outgoing_edges]))
+            print(env.acc[n][t + 1])
 
             # Constraint 2: We want to reach the target distribrution
             self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
@@ -49,7 +51,6 @@ class RebalFlowSolver:
 
             desired_acc_checksum += desired_acc[node_charge]
             acc_checksum += env.acc[node_charge][env.time + 1]
-            
             self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
             self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
         assert abs(desired_acc_checksum - acc_checksum) < 1e-5
