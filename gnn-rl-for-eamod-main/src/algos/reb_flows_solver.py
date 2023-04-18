@@ -51,8 +51,8 @@ class RebalFlowSolver:
             self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
             self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
         assert abs(desired_acc_checksum - acc_checksum) < 1e-5
-        for r_idx in range(env.number_nodes_spatial):
-            self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][env.time+1]
+        # for r_idx in range(env.number_nodes_spatial):
+        #     self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][env.time+1]
         self.m.update()
         
     def update_objective(self, env):
