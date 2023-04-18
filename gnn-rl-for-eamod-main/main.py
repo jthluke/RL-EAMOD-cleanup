@@ -261,6 +261,8 @@ for i_episode in epochs:
             assert desired_acc[n] >= 0
         for n in env.nodes:
             desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
+            print("current_acc", env.acc[n][env.time])
+            print("desired_acc", desired_acc[n])
         # solve minimum rebalancing distance problem (Step 3 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
