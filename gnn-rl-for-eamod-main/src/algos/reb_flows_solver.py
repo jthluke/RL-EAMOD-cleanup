@@ -23,12 +23,12 @@ class RebalFlowSolver:
             self.cons_charge_graph1[n_idx] = self.m.addConstr(sum(self.flow[outgoing_edges]) <= env.acc[n][t + 1])
 
             # Constraint 2: We want to reach the target distribrution
-            self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
+            self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) == desiredAcc[n] - env.acc[n][t + 1]) 
             
-            # Constraint 3: We want can not charge more vehicles then we have charging spots
-        # for r_idx in range(env.number_nodes_spatial):
-        #     outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
-        #     self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges])<= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
+            # Constraint 3: We cannot charge more vehicles then we have charging spots
+        for r_idx in range(env.number_nodes_spatial):
+            outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
+            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges]) <= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
             # self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(env.n_charging_vehicles_spatial[r_idx][t+1] <= env.scenario.cars_per_station_capacity[r_idx])
         
         self.obj1 = 0
@@ -51,8 +51,8 @@ class RebalFlowSolver:
             self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
             self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
         assert abs(desired_acc_checksum - acc_checksum) < 1e-5
-        # for r_idx in range(env.number_nodes_spatial):
-        #     self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][env.time+1]
+        for r_idx in range(env.number_nodes_spatial):
+            self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][env.time+1]
         self.m.update()
         
     def update_objective(self, env):
