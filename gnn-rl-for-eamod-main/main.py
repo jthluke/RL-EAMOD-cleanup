@@ -249,8 +249,14 @@ for i_episode in epochs:
             action_rl = model.select_action()
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
+        
+        print(env.acc[n][env.time+1]) for n in env.nodes
+        
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
         total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+        
+        print(desired_acc[n]) for n in env.nodes
+        
         missing_cars = total_idle_acc - total_desiredAcc
         most_likely_node = np.argmax(action_rl)
         if missing_cars != 0:
