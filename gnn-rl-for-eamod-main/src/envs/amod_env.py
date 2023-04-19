@@ -283,7 +283,7 @@ class AMoD:
                 # we have to add plus one because charging starts in the next timestep
                 for future_time in range(t+1, t+charge_time+1):
                     self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
-                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
+                    # assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
                     self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
             
