@@ -249,16 +249,8 @@ for i_episode in epochs:
             action_rl = model.select_action()
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
-        
-        # for n in env.nodes:
-        #     print(env.acc[n][env.time+1])
-        
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
         total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
-        
-        # for n in env.nodes:
-        #     print(desired_acc[n]) 
-        
         missing_cars = total_idle_acc - total_desiredAcc
         most_likely_node = np.argmax(action_rl)
         if missing_cars != 0:
@@ -269,9 +261,6 @@ for i_episode in epochs:
             assert desired_acc[n] >= 0
         for n in env.nodes:
             desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
-            # the check below shows that current_acc is indeed different from desired_acc
-                # print("current_acc", env.acc[n][env.time])
-                # print("desired_acc", desired_acc[n])
         # solve minimum rebalancing distance problem (Step 3 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
