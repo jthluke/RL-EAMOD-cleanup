@@ -72,6 +72,7 @@ class GNNActor(nn.Module):
         self.lin3 = nn.Linear(64, 2)
     
     def forward(self, data):
+        data = data.to("cuda:0")
         out = F.relu(self.conv1(data.x, data.edge_index))
         # out = F.relu(self.conv2(out, data.edge_index))
         x = out + data.x
@@ -97,6 +98,7 @@ class GNNCritic(nn.Module):
         self.lin3 = nn.Linear(64, 1)
     
     def forward(self, data):
+        data = data.to("cuda:0")
         out = F.relu(self.conv1(data.x, data.edge_index))
         # out = F.relu(self.conv2(out, data.edge_index))
         x = out + data.x 
