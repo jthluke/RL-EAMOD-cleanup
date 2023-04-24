@@ -180,6 +180,11 @@ class A2C(nn.Module):
     
     def select_action(self):
         concentration, non_zero, value = self.forward()
+
+        concentration = concentration.to(self.device)
+        non_zero = non_zero.to(self.device)
+        value = value.to(self.device)
+
         # concentration, value = self.forward(obs)
         concentration_without_zeros = torch.tensor([], dtype=torch.float32)
         sampled_zero_bool_arr = []
@@ -188,7 +193,8 @@ class A2C(nn.Module):
             sample = torch.bernoulli(non_zero[node])
             if sample>0:
                 indices = torch.tensor([node])
-                new_element = torch.index_select(concentration, 0, indices).to(self.device)
+                indicies = indices.to(self.device)
+                new_element = torch.index_select(concentration, 0, indices)
                 concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
                 log_prob_for_zeros += torch.log(non_zero[node])
