@@ -12,7 +12,7 @@ class RebalFlowSolver:
         t = env.time
         self.m = gp.Model(env=gurobi_env)
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
-        self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-1000000, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
+        self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-1000000000, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
 
         for n_idx in range(len(env.nodes)):
             n = env.nodes[n_idx]
@@ -34,7 +34,7 @@ class RebalFlowSolver:
         self.obj1 = 0
         self.obj2 = 0
         for n_idx in range(len(env.nodes)):
-            self.obj1 += (self.slack_variables[n_idx]) * 1e10
+            self.obj1 += (self.slack_variables[n_idx]) * (self.slack_variables[n_idx]) * 1e10
 
         for e_idx in range(len(env.edges)):
             i,j = env.edges[e_idx]
