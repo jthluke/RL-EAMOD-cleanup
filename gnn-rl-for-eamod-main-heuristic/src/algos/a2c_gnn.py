@@ -179,7 +179,12 @@ class A2C(nn.Module):
         return state
     
     def select_action(self):
-        concentration, non_zero, value = self.forward().to(self.device)
+        concentration, non_zero, value = self.forward()
+
+        concentration = concentration.to(self.device)
+        non_zero = non_zero.to(self.device)
+        value = value.to(self.device)
+        
         # concentration, value = self.forward(obs)
         concentration_without_zeros = torch.tensor([], dtype=torch.float32)
         sampled_zero_bool_arr = []
