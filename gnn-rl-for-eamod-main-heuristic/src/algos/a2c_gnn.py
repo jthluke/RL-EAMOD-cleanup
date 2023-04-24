@@ -188,6 +188,7 @@ class A2C(nn.Module):
             sample = torch.bernoulli(non_zero[node])
             if sample>0:
                 indices = torch.tensor([node])
+                indices.to(self.device)
                 new_element = torch.index_select(concentration, 0, indices)
                 concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
