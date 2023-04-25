@@ -31,12 +31,12 @@ class RebalFlowSolver:
             self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges]) <= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
             # self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(env.n_charging_vehicles_spatial[r_idx][t+1] <= env.scenario.cars_per_station_capacity[r_idx])
         
-        # self.obj1 = 0
-        self.obj2 = 0
-        self.obj1 = gp.abs_(quicksum(self.slack_variables) * 1e10)
-        # for n_idx in range(len(env.nodes)):
-        #     self.obj1 += gp.abs_(self.slack_variables[n_idx]) * 1e10
+        self.obj1 = 0
+        for n_idx in range(len(env.nodes)):
+            self.obj1 += gp.abs_(self.slack_variables[n_idx] * 1e10)
+        # self.obj1 = gp.abs_(quicksum(self.slack_variables) * 1e10)
 
+        self.obj2 = 0
         for e_idx in range(len(env.edges)):
             i,j = env.edges[e_idx]
             self.obj2 += self.flow[e_idx] * (env.G.edges[i,j]['time'][t + 1]+env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep
