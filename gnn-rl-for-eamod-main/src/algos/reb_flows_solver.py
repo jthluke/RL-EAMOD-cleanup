@@ -33,8 +33,9 @@ class RebalFlowSolver:
         
         self.obj1 = 0
         self.obj2 = 0
-        for n_idx in range(len(env.nodes)):
-            self.obj1 += gp.abs_(self.slack_variables[n_idx]) * 1e10
+        self.obj1 += gp.abs_(quicksum(self.slack_variables)) * 1e10
+        # for n_idx in range(len(env.nodes)):
+        #     self.obj1 += gp.abs_(self.slack_variables[n_idx]) * 1e10
 
         for e_idx in range(len(env.edges)):
             i,j = env.edges[e_idx]
