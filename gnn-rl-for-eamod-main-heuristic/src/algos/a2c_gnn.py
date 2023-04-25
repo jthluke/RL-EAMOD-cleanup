@@ -13,7 +13,7 @@ This file contains the A2C-GNN specifications. In particular, we implement:
 """
 
 from operator import ne
-import numpy as np 
+import numpy as np
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -25,7 +25,7 @@ from collections import namedtuple
 
 SavedAction = namedtuple('SavedAction', ['log_prob', 'value'])
 args = namedtuple('args', ('render', 'gamma', 'log_interval'))
-args.render= True
+args.render = True
 args.gamma = 0.97
 args.log_interval = 10
 
@@ -33,10 +33,12 @@ args.log_interval = 10
 ############## PARSER ###################
 #########################################
 
+
 class GNNParser():
     """
     Parser converting raw environment observations to agent inputs (s_t).
     """
+
     def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=23):
         super().__init__()
         self.env = env
@@ -44,7 +46,23 @@ class GNNParser():
         self.scale_factor = scale_factor
         self.price_scale_factor = scale_price
         self.input_size = input_size
-        
+
+    def parse_obs(self):
+        x = torch.cat((
+            torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
+                         ).view(1, 1, self.env.number_nodes).float(),
+            torch.tensor([self.env.acc[n][self.env.time+1]*self.scale_factor for n in self.env.nodes]
+                         ).view(1, 1, self.env.number_nodes).float(),
+            torch.tensor([[(self.env.acc[n][self.env.time+1] + self.env.dacc[n][t])*self.scale_factor for n in self.env.nodes]
+                          for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float(),
+            torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
+                          for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
+                      dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
+        edge_index = self.env.gcn_edge_idx
+        # edge_weight = self.env.edge_weight
+        data = Data(x, edge_index)
+        return data
+    
     def parse_obs_spatial(self):
         x = torch.cat((
             torch.tensor([self.env.acc_spatial[n][self.env.time+1]*self.scale_factor for n in self.env.nodes_spatial]).view(1, 1, self.env.number_nodes_spatial).float(), 
@@ -56,14 +74,17 @@ class GNNParser():
         edge_index  = self.env.gcn_edge_idx_spatial
         data = Data(x, edge_index)
         return data
-    
+
 #########################################
 ############## ACTOR ####################
 #########################################
+
+
 class GNNActor(nn.Module):
     """
     Actor \pi(a_t | s_t) parametrizing the concentration parameters of a Dirichlet Policy.
     """
+
     def __init__(self, in_channels):
         super().__init__()
         self.conv1 = GCNConv(in_channels, in_channels)
@@ -112,10 +133,12 @@ class GNNCritic(nn.Module):
 ############## A2C AGENT ################
 #########################################
 
+
 class A2C(nn.Module):
     """
     Advantage Actor Critic algorithm for the AMoD control problem. 
     """
+
     def __init__(self, env, eps=np.finfo(np.float32).eps.item(), device=torch.device("cpu"), T=10, lr_a=1.e-3, lr_c=1.e-3, grad_norm_clip_a=0.5, grad_norm_clip_c=0.5, seed=10, scale_factor=0.01, scale_price=0.1):
         super(A2C, self).__init__()
         self.env = env
@@ -133,20 +156,20 @@ class A2C(nn.Module):
         self.input_size = input_size
         torch.manual_seed(seed)
         self.device = device
-        
+
         self.actor = GNNActor(in_channels=self.input_size)
         self.critic = GNNCritic(in_channels=self.input_size)
         self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
-        
+
         self.optimizers = self.configure_optimizers()
-        
+
         # action & reward buffer
         self.saved_actions = []
         self.rewards = []
         self.means_concentration = []
         self.std_concentration = []
         self.to(self.device)
-    
+
     def set_env(self, env):
         self.env = env
         self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size, scale_factor=self.scale_factor, scale_price=self.scale_price)
@@ -157,14 +180,14 @@ class A2C(nn.Module):
     #     self.adapted_lr_a *= scaler_a
     #     self.adapted_lr_c *= scaler_c
     #     self.optimizers = self.configure_optimizers()
-        
+
     def forward(self, jitter=1e-20):
         """
         forward of both actor and critic
         """
         # parse raw environment data in model format
         x = self.parse_obs_spatial().to(self.device)
-        
+
         # actor: computes concentration parameters of a Dirichlet distribution
         a_out_concentration, a_out_is_zero = self.actor(x)
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
@@ -177,22 +200,20 @@ class A2C(nn.Module):
     def parse_obs_spatial(self):
         state = self.obs_parser.parse_obs_spatial()
         return state
-    
+
     def select_action(self):
         concentration, non_zero, value = self.forward()
-
         concentration = concentration.to(self.device)
         non_zero = non_zero.to(self.device)
         value = value.to(self.device)
-        
         # concentration, value = self.forward(obs)
         concentration_without_zeros = torch.tensor([], dtype=torch.float32)
         sampled_zero_bool_arr = []
         log_prob_for_zeros = 0
         for node in range(non_zero.shape[0]):
             sample = torch.bernoulli(non_zero[node])
-            if sample>0:
-                indices = torch.tensor([node]).to(self.device)
+            if sample > 0:
+                indices = torch.tensor([node])
                 new_element = torch.index_select(concentration, 0, indices)
                 concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
@@ -200,7 +221,7 @@ class A2C(nn.Module):
             else:
                 sampled_zero_bool_arr.append(True)
                 log_prob_for_zeros += torch.log(1-non_zero[node])
-        if concentration_without_zeros.shape[0]!=0:
+        if concentration_without_zeros.shape[0] != 0:
             mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
             std_concentration = np.std(concentration_without_zeros.detach().numpy())
             self.means_concentration.append(mean_concentration)
@@ -220,7 +241,7 @@ class A2C(nn.Module):
             else:
                 action_np.append(dirichlet_action_np[dirichlet_idx])
                 dirichlet_idx += 1
-       
+
         return action_np
 
     def select_equal_action(self):
@@ -230,9 +251,9 @@ class A2C(nn.Module):
     def training_step(self):
         R = 0
         saved_actions = self.saved_actions
-        policy_losses = [] # list to save actor (policy) loss
-        value_losses = [] # list to save critic (value) loss
-        returns = [] # list to save the true values
+        policy_losses = []  # list to save actor (policy) loss
+        value_losses = []  # list to save critic (value) loss
+        returns = []  # list to save the true values
 
         # calculate the true value using rewards returned from the environment
         for r in self.rewards[::-1]:
@@ -243,7 +264,7 @@ class A2C(nn.Module):
         # returns = [r / 4390. for r in returns] # 49000 is the maximum reward
         returns = torch.tensor(returns)
         returns = (returns - returns.mean()) / (returns.std() + self.eps)
-        
+
         log_probs = []
         values = []
         for (log_prob, value) in saved_actions:
@@ -260,7 +281,7 @@ class A2C(nn.Module):
             # normed_value = (value - mean_value) / (np.std(values) + self.eps)
             advantage = R - value.item()
 
-            # calculate actor (policy) loss 
+            # calculate actor (policy) loss
             policy_losses.append(-log_prob * advantage)
 
             # calculate critic (value) loss using L1 smooth loss
@@ -269,21 +290,25 @@ class A2C(nn.Module):
         # take gradient steps
         self.optimizers['a_optimizer'].zero_grad()
         a_loss = torch.stack(policy_losses).sum()
+        # a_loss = torch.clamp(a_loss, -1000, 1000)
+        # if np.abs(a_loss.item()) == 1000:
+        #     self.decay_learning_rate(scaler_a=0.1)
         a_loss.backward()
         torch.nn.utils.clip_grad_norm_(self.actor.parameters(), self.grad_norm_clip_a)
         self.optimizers['a_optimizer'].step()
-        
+
         self.optimizers['c_optimizer'].zero_grad()
         v_loss = torch.stack(value_losses).sum()
+        # v_loss = torch.clamp(v_loss, -1000, 1000)
         v_loss.backward()
         torch.nn.utils.clip_grad_norm_(self.critic.parameters(), self.grad_norm_clip_c)
         self.optimizers['c_optimizer'].step()
-        
+
         # reset rewards and action buffer
         del self.rewards[:]
         del self.saved_actions[:]
         return a_loss, v_loss, mean_value, mean_concentration, mean_std, mean_log_prob, std_log_prob
-    
+
     def configure_optimizers(self):
         optimizers = dict()
         actor_params = list(self.actor.parameters())
@@ -293,19 +318,19 @@ class A2C(nn.Module):
         optimizers['c_optimizer'] = torch.optim.Adam(critic_params, lr=self.adapted_lr_c)
         # optimizers['c_optimizer'] = torch.optim.RAdam(critic_params, lr=self.adapted_lr_c)
         return optimizers
-    
+
     def save_checkpoint(self, path='ckpt.pth'):
         checkpoint = dict()
         checkpoint['model'] = self.state_dict()
         for key, value in self.optimizers.items():
             checkpoint[key] = value.state_dict()
         torch.save(checkpoint, path)
-        
+
     def load_checkpoint(self, path='ckpt.pth'):
         checkpoint = torch.load(path)
         self.load_state_dict(checkpoint['model'])
         for key, value in self.optimizers.items():
             self.optimizers[key].load_state_dict(checkpoint[key])
-    
+
     def log(self, log_dict, path='log.pth'):
         torch.save(log_dict, path)

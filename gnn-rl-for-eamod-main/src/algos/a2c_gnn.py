@@ -62,6 +62,18 @@ class GNNParser():
         # edge_weight = self.env.edge_weight
         data = Data(x, edge_index)
         return data
+    
+    def parse_obs_spatial(self):
+        x = torch.cat((
+            torch.tensor([self.env.acc_spatial[n][self.env.time+1]*self.scale_factor for n in self.env.nodes_spatial]).view(1, 1, self.env.number_nodes_spatial).float(), 
+            torch.tensor([[(self.env.acc_spatial[n][self.env.time+1] + self.env.dacc_spatial[n][t])*self.scale_factor for n in self.env.nodes_spatial] \
+                          for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float(),
+            torch.tensor([[sum([self.env.price[o,j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o,j][t]) \
+                          for j in self.env.region]) for o in self.env.region] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float()),
+              dim=1).squeeze(0).view(self.input_size, self.env.number_nodes_spatial).T
+        edge_index  = self.env.gcn_edge_idx_spatial
+        data = Data(x, edge_index)
+        return data
 
 #########################################
 ############## ACTOR ####################
@@ -151,15 +163,13 @@ class A2C(nn.Module):
         self.scale_factor = scale_factor
         self.scale_price = scale_price
         input_size = 2*T + 2
-        # input_size = 2*T + 1
         self.input_size = input_size
         torch.manual_seed(seed)
         self.device = device
 
         self.actor = GNNActor(in_channels=self.input_size)
         self.critic = GNNCritic(in_channels=self.input_size)
-        self.obs_parser = GNNParser(
-            self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
+        self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         self.optimizers = self.configure_optimizers()
 
@@ -172,8 +182,7 @@ class A2C(nn.Module):
 
     def set_env(self, env):
         self.env = env
-        self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size,
-                                    scale_factor=self.scale_factor, scale_price=self.scale_price)
+        self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size, scale_factor=self.scale_factor, scale_price=self.scale_price)
         self.means_concentration = []
         self.std_concentration = []
 
@@ -216,18 +225,15 @@ class A2C(nn.Module):
             if sample > 0:
                 indices = torch.tensor([node])
                 new_element = torch.index_select(concentration, 0, indices)
-                concentration_without_zeros = torch.cat(
-                    (concentration_without_zeros, new_element), 0)
+                concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
                 log_prob_for_zeros += torch.log(non_zero[node])
             else:
                 sampled_zero_bool_arr.append(True)
                 log_prob_for_zeros += torch.log(1-non_zero[node])
         if concentration_without_zeros.shape[0] != 0:
-            mean_concentration = np.mean(
-                concentration_without_zeros.detach().numpy())
-            std_concentration = np.std(
-                concentration_without_zeros.detach().numpy())
+            mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
+            std_concentration = np.std(concentration_without_zeros.detach().numpy())
             self.means_concentration.append(mean_concentration)
             self.std_concentration.append(std_concentration)
             m = Dirichlet(concentration_without_zeros)
@@ -236,8 +242,7 @@ class A2C(nn.Module):
             log_prob_dirichlet = m.log_prob(dirichlet_action)
         else:
             log_prob_dirichlet = 0
-        self.saved_actions.append(SavedAction(
-            log_prob_dirichlet+log_prob_for_zeros, value))
+        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value))
         action_np = []
         dirichlet_idx = 0
         for node in range(non_zero.shape[0]):
@@ -291,8 +296,7 @@ class A2C(nn.Module):
             policy_losses.append(-log_prob * advantage)
 
             # calculate critic (value) loss using L1 smooth loss
-            value_losses.append(F.smooth_l1_loss(
-                value, torch.tensor([R]).to(self.device)))
+            value_losses.append(F.smooth_l1_loss(value, torch.tensor([R]).to(self.device)))
 
         # take gradient steps
         self.optimizers['a_optimizer'].zero_grad()
@@ -301,16 +305,14 @@ class A2C(nn.Module):
         # if np.abs(a_loss.item()) == 1000:
         #     self.decay_learning_rate(scaler_a=0.1)
         a_loss.backward()
-        torch.nn.utils.clip_grad_norm_(
-            self.actor.parameters(), self.grad_norm_clip_a)
+        torch.nn.utils.clip_grad_norm_(self.actor.parameters(), self.grad_norm_clip_a)
         self.optimizers['a_optimizer'].step()
 
         self.optimizers['c_optimizer'].zero_grad()
         v_loss = torch.stack(value_losses).sum()
         # v_loss = torch.clamp(v_loss, -1000, 1000)
         v_loss.backward()
-        torch.nn.utils.clip_grad_norm_(
-            self.critic.parameters(), self.grad_norm_clip_c)
+        torch.nn.utils.clip_grad_norm_(self.critic.parameters(), self.grad_norm_clip_c)
         self.optimizers['c_optimizer'].step()
 
         # reset rewards and action buffer
@@ -322,11 +324,9 @@ class A2C(nn.Module):
         optimizers = dict()
         actor_params = list(self.actor.parameters())
         critic_params = list(self.critic.parameters())
-        optimizers['a_optimizer'] = torch.optim.Adam(
-            actor_params, lr=self.adapted_lr_a)
+        optimizers['a_optimizer'] = torch.optim.Adam(actor_params, lr=self.adapted_lr_a)
         # optimizers['a_optimizer'] = torch.optim.RAdam(actor_params, lr=self.adapted_lr_a)
-        optimizers['c_optimizer'] = torch.optim.Adam(
-            critic_params, lr=self.adapted_lr_c)
+        optimizers['c_optimizer'] = torch.optim.Adam(critic_params, lr=self.adapted_lr_c)
         # optimizers['c_optimizer'] = torch.optim.RAdam(critic_params, lr=self.adapted_lr_c)
         return optimizers
 
