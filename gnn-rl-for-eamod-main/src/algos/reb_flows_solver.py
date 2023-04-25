@@ -13,6 +13,7 @@ class RebalFlowSolver:
         self.m = gp.Model(env=gurobi_env)
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
         self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-10000000, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
+        self.slack_variables_abs = self.m.addMVar(shape=(len(env.nodes)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack_abs")
 
         for n_idx in range(len(env.nodes)):
             n = env.nodes[n_idx]
@@ -24,7 +25,7 @@ class RebalFlowSolver:
 
             # Constraint 2: We want to reach the target distribrution
             self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
-            self.m.addGenConstrAbs(self.slack_variables[n_idx], self.slack_variables[n_idx], "absconstr")
+            self.m.addGenConstrAbs(self.slack_variables_abs[n_idx], self.slack_variables[n_idx], "absconstr")
             
             # Constraint 3: We cannot charge more vehicles then we have charging spots
         for r_idx in range(env.number_nodes_spatial):
@@ -34,7 +35,7 @@ class RebalFlowSolver:
         
         self.obj1 = 0
         for n_idx in range(len(env.nodes)):
-            self.obj1 += self.slack_variables[n_idx] * 1e10
+            self.obj1 += self.slack_variables_abs[n_idx] * 1e10
         # self.obj1 = gp.abs_(quicksum(self.slack_variables) * 1e10)
 
         self.obj2 = 0
