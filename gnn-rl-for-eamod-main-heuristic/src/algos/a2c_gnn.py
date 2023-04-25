@@ -176,10 +176,10 @@ class A2C(nn.Module):
         self.means_concentration = []
         self.std_concentration = []
 
-    # def decay_learning_rate(self, scaler_a=1, scaler_c=1):
-    #     self.adapted_lr_a *= scaler_a
-    #     self.adapted_lr_c *= scaler_c
-    #     self.optimizers = self.configure_optimizers()
+    def decay_learning_rate(self, scaler_a=1, scaler_c=1):
+        self.adapted_lr_a *= scaler_a
+        self.adapted_lr_c *= scaler_c
+        self.optimizers = self.configure_optimizers()
 
     def forward(self, jitter=1e-20):
         """
@@ -290,9 +290,9 @@ class A2C(nn.Module):
         # take gradient steps
         self.optimizers['a_optimizer'].zero_grad()
         a_loss = torch.stack(policy_losses).sum()
-        # a_loss = torch.clamp(a_loss, -1000, 1000)
-        # if np.abs(a_loss.item()) == 1000:
-        #     self.decay_learning_rate(scaler_a=0.1)
+        a_loss = torch.clamp(a_loss, -1000, 1000)
+        if np.abs(a_loss.item()) == 1000:
+            self.decay_learning_rate(scaler_a=0.1)
         a_loss.backward()
         torch.nn.utils.clip_grad_norm_(self.actor.parameters(), self.grad_norm_clip_a)
         self.optimizers['a_optimizer'].step()
