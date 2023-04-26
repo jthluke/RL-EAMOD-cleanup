@@ -39,41 +39,52 @@ class GNNParser():
     Parser converting raw environment observations to agent inputs (s_t).
     """
 
-    def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=23):
+    def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=23, v=0):
         super().__init__()
         self.env = env
         self.T = T
         self.scale_factor = scale_factor
         self.price_scale_factor = scale_price
         self.input_size = input_size
+        self.v = v
 
     def parse_obs(self):
-        x = torch.cat((
-            torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
-                         ).view(1, 1, self.env.number_nodes).float(),
-            torch.tensor([self.env.acc[n][self.env.time+1]*self.scale_factor for n in self.env.nodes]
-                         ).view(1, 1, self.env.number_nodes).float(),
-            torch.tensor([[(self.env.acc[n][self.env.time+1] + self.env.dacc[n][t])*self.scale_factor for n in self.env.nodes]
-                          for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float(),
-            torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
-                          for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
-                      dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
-        edge_index = self.env.gcn_edge_idx
-        # edge_weight = self.env.edge_weight
-        data = Data(x, edge_index)
-        return data
+        if (self.v == 0):
+            x = torch.cat((
+                torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
+                            ).view(1, 1, self.env.number_nodes).float(),
+                torch.tensor([self.env.acc[n][self.env.time+1]*self.scale_factor for n in self.env.nodes]
+                            ).view(1, 1, self.env.number_nodes).float(),
+                torch.tensor([[(self.env.acc[n][self.env.time+1] + self.env.dacc[n][t])*self.scale_factor for n in self.env.nodes]
+                            for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float(),
+                torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
+                            for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
+                        dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
+            edge_index = self.env.gcn_edge_idx
+            data = Data(x, edge_index)
+            return data
+        if (self.v == 1):
+            return 0
+        if (self.v == 2):
+            return 0
     
     def parse_obs_spatial(self):
-        x = torch.cat((
-            torch.tensor([self.env.acc_spatial[n][self.env.time+1]*self.scale_factor for n in self.env.nodes_spatial]).view(1, 1, self.env.number_nodes_spatial).float(), 
-            torch.tensor([[(self.env.acc_spatial[n][self.env.time+1] + self.env.dacc_spatial[n][t])*self.scale_factor for n in self.env.nodes_spatial] \
-                          for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float(),
-            torch.tensor([[sum([self.env.price[o,j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o,j][t]) \
-                          for j in self.env.region]) for o in self.env.region] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float()),
-              dim=1).squeeze(0).view(self.input_size, self.env.number_nodes_spatial).T
-        edge_index  = self.env.gcn_edge_idx_spatial
-        data = Data(x, edge_index)
-        return data
+        if (self.v == 0):
+            x = torch.cat((
+                torch.tensor([self.env.acc_spatial[n][self.env.time+1]*self.scale_factor for n in self.env.nodes_spatial]).view(1, 1, self.env.number_nodes_spatial).float(), 
+                torch.tensor([[(self.env.acc_spatial[n][self.env.time+1] + self.env.dacc_spatial[n][t])*self.scale_factor for n in self.env.nodes_spatial] \
+                            for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float(),
+                torch.tensor([[sum([self.env.price[o,j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o,j][t]) \
+                            for j in self.env.region]) for o in self.env.region] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float()),
+                dim=1).squeeze(0).view(self.input_size, self.env.number_nodes_spatial).T
+            edge_index  = self.env.gcn_edge_idx_spatial
+            print(edge_index)
+            data = Data(x, edge_index)
+            return data
+        if (self.v == 1):
+            return 0
+        if (self.v == 2):
+            return 0
 
 #########################################
 ############## ACTOR ####################
@@ -85,7 +96,7 @@ class GNNActor(nn.Module):
     Actor \pi(a_t | s_t) parametrizing the concentration parameters of a Dirichlet Policy.
     """
 
-    def __init__(self, in_channels):
+    def __init__(self, in_channels, v=0):
         super().__init__()
         self.conv1 = GCNConv(in_channels, in_channels*4)
         self.conv2 = GCNConv(in_channels*4, in_channels*2)
@@ -94,18 +105,24 @@ class GNNActor(nn.Module):
         self.lin2 = nn.Linear(128, 64)
         self.lin3 = nn.Linear(64, 32)
         self.lin4 = nn.Linear(32, 2)
+        self.v = v
 
     def forward(self, data):
-        data = data.to("cuda:0")
-        out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
-        out = F.relu(self.conv2(out, data.edge_index))
-        out = F.relu(self.conv3(out, data.edge_index))
-        x = out + data.x
-        x = F.relu(self.lin1(x))
-        x = F.relu(self.lin2(x))
-        x = F.relu(self.lin3(x))
-        x = self.lin4(x)
-        return x[:, 0], x[:, 1]
+        if (self.v == 0):
+            data = data.to("cuda:0")
+            out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
+            out = F.relu(self.conv2(out, data.edge_index))
+            out = F.relu(self.conv3(out, data.edge_index))
+            x = out + data.x
+            x = F.relu(self.lin1(x))
+            x = F.relu(self.lin2(x))
+            x = F.relu(self.lin3(x))
+            x = self.lin4(x)
+            return x[:, 0], x[:, 1]
+        if (self.v == 1):
+            return 0
+        if (self.v == 2):
+            return 0
 
 #########################################
 ############## CRITIC ###################
@@ -117,7 +134,7 @@ class GNNCritic(nn.Module):
     Critic parametrizing the value function estimator V(s_t).
     """
 
-    def __init__(self, in_channels):
+    def __init__(self, in_channels, v=0):
         super().__init__()
         self.conv1 = GCNConv(in_channels, in_channels*4)
         self.conv2 = GCNConv(in_channels*4, in_channels*2)
@@ -126,18 +143,24 @@ class GNNCritic(nn.Module):
         self.lin2 = nn.Linear(128, 64)
         self.lin3 = nn.Linear(64, 32)
         self.lin4 = nn.Linear(32, 1)
+        self.v = v
 
     def forward(self, data):
-        out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
-        out = F.relu(self.conv2(out, data.edge_index))
-        out = F.relu(self.conv3(out, data.edge_index))
-        x = out + data.x
-        x = torch.sum(x, dim=0)
-        x = F.relu(self.lin1(x))
-        x = F.relu(self.lin2(x))
-        x = F.relu(self.lin3(x))
-        x = self.lin4(x)
-        return x
+        if (self.v == 0):
+            out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
+            out = F.relu(self.conv2(out, data.edge_index))
+            out = F.relu(self.conv3(out, data.edge_index))
+            x = out + data.x
+            x = torch.sum(x, dim=0)
+            x = F.relu(self.lin1(x))
+            x = F.relu(self.lin2(x))
+            x = F.relu(self.lin3(x))
+            x = self.lin4(x)
+            return x
+        if (self.v == 1):
+            return 0
+        if (self.v == 2):
+            return 0
 
 #########################################
 ############## A2C AGENT ################
