@@ -59,6 +59,8 @@ class GNNParser():
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
         edge_index = self.env.gcn_edge_idx
+        idxs = edge_index[edge_index[0] == edge_index[1]]
+        edge_index = edge_index[:, idxs]
         # edge_weight = self.env.edge_weight
         data = Data(x, edge_index)
         return data
