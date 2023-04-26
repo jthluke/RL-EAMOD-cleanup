@@ -76,10 +76,9 @@ class GNNParser():
                         dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
             
             edge_index = self.env.gcn_edge_idx
-
-            for edge in edge_index:
-                print(edge)
-                print('gap')
+            print(edge_index[0])
+            print("gap")
+            print(edge_index[1])
 
             data = Data(x, edge_index)
             return data
