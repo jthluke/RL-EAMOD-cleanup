@@ -227,9 +227,9 @@ class A2C(nn.Module):
         torch.manual_seed(seed)
         self.device = device
 
-        self.actor = GNNActor(in_channels=self.input_size)
-        self.critic = GNNCritic(in_channels=self.input_size)
-        self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price, v=1)
+        self.actor = GNNActor(in_channels=self.input_size, v=1)
+        self.critic = GNNCritic(in_channels=self.input_size, v=1)
+        self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         self.optimizers = self.configure_optimizers()
 
