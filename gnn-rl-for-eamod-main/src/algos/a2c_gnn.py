@@ -95,9 +95,7 @@ class GNNActor(nn.Module):
 
     def __init__(self, in_channels):
         super().__init__()
-        self.conv1 = GCNConv(in_channels, in_channels*4)
-        self.conv2 = GCNConv(in_channels*4, in_channels*2)
-        self.conv3 = GCNConv(in_channels*2, in_channels)
+        self.conv1 = GCNConv(in_channels, in_channels)
         self.lin1 = nn.Linear(in_channels, 128)
         self.lin2 = nn.Linear(128, 64)
         self.lin3 = nn.Linear(64, 32)
@@ -106,8 +104,6 @@ class GNNActor(nn.Module):
     def forward(self, data):
         data = data.to("cuda:0")
         out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
-        out = F.relu(self.conv2(out, data.edge_index))
-        out = F.relu(self.conv3(out, data.edge_index))
         x = out + data.x
         x = F.relu(self.lin1(x))
         x = F.relu(self.lin2(x))
@@ -127,9 +123,7 @@ class GNNCritic(nn.Module):
 
     def __init__(self, in_channels):
         super().__init__()
-        self.conv1 = GCNConv(in_channels, in_channels*4)
-        self.conv2 = GCNConv(in_channels*4, in_channels*2)
-        self.conv3 = GCNConv(in_channels*2, in_channels)
+        self.conv1 = GCNConv(in_channels, in_channels)
         self.lin1 = nn.Linear(in_channels, 128)
         self.lin2 = nn.Linear(128, 64)
         self.lin3 = nn.Linear(64, 32)
@@ -137,8 +131,6 @@ class GNNCritic(nn.Module):
 
     def forward(self, data):
         out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
-        out = F.relu(self.conv2(out, data.edge_index))
-        out = F.relu(self.conv3(out, data.edge_index))
         x = out + data.x
         x = torch.sum(x, dim=0)
         x = F.relu(self.lin1(x))
