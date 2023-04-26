@@ -242,7 +242,7 @@ class A2C(nn.Module):
 
     def set_env(self, env):
         self.env = env
-        self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size, scale_factor=self.scale_factor, scale_price=self.scale_price, v=1)
+        self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size, scale_factor=self.scale_factor, scale_price=self.scale_price)
         self.means_concentration = []
         self.std_concentration = []
 
