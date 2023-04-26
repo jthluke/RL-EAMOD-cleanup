@@ -61,11 +61,29 @@ class GNNParser():
                             for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                         dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
             edge_index = self.env.gcn_edge_idx
-            print(edge_index)
             data = Data(x, edge_index)
             return data
         if (self.v == 1):
-            return 0
+            x = torch.cat((
+                torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
+                            ).view(1, 1, self.env.number_nodes).float(),
+                torch.tensor([self.env.acc[n][self.env.time+1]*self.scale_factor for n in self.env.nodes]
+                            ).view(1, 1, self.env.number_nodes).float(),
+                torch.tensor([[(self.env.acc[n][self.env.time+1] + self.env.dacc[n][t])*self.scale_factor for n in self.env.nodes]
+                            for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float(),
+                torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
+                            for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
+                        dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
+            
+            nodes = self.env.nodes
+            self_loop_edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for node in nodes:
+                self_loop = torch.tensor([[node], [node]], dtype=torch.long)
+                self_loop_edge_idx = torch.cat((self_loop_edge_idx, self_loop), 1)
+            
+            edge_index = self_loop_edge_idx
+            data = Data(x, edge_index)
+            return data
         if (self.v == 2):
             return 0
     
@@ -98,18 +116,25 @@ class GNNActor(nn.Module):
 
     def __init__(self, in_channels, v=0):
         super().__init__()
-        self.conv1 = GCNConv(in_channels, in_channels*4)
-        self.conv2 = GCNConv(in_channels*4, in_channels*2)
-        self.conv3 = GCNConv(in_channels*2, in_channels)
-        self.lin1 = nn.Linear(in_channels, 128)
-        self.lin2 = nn.Linear(128, 64)
-        self.lin3 = nn.Linear(64, 32)
-        self.lin4 = nn.Linear(32, 2)
         self.v = v
+        if (v == 0):
+            self.conv1 = GCNConv(in_channels, in_channels*4)
+            self.conv2 = GCNConv(in_channels*4, in_channels*2)
+            self.conv3 = GCNConv(in_channels*2, in_channels)
+            self.lin1 = nn.Linear(in_channels, 128)
+            self.lin2 = nn.Linear(128, 64)
+            self.lin3 = nn.Linear(64, 32)
+            self.lin4 = nn.Linear(32, 2)
+        else:
+            self.conv1 = GCNConv(in_channels, in_channels)
+            self.lin1 = nn.Linear(in_channels, 128)
+            self.lin2 = nn.Linear(128, 64)
+            self.lin3 = nn.Linear(64, 32)
+            self.lin4 = nn.Linear(32, 2)
 
     def forward(self, data):
+        data = data.to("cuda:0")
         if (self.v == 0):
-            data = data.to("cuda:0")
             out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
             out = F.relu(self.conv2(out, data.edge_index))
             out = F.relu(self.conv3(out, data.edge_index))
@@ -119,10 +144,15 @@ class GNNActor(nn.Module):
             x = F.relu(self.lin3(x))
             x = self.lin4(x)
             return x[:, 0], x[:, 1]
-        if (self.v == 1):
-            return 0
-        if (self.v == 2):
-            return 0
+        else:
+            out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
+            x = out + data.x
+            x = F.relu(self.lin1(x))
+            x = F.relu(self.lin2(x))
+            x = F.relu(self.lin3(x))
+            x = self.lin4(x)
+            return x[:, 0], x[:, 1]
+            
 
 #########################################
 ############## CRITIC ###################
@@ -136,14 +166,21 @@ class GNNCritic(nn.Module):
 
     def __init__(self, in_channels, v=0):
         super().__init__()
-        self.conv1 = GCNConv(in_channels, in_channels*4)
-        self.conv2 = GCNConv(in_channels*4, in_channels*2)
-        self.conv3 = GCNConv(in_channels*2, in_channels)
-        self.lin1 = nn.Linear(in_channels, 128)
-        self.lin2 = nn.Linear(128, 64)
-        self.lin3 = nn.Linear(64, 32)
-        self.lin4 = nn.Linear(32, 1)
         self.v = v
+        if (v == 0):
+            self.conv1 = GCNConv(in_channels, in_channels*4)
+            self.conv2 = GCNConv(in_channels*4, in_channels*2)
+            self.conv3 = GCNConv(in_channels*2, in_channels)
+            self.lin1 = nn.Linear(in_channels, 128)
+            self.lin2 = nn.Linear(128, 64)
+            self.lin3 = nn.Linear(64, 32)
+            self.lin4 = nn.Linear(32, 2)
+        else:
+            self.conv1 = GCNConv(in_channels, in_channels)
+            self.lin1 = nn.Linear(in_channels, 128)
+            self.lin2 = nn.Linear(128, 64)
+            self.lin3 = nn.Linear(64, 32)
+            self.lin4 = nn.Linear(32, 2)
 
     def forward(self, data):
         if (self.v == 0):
@@ -157,10 +194,16 @@ class GNNCritic(nn.Module):
             x = F.relu(self.lin3(x))
             x = self.lin4(x)
             return x
-        if (self.v == 1):
-            return 0
-        if (self.v == 2):
-            return 0
+        else:
+            out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
+            x = out + data.x
+            x = torch.sum(x, dim=0)
+            x = F.relu(self.lin1(x))
+            x = F.relu(self.lin2(x))
+            x = F.relu(self.lin3(x))
+            x = self.lin4(x)
+            return x
+
 
 #########################################
 ############## A2C AGENT ################
@@ -190,9 +233,9 @@ class A2C(nn.Module):
         torch.manual_seed(seed)
         self.device = device
 
-        self.actor = GNNActor(in_channels=self.input_size)
-        self.critic = GNNCritic(in_channels=self.input_size)
-        self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
+        self.actor = GNNActor(in_channels=self.input_size, v=1)
+        self.critic = GNNCritic(in_channels=self.input_size, v=1)
+        self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price, v=1)
 
         self.optimizers = self.configure_optimizers()
 
@@ -205,7 +248,7 @@ class A2C(nn.Module):
 
     def set_env(self, env):
         self.env = env
-        self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size, scale_factor=self.scale_factor, scale_price=self.scale_price)
+        self.obs_parser = GNNParser(self.env, T=self.T, input_size=self.input_size, scale_factor=self.scale_factor, scale_price=self.scale_price, v=1)
         self.means_concentration = []
         self.std_concentration = []
 
