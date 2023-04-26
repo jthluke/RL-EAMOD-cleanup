@@ -39,14 +39,14 @@ class GNNParser():
     Parser converting raw environment observations to agent inputs (s_t).
     """
 
-    def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=23, v=0):
+    def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=23):
         super().__init__()
         self.env = env
         self.T = T
         self.scale_factor = scale_factor
         self.price_scale_factor = scale_price
         self.input_size = input_size
-        self.v = v
+        self.v = 0
 
     def parse_obs(self):
         if (self.v == 0):
@@ -108,10 +108,10 @@ class GNNActor(nn.Module):
     Actor \pi(a_t | s_t) parametrizing the concentration parameters of a Dirichlet Policy.
     """
 
-    def __init__(self, in_channels, v=0):
+    def __init__(self, in_channels):
         super().__init__()
-        self.v = v
-        if (v == 0):
+        self.v = 0
+        if (self.v == 0):
             self.conv1 = GCNConv(in_channels, in_channels*4)
             self.conv2 = GCNConv(in_channels*4, in_channels*2)
             self.conv3 = GCNConv(in_channels*2, in_channels)
@@ -158,10 +158,10 @@ class GNNCritic(nn.Module):
     Critic parametrizing the value function estimator V(s_t).
     """
 
-    def __init__(self, in_channels, v=0):
+    def __init__(self, in_channels):
         super().__init__()
-        self.v = v
-        if (v == 0):
+        self.v = 0
+        if (self.v == 0):
             self.conv1 = GCNConv(in_channels, in_channels*4)
             self.conv2 = GCNConv(in_channels*4, in_channels*2)
             self.conv3 = GCNConv(in_channels*2, in_channels)
