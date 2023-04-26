@@ -78,6 +78,7 @@ class GNNParser():
             nodes = self.env.nodes
             self_loop_edge_idx = torch.tensor([[], []], dtype=torch.long)
             for node in nodes:
+                print(node)
                 self_loop = torch.tensor([[node], [node]], dtype=torch.long)
                 self_loop_edge_idx = torch.cat((self_loop_edge_idx, self_loop), 1)
             
