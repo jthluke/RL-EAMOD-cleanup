@@ -75,15 +75,12 @@ class GNNParser():
                             for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                         dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
             
-            nodes = self.env.nodes
-            self_loop_edge_idx = torch.tensor([[], []], dtype=torch.long)
-            for node in nodes:
-                self_loop = torch.tensor([[node], [node]], dtype=torch.long)
-                print(self_loop)
-                print(self_loop_edge_idx)
-                self_loop_edge_idx = torch.cat((self_loop_edge_idx, self_loop), 1)
-            
-            edge_index = self_loop_edge_idx
+            edge_index = self.env.gcn_edge_idx
+
+            for edge in edge_index:
+                print(edge)
+                print('gap')
+
             data = Data(x, edge_index)
             return data
         if (self.v == 2):
