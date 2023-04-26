@@ -58,8 +58,15 @@ class GNNParser():
             torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
+        
         edge_index = self.env.gcn_edge_idx
-        print(edge_index.shape)
+        
+        idxs = []
+        for i in range(edge_index.shape[1]):
+            if edge_index[0][i] == edge_index[1][i]:
+                idxs.append(i)
+        
+        edge_index = edge_index[:, idxs]
         # edge_weight = self.env.edge_weight
         data = Data(x, edge_index)
         return data
