@@ -510,10 +510,11 @@ class Scenario:
                     assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
                     self.G.add_edge((l, c1), (l, c2))
                     counter += 1
+                    print("edge: " + counter + " --->  l: " + l + " c1: " + c1 + " c2: " + c2)
+                    counter += 1
                     self.G.edges[(l, c1), (l, c2)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
-        print(counter)
     
     def add_road_edges(self):
         for o in range(self.spatial_nodes):
