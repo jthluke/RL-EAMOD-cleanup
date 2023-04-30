@@ -516,8 +516,8 @@ class Scenario:
         print(counter)
     
     def add_road_edges(self):
-         counter = 0
-         for o in range(self.spatial_nodes):
+        counter = 0
+        for o in range(self.spatial_nodes):
             for d in range(self.spatial_nodes):
                 self.G_spatial.add_edge(o, d)
                 counter = counter + 1
