@@ -394,7 +394,9 @@ class Scenario:
             self.cars_per_station_capacity = cars_per_station_capacity
             self.cars_charging_per_station = defaultdict(dict)
             self.number_charge_levels = number_charge_levels
+            print(number_charge_levels)
             self.charge_levels_per_charge_step = charge_levels_per_charge_step
+            print(charge_levels_per_charge_step)
             self.energy_distance = energy_distance
             print(energy_distance)
             self.p_energy = np.array(p_energy)  # price of energy in $/kWh
