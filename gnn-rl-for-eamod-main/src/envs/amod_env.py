@@ -495,7 +495,6 @@ class Scenario:
             self.tripAttr = self.get_random_demand() # randomly generated demand
 
     def add_charge_edges(self):
-        counter = 0
         for l in range(self.spatial_nodes):
             if not self.charging_stations[l]:
                 continue
@@ -509,18 +508,14 @@ class Scenario:
                         fully_charged = True
                     assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
                     self.G.add_edge((l, c1), (l, c2))
-                    counter += 1
                     self.G.edges[(l, c1), (l, c2)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
-        print(counter)
     
     def add_road_edges(self):
-        counter = 0
         for o in range(self.spatial_nodes):
             for d in range(self.spatial_nodes):
                 self.G_spatial.add_edge(o, d)
-                counter = counter + 1
                 self.G_spatial.edges[o, d]['time'] = dict()
                 for t in range(0, self.tf+1):
                     self.G_spatial.edges[o, d]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
@@ -535,11 +530,9 @@ class Scenario:
                         break
                     assert target_charge < c  # we have to loose energy to move
                     self.G.add_edge((o, c), (d, target_charge))
-                    counter = counter + 1
                     self.G.edges[(o, c), (d, target_charge)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
-        print(counter)
 
     def add_artificial_edges_from_or_to_station(self, o_node: tuple, d_node: tuple):
         o_region = o_node[0]
