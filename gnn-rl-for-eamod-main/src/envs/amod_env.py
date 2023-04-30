@@ -502,18 +502,16 @@ class Scenario:
             for c1 in range(self.number_charge_levels - 1):
                 fully_charged = c1 == (self.number_charge_levels-1)
                 c2 = c1
-                while not fully_charged:
-                    c2 += self.charge_levels_per_charge_step
-                    if c2 >= self.number_charge_levels:
-                        c2 = (self.number_charge_levels-1)
-                        fully_charged = True
-                    assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
-                    self.G.add_edge((l, c1), (l, c2))
-                    print("edge: " + str(counter) + " --->  l: " + str(l) + " c1: " + str(c1) + " c2: " + str(c2))
-                    counter += 1
-                    self.G.edges[(l, c1), (l, c2)]['time'] = dict()
-                    for t in range(0, self.tf+1):
-                        self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
+                c2 += self.charge_levels_per_charge_step
+                if c2 >= self.number_charge_levels:
+                    c2 = (self.number_charge_levels-1)
+                assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
+                self.G.add_edge((l, c1), (l, c2))
+                print("edge: " + str(counter) + " --->  l: " + str(l) + " c1: " + str(c1) + " c2: " + str(c2))
+                counter += 1
+                self.G.edges[(l, c1), (l, c2)]['time'] = dict()
+                for t in range(0, self.tf+1):
+                    self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
     
     def add_road_edges(self):
         for o in range(self.spatial_nodes):
