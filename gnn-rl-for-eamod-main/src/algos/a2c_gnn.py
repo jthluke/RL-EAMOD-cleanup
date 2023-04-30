@@ -48,6 +48,7 @@ class GNNParser():
         self.input_size = input_size
 
     def parse_obs(self):
+        v = 0
         x = torch.cat((
             torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
                          ).view(1, 1, self.env.number_nodes).float(),
@@ -60,14 +61,23 @@ class GNNParser():
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
         
         edge_index = self.env.gcn_edge_idx
+        print(edge_index)
+        if (v == 1):
+            idxs = []
+            for i in range(edge_index.shape[1]):
+                if edge_index[0][i] == edge_index[1][i]:
+                    idxs.append(i)
+            
+            edge_index = edge_index[:, idxs]
         
-        idxs = []
-        for i in range(edge_index.shape[1]):
-            if edge_index[0][i] == edge_index[1][i]:
-                idxs.append(i)
-        
-        edge_index = edge_index[:, idxs]
-        # edge_weight = self.env.edge_weight
+        if (v == 2):
+            idxs = []
+            for i in range(edge_index.shape[1]):
+                if edge_index[0][i] == edge_index[1][i]:
+                    idxs.append(i)
+            
+            edge_index = edge_index[:, idxs]
+
         data = Data(x, edge_index)
         return data
     
