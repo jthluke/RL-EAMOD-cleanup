@@ -518,7 +518,7 @@ class Scenario:
         for o in range(self.spatial_nodes):
             for d in range(self.spatial_nodes):
                 self.G_spatial.add_edge(o, d)
-                print("edge: " + str(counter) + " --->  o: " + str(o) + " d: " + str(o))
+                print("edge: " + str(counter) + " --->  o: " + str(o) + " d: " + str(d))
                 counter += 1
                 self.G_spatial.edges[o, d]['time'] = dict()
                 for t in range(0, self.tf+1):
