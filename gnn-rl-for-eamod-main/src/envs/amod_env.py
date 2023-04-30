@@ -396,6 +396,7 @@ class Scenario:
             self.number_charge_levels = number_charge_levels
             self.charge_levels_per_charge_step = charge_levels_per_charge_step
             self.energy_distance = energy_distance
+            print(energy_distance)
             self.p_energy = np.array(p_energy)  # price of energy in $/kWh
             self.intermediate_charging_station = defaultdict(dict)
             self.time = 0  # current time
