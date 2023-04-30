@@ -394,11 +394,8 @@ class Scenario:
             self.cars_per_station_capacity = cars_per_station_capacity
             self.cars_charging_per_station = defaultdict(dict)
             self.number_charge_levels = number_charge_levels
-            print(number_charge_levels)
             self.charge_levels_per_charge_step = charge_levels_per_charge_step
-            print(charge_levels_per_charge_step)
             self.energy_distance = energy_distance
-            print(energy_distance)
             self.p_energy = np.array(p_energy)  # price of energy in $/kWh
             self.intermediate_charging_station = defaultdict(dict)
             self.time = 0  # current time
@@ -498,6 +495,7 @@ class Scenario:
             self.tripAttr = self.get_random_demand() # randomly generated demand
 
     def add_charge_edges(self):
+        counter = 0
         for l in range(self.spatial_nodes):
             if not self.charging_stations[l]:
                 continue
@@ -511,9 +509,11 @@ class Scenario:
                         fully_charged = True
                     assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
                     self.G.add_edge((l, c1), (l, c2))
+                    counter += 1
                     self.G.edges[(l, c1), (l, c2)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
+        print(counter)
     
     def add_road_edges(self):
         for o in range(self.spatial_nodes):
