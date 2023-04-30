@@ -503,7 +503,7 @@ class Scenario:
                 fully_charged = c1 == (self.number_charge_levels-1)
                 c2 = c1
                 while not fully_charged:
-                    c2 += self.charge_levels_per_charge_step
+                    c2 += self.charge_levels_per_charge_step - 1
                     if c2 >= self.number_charge_levels:
                         c2 = (self.number_charge_levels-1)
                         fully_charged = True
