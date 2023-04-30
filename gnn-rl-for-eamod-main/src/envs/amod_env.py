@@ -509,7 +509,6 @@ class Scenario:
                         fully_charged = True
                     assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
                     self.G.add_edge((l, c1), (l, c2))
-                    counter += 1
                     print("edge: " + str(counter) + " --->  l: " + str(l) + " c1: " + str(c1) + " c2: " + str(c2))
                     counter += 1
                     self.G.edges[(l, c1), (l, c2)]['time'] = dict()
