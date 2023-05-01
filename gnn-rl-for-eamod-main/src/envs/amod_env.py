@@ -152,6 +152,9 @@ class AMoD:
                 [[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx_spatial = torch.cat((edge_idx, new_edge), 1)
         self.gcn_edge_idx_spatial = edge_idx_spatial
+        print(len(self.edges))
+        print(len(self.charging_edges))
+        print(len(self.edges_spatial))
         for e in self.edges:
             origin_node_idx = self.nodes.index(e[0])
             destination_node_idx = self.nodes.index(e[1])
