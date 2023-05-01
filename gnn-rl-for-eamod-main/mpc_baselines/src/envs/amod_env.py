@@ -207,6 +207,7 @@ class AMoD:
         for origin in range(self.number_nodes_spatial):
             for destination in range(self.number_nodes_spatial):
                 total_demand[origin] += self.demand[origin, destination][t]
+        
         for k in range(len(self.edges)):
             i, j = self.edges[k]
             i_region = i[0]

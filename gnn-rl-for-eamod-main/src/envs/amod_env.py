@@ -27,6 +27,7 @@ from src.misc.utils import mat2str
 from copy import deepcopy
 import json
 
+
 class AMoD:
     # initialization
     # updated to take scenario
@@ -66,6 +67,7 @@ class AMoD:
             self.n_charging_vehicles_spatial = defaultdict(dict)
             self.n_rebal_vehicles_spatial = defaultdict(dict)
             self.n_customer_vehicles_spatial = defaultdict(dict)
+            
             # number of vehicles arriving at each spatial node, key: i - node, t - time
             self.dacc_spatial = defaultdict(dict)
             # number of rebalancing vehicles, key: (i,j) - (origin, destination), t - time
@@ -244,13 +246,14 @@ class AMoD:
             if rebAction[k] < 1e-3:
                 continue
             self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
+            
             self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.rebAction[k]
             self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
             self.dacc_spatial[j[0]][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
             self.acc[i][t+1] -= self.rebAction[k] 
             self.acc_spatial[i[0]][t+1] -= self.rebAction[k]
             # charging edge
-            if i[1] < j[1] and self.rebAction[k] > 0 and i[0]==j[0]:
+            if i[1] < j[1] and self.rebAction[k] > 0 and i[0] == j[0]:
                 charge_difference = j[1] - i[1]
                 # assert charge_difference > 0
                 charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
@@ -329,12 +332,14 @@ class AMoD:
         self.acc_spatial = defaultdict(dict)
         self.n_rebal_vehicles_spatial = defaultdict(dict)
         self.n_customer_vehicles_spatial = defaultdict(dict)
-        self.reset_cars_charging()
+        
         self.dacc = defaultdict(dict)
         self.rebFlow = defaultdict(dict)
         self.paxFlow = defaultdict(dict)
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
+        self.reset_cars_charging()
+
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
@@ -368,9 +373,9 @@ class AMoD:
             for t in range(self.scenario.tf):
                 self.scenario.cars_charging_per_station[region][t] = 0.
                 self.n_charging_vehicles_spatial[region][t] = 0.
-   
-    
-    
+
+
+
 class Scenario:
     def __init__(self, EV=True, spatial_nodes=4, charging_stations=None, cars_per_station_capacity=None, number_charge_levels=10, charge_levels_per_charge_step=1, energy_distance=None, tf=60, sd=None, tripAttr=None,
                  demand_ratio=None, trip_length_preference=0.25, grid_travel_time=1, reb_time=None, total_acc=None, p_energy=None, time_granularity=0.5, operational_cost_per_timestep=0.5):
@@ -411,7 +416,6 @@ class Scenario:
             self.G_spatial = self.G_spatial.to_directed()
 
             self.demand_input, self.p, self.rebTime = defaultdict(dict), defaultdict(dict), defaultdict(dict)
-
             for item in tripAttr:
                 t,o,d,v,p = item['time_stamp'], item['origin'], item['destination'], item['demand'], item['price']
                 if (o,d) not in self.demand_input:
@@ -425,8 +429,8 @@ class Scenario:
                     # self.rebTime[o,d][t] = max(int(round(rt)),1) used to be this
                     self.rebTime[o,d][t] = int(round(rt))
             # add charge edges
-            self.add_charge_edges()             
-            
+            self.add_charge_edges()
+
             # add road edges
             self.add_road_edges()
             
@@ -447,7 +451,7 @@ class Scenario:
 
             self.edges = list(self.G.edges)
             self.tf = tf
-            
+
             for o,d in self.edges:
                 for t in range(0,tf*2): # TODO: do not know why
                     if t in self.demand_input[o[0],d[0]] and self.demand_input[o[0],d[0]][t] > 0:
@@ -455,7 +459,6 @@ class Scenario:
                     else:
                         self.demand_input[o[0],d[0]][t] = 0
                         self.p[o[0],d[0]][t] = 0
-
 
             for item in total_acc:
                 hr, acc = item['hour'], item['acc']
