@@ -73,6 +73,7 @@ class GNNParser():
         # edge_index = edge_index[:, idxs]
         # (B)
         edges = []
+        print(self.env.nodes)
         for o in self.env.nodes:
             for d in self.env.nodes:
                 if (o == d):
