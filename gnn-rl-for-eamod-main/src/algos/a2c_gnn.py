@@ -62,28 +62,12 @@ class GNNParser():
         
         edge_index = self.env.gcn_edge_idx
 
-        # if (v == 1):
-        #     idxs = []
-        #     for i in range(edge_index.shape[1]):
-        #         if (edge_index[0][i] != edge_index[1][i]):
-        #             idxs.append(i)
-            
-        #     edge_index = edge_index[:, idxs]
+        idxs = []
+        for i in range(edge_index.shape[1]):
+            if (edge_index[0][i] != edge_index[1][i]):
+                idxs.append(i)
+        edge_index = edge_index[:, idxs]
         
-        # if (v == 2):
-        #     idxs = []
-        #     for i in range(edge_index.shape[1]):
-        #         if edge_index[0][i] == edge_index[1][i]:
-        #             idxs.append(i)
-            
-        #     edge_index = edge_index[:, idxs]
-        
-        # if (v == 3):
-        #     idxs = []
-            
-            
-        #     edge_index = edge_index[:, idxs]
-
         data = Data(x, edge_index)
         return data
     
