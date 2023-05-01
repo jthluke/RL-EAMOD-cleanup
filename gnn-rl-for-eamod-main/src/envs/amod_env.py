@@ -532,9 +532,12 @@ class Scenario:
                         break
                     elif (not self.charging_stations[d]) and (target_charge == 0):
                         break
-                    assert target_charge < c  # we have to loose energy to move
+
                     if (o == d):
-                        target_charge = c
+                        target_charge = c # no charge lost if staying at the same location
+                    else:
+                        assert target_charge < c  # we have to loose energy to move
+                    
                     self.G.add_edge((o, c), (d, target_charge))
                     print("edge: " + str(counter) + " --->  o: " + str(o) + " d: " + str(d) + " c1: " + str(c) + ' c2: ' + str(target_charge))
                     counter += 1
