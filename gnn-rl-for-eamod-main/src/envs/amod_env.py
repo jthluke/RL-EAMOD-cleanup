@@ -554,7 +554,7 @@ class Scenario:
         if energy_dist % self.charge_levels_per_charge_step != 0:
             return
         energy_time = math.ceil(energy_dist/self.charge_levels_per_charge_step)
-        print("edge " + counter + " --> o: " + str(o_node[0]) + " d: " + str(d_node[0]) + " c1: " + str(o_node[1]) + " c2: " + str(d_node[1]))
+        print("edge " + str(counter) + " --> o: " + str(o_node[0]) + " d: " + str(d_node[0]) + " c1: " + str(o_node[1]) + " c2: " + str(d_node[1]))
         self.G.add_edge(o_node, d_node)
         counter += 1
         self.G.edges[o_node, d_node]['time'] = dict()
