@@ -153,7 +153,6 @@ class AMoD:
             edge_idx_spatial = torch.cat((edge_idx, new_edge), 1)
         self.gcn_edge_idx_spatial = edge_idx_spatial
         print(len(self.edges))
-        print(self.edges)
         for e in self.edges:
             print(e)
             origin_node_idx = self.nodes.index(e[0])

@@ -78,7 +78,8 @@ class GNNParser():
                 if (o == d):
                     for level in range(int(self.env.number_nodes/self.env.number_nodes_spatial)):
                         edges.append([(o, level), (d, level)])
-        
+                        
+        print(edges)
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
             origin_node_idx = self.env.nodes.index(e[0])
