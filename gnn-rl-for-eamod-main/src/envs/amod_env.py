@@ -546,6 +546,7 @@ class Scenario:
                         self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
 
     def add_artificial_edges_from_or_to_station(self, o_node: tuple, d_node: tuple):
+        counter = 0
         o_region = o_node[0]
         d_region = d_node[0]
         target_energy = d_node[1] + self.energy_distance[o_region,d_region]
@@ -553,8 +554,9 @@ class Scenario:
         if energy_dist % self.charge_levels_per_charge_step != 0:
             return
         energy_time = math.ceil(energy_dist/self.charge_levels_per_charge_step)
-        print("edge ----> " + str(o_node) + " to " + str(d_node))
+        print("edge " + counter + " --> o: " + str(o_node[0]) + " d: " + str(d_node[0]) + " c1: " + str(o_node[1]) + " c2: " + str(d_node[1]))
         self.G.add_edge(o_node, d_node)
+        counter += 1
         self.G.edges[o_node, d_node]['time'] = dict()
         for t in range(0,self.tf+1):
             if t+energy_time < self.tf:
