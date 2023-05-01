@@ -73,8 +73,8 @@ class GNNParser():
         # edge_index = edge_index[:, idxs]
         # (B)
         edges = []
-        for o in range(self.env.nodes):
-            for d in range(self.env.nodes):
+        for o in self.env.nodes:
+            for d in self.env.nodes:
                 if (o == d):
                     for level in range(self.number_charge_levels):
                         edges.append((o, level), (d, level))
@@ -89,8 +89,8 @@ class GNNParser():
 
         # V3
         # edges = []
-        # for o in range(self.env.nodes):
-        #     for d in range(self.env.nodes):
+        # for o in self.env.nodes):
+        #     for d in self.env.nodes):
         #         for level in range(self.number_charge_levels):
         #             edges.append((o, level), (d, level))
         
