@@ -72,26 +72,11 @@ class GNNParser():
             #         idxs.append(i)
             # edge_index = edge_index[:, idxs]
         # (B) - running in colab
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = edge_idx
-
-        # V3
         edges = []
         for o in self.env.nodes:
             for d in self.env.nodes:
-                if ((o[1] == d[1]) or ((o[1] == d[1] - 1) and (o[0] == d[0]))):
+                if (o[0] == d[0] and o[1] == d[1]):
                     edges.append([o, d])
-        
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
             origin_node_idx = self.env.nodes.index(e[0])
@@ -99,6 +84,21 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = edge_idx
+
+        # V3
+        # edges = []
+        # for o in self.env.nodes:
+        #     for d in self.env.nodes:
+        #         if ((o[1] == d[1]) or ((o[1] == d[1] - 1) and (o[0] == d[0]))):
+        #             edges.append([o, d])
+        
+        # edge_idx = torch.tensor([[], []], dtype=torch.long)
+        # for e in edges:
+        #     origin_node_idx = self.env.nodes.index(e[0])
+        #     destination_node_idx = self.env.nodes.index(e[1])
+        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
+        # edge_index = edge_idx
 
         # default/global return
         data = Data(x, edge_index)
