@@ -464,6 +464,7 @@ class Scenario:
                             self.add_artificial_edges_from_or_to_station(o_node, d_node)
 
             self.edges = list(self.G.edges)
+            print("Number of edges: " + str(len(self.edges)))
             self.tf = tf
 
             for o,d in self.edges:
