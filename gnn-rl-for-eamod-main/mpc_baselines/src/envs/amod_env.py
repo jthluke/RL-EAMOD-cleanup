@@ -456,6 +456,7 @@ class Scenario:
                     d_region = d_node[0]
                     d_charge = d_node[1]
                     energy_dist = self.energy_distance[o_region,d_region]
+                    print(energy_dist)
                     if o_region == d_region or o_charge - energy_dist >= d_charge: # We already created charge edges and regular road edges
                         continue
                     # edges from a charging station
