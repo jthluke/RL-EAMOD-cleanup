@@ -229,7 +229,7 @@ class AMoD:
             self.info['served_demand'] += self.paxAction[k]
             self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
             self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
+            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k])
             self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
 
         test_spatial_acc_count = np.zeros(self.number_nodes_spatial)
@@ -456,12 +456,11 @@ class Scenario:
                     d_region = d_node[0]
                     d_charge = d_node[1]
                     energy_dist = self.energy_distance[o_region,d_region]
-                    print(energy_dist)
                     if o_region == d_region or o_charge - energy_dist >= d_charge: # We already created charge edges and regular road edges
                         continue
                     # edges from a charging station
                     elif self.charging_stations[o_region]:
-                        if (d_charge <= self.number_charge_levels-1 - energy_dist):
+                        if (d_charge <= self.number_charge_levels - 1 - energy_dist):
                             self.add_artificial_edges_from_or_to_station(o_node, d_node)
 
             self.edges = list(self.G.edges)
