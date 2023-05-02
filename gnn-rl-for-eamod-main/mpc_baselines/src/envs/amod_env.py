@@ -517,6 +517,7 @@ class Scenario:
             self.tripAttr = self.get_random_demand() # randomly generated demand
 
     def add_charge_edges(self):
+        counter = 0
         for l in range(self.spatial_nodes):
             if not self.charging_stations[l]:
                 continue
@@ -530,11 +531,14 @@ class Scenario:
                         fully_charged = True
                     assert c1 >= 0 and c2 > c1 and c2 < self.number_charge_levels
                     self.G.add_edge((l, c1), (l, c2))
+                    print("edge: " + str(counter) + " --->  l: " + str(l) + " c1: " + str(c1) + " c2: " + str(c2))
+                    counter += 1
                     self.G.edges[(l, c1), (l, c2)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(l, c1), (l, c2)]['time'][t] = math.ceil((c2-c1)/self.charge_levels_per_charge_step) - self.time_normalizer
 
     def add_road_edges(self):
+        counter = 0
         for o in range(self.spatial_nodes):
             for d in range(self.spatial_nodes):
                 self.G_spatial.add_edge(o, d)
@@ -552,11 +556,14 @@ class Scenario:
                         break
                     assert target_charge < c  # we have to loose energy to move
                     self.G.add_edge((o, c), (d, target_charge))
+                    print("edge: " + str(counter) + " --->  o: " + str(o) + " d: " + str(d) + " c1: " + str(c) + ' c2: ' + str(target_charge))
+                    counter += 1
                     self.G.edges[(o, c), (d, target_charge)]['time'] = dict()
                     for t in range(0, self.tf+1):
                         self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
 
     def add_artificial_edges_from_or_to_station(self, o_node: tuple, d_node: tuple):
+        counter = 0
         o_region = o_node[0]
         d_region = d_node[0]
         target_energy = d_node[1] + self.energy_distance[o_region,d_region]
@@ -565,6 +572,8 @@ class Scenario:
             return
         energy_time = math.ceil(energy_dist/self.charge_levels_per_charge_step)
         self.G.add_edge(o_node, d_node)
+        print("edge " + str(counter) + " --> o: " + str(o_node[0]) + " d: " + str(d_node[0]) + " c1: " + str(o_node[1]) + " c2: " + str(d_node[1]))
+        counter += 1
         self.G.edges[o_node, d_node]['time'] = dict()
         for t in range(0,self.tf+1):
             if t+energy_time < self.tf:
