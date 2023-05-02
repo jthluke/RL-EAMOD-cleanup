@@ -320,7 +320,8 @@ class AMoD:
                 self.n_customer_vehicles_spatial[o[0]][t+1] -= self.paxFlow[o, d][t]
             
         self.time += 1
-        self.obs = (self.acc, self.time, self.dacc, self.demand) # use self.time to index the next time step
+        # use self.time to index the next time step
+        self.obs = (self.acc, self.time, self.dacc, self.demand)
         done = (self.tf == t+1) # if the episode is completed
         return self.obs, self.reward, done, self.info
     
@@ -577,8 +578,8 @@ class Scenario:
         if energy_dist % self.charge_levels_per_charge_step != 0:
             return
         energy_time = math.ceil(energy_dist/self.charge_levels_per_charge_step)
-        print("edge " + str(counter) + " --> o: " + str(o_node[0]) + " d: " + str(d_node[0]) + " c1: " + str(o_node[1]) + " c2: " + str(d_node[1]))
         self.G.add_edge(o_node, d_node)
+        print("edge " + str(counter) + " --> o: " + str(o_node[0]) + " d: " + str(d_node[0]) + " c1: " + str(o_node[1]) + " c2: " + str(d_node[1]))
         counter += 1
         self.G.edges[o_node, d_node]['time'] = dict()
         for t in range(0,self.tf+1):
