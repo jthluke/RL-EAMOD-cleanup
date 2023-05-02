@@ -465,6 +465,8 @@ class Scenario:
 
             self.edges = list(self.G.edges)
             print("Number of edges: " + str(len(self.edges)))
+            print("Number of spatial nodes: " + str(len(self.G_spatial.nodes)))
+            print("Number of nodes: " + str(len(self.G.nodes)))
             self.tf = tf
 
             for o,d in self.edges:
