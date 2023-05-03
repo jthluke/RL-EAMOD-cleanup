@@ -463,7 +463,7 @@ class Scenario:
             # add road edges
             self.add_road_edges()
             
-            # add artificial edges (comment out to remove artifical edges)
+            # add artificial edges (commented out due to decoupling of GNN and AMoD_Env)
             # for o_node in list(self.G.nodes):
             #     for d_node in list(self.G.nodes):
             #         o_region = o_node[0]
