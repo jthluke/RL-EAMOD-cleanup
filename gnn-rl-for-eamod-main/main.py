@@ -233,6 +233,7 @@ for i_episode in epochs:
         else:
             pax_flows_solver.update_constraints()
             pax_flows_solver.update_objective()
+        print("TIME STEP: " + str(step))
         _, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
         episode_reward += paxreward
         # use GNN-RL policy (Step 2 in paper)
