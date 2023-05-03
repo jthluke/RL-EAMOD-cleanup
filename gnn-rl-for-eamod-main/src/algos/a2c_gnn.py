@@ -39,7 +39,7 @@ class GNNParser():
     Parser converting raw environment observations to agent inputs (s_t).
     """
 
-    def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=23):
+    def __init__(self, env, T=5, scale_factor=0.01, scale_price=0.1, input_size=23):
         super().__init__()
         self.env = env
         self.T = T
