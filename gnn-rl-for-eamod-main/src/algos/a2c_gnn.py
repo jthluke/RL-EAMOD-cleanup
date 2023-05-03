@@ -293,6 +293,7 @@ class A2C(nn.Module):
                 action_np.append(dirichlet_action_np[dirichlet_idx])
                 dirichlet_idx += 1
 
+        print("action_np: " + str(action_np))
         return action_np
 
     def select_equal_action(self):
