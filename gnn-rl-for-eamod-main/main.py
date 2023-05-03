@@ -248,8 +248,8 @@ for i_episode in epochs:
         else:
             action_rl = model.select_action()
             if (i_episode % 1000 == 0):
-                for node in env.nodes:
-                    print(str(node) + ", action_rl: " + str(action_rl[node]))
+                for i in range(len(env.nodes)):
+                    print(str(env.nodes[i]) + ", action_rl: " + str(action_rl[i]))
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
