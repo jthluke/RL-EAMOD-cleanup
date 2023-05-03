@@ -276,7 +276,7 @@ for i_episode in epochs:
         rebAction = rebal_flow_solver.optimize()
         if (i_episode % 1000 == 0):
             for i in range(len(env.edges)):
-                print(str(env.edges[i]) + ", rebAction: " + str(rebAction[i]))
+                # print(str(env.edges[i]) + ", rebAction: " + str(rebAction[i]))
         # currently, rebAction is not returning a rebalancing action - hence, there is an error with rebal_flow_solver
 
         # Take action in environment

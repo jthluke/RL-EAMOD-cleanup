@@ -187,7 +187,7 @@ class AMoD:
        self.paxAction = paxAction
        if (episode % 1000 == 0):
         for i in range(len(self.edges)):
-            print(str(self.edges[i]) + " paxAction: " + str(paxAction[i]))
+            # print(str(self.edges[i]) + " paxAction: " + str(paxAction[i]))
        # serving passengers
        satisfied_demand = np.zeros(self.number_nodes_spatial)
        total_demand = np.zeros(self.number_nodes_spatial)
