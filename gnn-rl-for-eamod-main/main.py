@@ -247,6 +247,7 @@ for i_episode in epochs:
             std_log_prob = 0
         else:
             action_rl = model.select_action()
+            print("action_rl: " + str(action_rl))
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
@@ -269,7 +270,7 @@ for i_episode in epochs:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
-        # print(rebAction)
+        print("rebAction: " + str(rebAction))
         # currently, rebAction is not returning a rebalancing action - hence, there is an error with rebal_flow_solver
 
         # Take action in environment

@@ -185,6 +185,7 @@ class AMoD:
        if paxAction is None:  # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
            paxAction = pax_flows_solver.optimize()
        self.paxAction = paxAction
+       print("paxAction: " + str(paxAction))
        # serving passengers
        satisfied_demand = np.zeros(self.number_nodes_spatial)
        total_demand = np.zeros(self.number_nodes_spatial)
