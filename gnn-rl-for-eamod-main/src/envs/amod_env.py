@@ -163,7 +163,7 @@ class AMoD:
         self.gcn_edge_idx = edge_idx
 
     # pax step
-    def pax_step(self, paxAction=None, pax_flows_solver=None):
+    def pax_step(self, paxAction=None, pax_flows_solver=None, episode=1):
        t = self.time
        self.reward = 0
        new_customer_vehicles = 0
@@ -185,7 +185,8 @@ class AMoD:
        if paxAction is None:  # default matching algorithm used if isMatching is True, matching method will need the information of self.acc[t+1], therefore this part cannot be put forward
            paxAction = pax_flows_solver.optimize()
        self.paxAction = paxAction
-       print("paxAction: " + str(paxAction))
+       if (episode % 1000 == 0):
+        print("paxAction: " + str(paxAction))
        # serving passengers
        satisfied_demand = np.zeros(self.number_nodes_spatial)
        total_demand = np.zeros(self.number_nodes_spatial)

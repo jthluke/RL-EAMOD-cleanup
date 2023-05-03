@@ -233,7 +233,7 @@ for i_episode in epochs:
         else:
             pax_flows_solver.update_constraints()
             pax_flows_solver.update_objective()
-        _, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver)
+        _, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
         episode_reward += paxreward
         # use GNN-RL policy (Step 2 in paper)
         if use_equal_distr_baseline:
@@ -247,7 +247,8 @@ for i_episode in epochs:
             std_log_prob = 0
         else:
             action_rl = model.select_action()
-            print("action_rl: " + str(action_rl))
+            if (i_episode % 1000 == 0):
+                print("action_rl: " + str(action_rl))
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
@@ -270,7 +271,8 @@ for i_episode in epochs:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
-        print("rebAction: " + str(rebAction))
+        if (i_episode % 1000 == 0):
+            print("rebAction: " + str(rebAction))
         # currently, rebAction is not returning a rebalancing action - hence, there is an error with rebal_flow_solver
 
         # Take action in environment
