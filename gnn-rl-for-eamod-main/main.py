@@ -249,9 +249,6 @@ for i_episode in epochs:
             std_log_prob = 0
         else:
             action_rl = model.select_action()
-            if (i_episode % 1000 == 0):
-                for i in range(len(env.nodes)):
-                    print(str(env.nodes[i]) + ", action_rl: " + str(action_rl[i]))
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
@@ -304,6 +301,9 @@ for i_episode in epochs:
             wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
     # Checkpoint best performing model
     if episode_reward > best_reward:
+        if (i_episode % 1000 == 0):
+                for i in range(len(env.nodes)):
+                    print(str(env.nodes[i]) + ", action_rl: " + str(action_rl[i]))
         print("Saving best model.")
         model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
         wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
