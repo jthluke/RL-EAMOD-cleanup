@@ -63,7 +63,7 @@ class GNNParser():
         # V0
         edge_index = self.env.gcn_edge_idx
 
-        # V2
+        # V2 - no edges, only self loops
             # (A)
             # edge_index = self.env.gcn_edge_idx
             # idxs = []
@@ -85,7 +85,7 @@ class GNNParser():
         #     edge_idx = torch.cat((edge_idx, new_edge), 1)
         # edge_index = edge_idx
 
-        # V3
+        # V3 - grid style one-hop connections
         # edges = []
         # for o in self.env.nodes:
         #     for d in self.env.nodes:

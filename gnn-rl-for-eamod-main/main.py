@@ -344,6 +344,7 @@ for i_episode in epochs:
                 pickle.dump(env.n_customer_vehicles_spatial, file)
             wandb.save(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial_{i_episode}.p")
 if test:
+    print(rewards_np)
     wandb.log({"AVG Reward ": rewards_np.mean(), "Std Reward ": rewards_np.std(), "AVG Satisfied Demand ": served_demands_np.mean(), "AVG Rebalancing Cost": episode_rebalancing_cost.mean(), "AVG Epoch Time": epoch_times.mean()})
 model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
 wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
