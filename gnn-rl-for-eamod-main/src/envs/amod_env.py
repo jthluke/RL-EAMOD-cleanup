@@ -565,12 +565,13 @@ class Scenario:
                     else:
                         assert target_charge < c  # we have to loose energy to move
                     
-                    self.G.add_edge((o, c), (d, target_charge))
-                    print("edge: " + str(counter) + " --->  o: " + str(o) + " d: " + str(d) + " c1: " + str(c) + ' c2: ' + str(target_charge))
-                    counter += 1
-                    self.G.edges[(o, c), (d, target_charge)]['time'] = dict()
-                    for t in range(0, self.tf+1):
-                        self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
+                    if (o != d):
+                        self.G.add_edge((o, c), (d, target_charge))
+                        print("edge: " + str(counter) + " --->  o: " + str(o) + " d: " + str(d) + " c1: " + str(c) + ' c2: ' + str(target_charge))
+                        counter += 1
+                        self.G.edges[(o, c), (d, target_charge)]['time'] = dict()
+                        for t in range(0, self.tf+1):
+                            self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
 
     def add_artificial_edges_from_or_to_station(self, o_node: tuple, d_node: tuple):
         counter = 0
