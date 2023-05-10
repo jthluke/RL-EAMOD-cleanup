@@ -248,10 +248,10 @@ for i_episode in epochs:
             std_log_prob = 0
         else:
             action_rl = model.select_action()
-            action_tracker[step] = action_rl
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
+        action_tracker[step] = desired_acc
         total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
         missing_cars = total_idle_acc - total_desiredAcc
         most_likely_node = np.argmax(action_rl)
@@ -303,7 +303,7 @@ for i_episode in epochs:
     if episode_reward > best_reward:
         print("Saving best model.")
         for step in action_tracker:
-            print("Time step: " + str(step) + ", rebalancing action: " + str(action_tracker[step]))
+            print("Time step: " + str(step) + ", desired cars at nodes after policy's rebalancing action: " + str(action_tracker[step]))
         model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
         wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
         with open(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial.p", "wb") as file:
