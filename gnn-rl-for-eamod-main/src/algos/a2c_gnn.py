@@ -62,6 +62,7 @@ class GNNParser():
         
         # V0 - all edges from AMoD passed into GCN
         edge_index = self.env.gcn_edge_idx
+        print("EDGES PASSED TO GCN")
         print(edge_index)
 
         # V1 - no edges, only self loops
