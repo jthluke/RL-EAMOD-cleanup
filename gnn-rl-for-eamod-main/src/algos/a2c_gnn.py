@@ -96,6 +96,7 @@ class GNNParser():
         
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
+            print(e)
             origin_node_idx = self.env.nodes.index(e[0])
             destination_node_idx = self.env.nodes.index(e[1])
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
