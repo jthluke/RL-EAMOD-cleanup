@@ -98,7 +98,7 @@ class GNNParser():
         edges = []
         for o in self.env.nodes:
             for d in self.env.nodes:
-                if ((o[1] == d[1]) or ((o[1] == d[1] - 1) and (o[0] == d[0]))):
+                if ((o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
                     edges.append([o, d])
         
         edge_idx = torch.tensor([[], []], dtype=torch.long)
