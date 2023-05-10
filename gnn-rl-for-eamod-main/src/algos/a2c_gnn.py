@@ -60,10 +60,10 @@ class GNNParser():
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
         
-        # V0
-        edge_index = self.env.gcn_edge_idx
+        # V0 - all edges from AMoD passed into GCN
+        # edge_index = self.env.gcn_edge_idx
 
-        # V2 - no edges, only self loops
+        # V1 - no edges, only self loops
             # (A)
             # edge_index = self.env.gcn_edge_idx
             # idxs = []
@@ -72,18 +72,18 @@ class GNNParser():
             #         idxs.append(i)
             # edge_index = edge_index[:, idxs]
         # (B) - running in colab
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = edge_idx
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                if (o[0] == d[0] and o[1] == d[1]):
+                    edges.append([o, d])
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_index = edge_idx
 
         # V3 - grid style one-hop connections
         # edges = []
