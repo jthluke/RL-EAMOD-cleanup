@@ -108,7 +108,7 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = edge_idx
-        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
         
         # V4 - combination of V3 and V1
         # edges = []
