@@ -302,7 +302,7 @@ for i_episode in epochs:
     # Checkpoint best performing model
     if episode_reward > best_reward:
         print("Saving best model.")
-        if (i_episode >= 13000):
+        if (i_episode >= 10000):
             for step in action_tracker:
                 print("Time step: " + str(step) + ", desired cars at nodes after policy's rebalancing action: " + str(action_tracker[step]))
         model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
