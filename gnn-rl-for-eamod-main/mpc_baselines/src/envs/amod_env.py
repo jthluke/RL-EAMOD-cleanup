@@ -457,6 +457,8 @@ class Scenario:
                 for t in range(0,tf+1):
                     # self.rebTime[o,d][t] = max(int(round(rt)),1) used to be this
                     self.rebTime[o,d][t] = int(round(rt))
+
+            print("EDGES IN AMOND_ENV:")
             # add charge edges
             self.add_charge_edges()
 
