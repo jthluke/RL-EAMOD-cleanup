@@ -127,11 +127,11 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 44
 
         # V5 - all edges + artificial edges
-        charge_delta = 3
+        charge_delta = 4
         edges = []
         for o in self.env.nodes:
             for d in self.env.nodes:
-                if ((o[0] != d[0]) and (o[1] + charge_delta == d[1])):
+                if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) or ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1]))):
                     edges.append([o, d])
         
         edge_idx = torch.tensor([[], []], dtype=torch.long)
