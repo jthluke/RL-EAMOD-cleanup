@@ -133,10 +133,10 @@ class GNNParser():
             for d in self.env.nodes:
                 if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) or ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1]))):
                     edges.append([o, d])
+        print(edges)
         
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
-            print(e)
             origin_node_idx = self.env.nodes.index(e[0])
             destination_node_idx = self.env.nodes.index(e[1])
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
