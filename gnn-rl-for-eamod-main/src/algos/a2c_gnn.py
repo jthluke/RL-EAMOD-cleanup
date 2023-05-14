@@ -136,14 +136,14 @@ class GNNParser():
         
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
-            print(e)
+            # print(e)
             origin_node_idx = self.env.nodes.index(e[0])
             destination_node_idx = self.env.nodes.index(e[1])
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 
+        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 
 
         # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
         # Finish V0 - V5 (with artificial edges added)
