@@ -126,7 +126,7 @@ class GNNParser():
         # edge_index = edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 44
 
-        # V5 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges
+        # V5 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges + self loops
         charge_delta = 4
         max_charge = 5
         edges = []
@@ -141,6 +141,9 @@ class GNNParser():
                 # "unintuitive" road edges
                 if (o[0] == d[0] and (o[1] - 1 == d[1])):
                     edges.append([o, d])
+                # self loops
+                if (o[0] == d[0] and o[1] == d[1]):
+                    edges.append([o, d])
         
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
@@ -150,7 +153,7 @@ class GNNParser():
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
+        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 48
 
         # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
         # Finish V0 - V5 (with artificial edges added)
