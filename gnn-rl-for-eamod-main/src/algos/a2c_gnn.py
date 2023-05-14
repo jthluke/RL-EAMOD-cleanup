@@ -150,7 +150,7 @@ class GNNParser():
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         edge_index = edge_idx
-        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 38
+        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
 
         # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
         # Finish V0 - V5 (with artificial edges added)
