@@ -247,7 +247,10 @@ for i_episode in epochs:
             mean_log_prob = 0
             std_log_prob = 0
         else:
-            action_rl = model.select_action()
+            if test:
+                action_rl = model.select_action_test()
+            else:
+                action_rl = model.select_action()
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes

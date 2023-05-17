@@ -127,35 +127,6 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 44
 
         # V5 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges + self loops
-        charge_delta = 4
-        max_charge = 5
-        edges = []
-        for o in self.env.nodes:
-            for d in self.env.nodes:
-                # artificial edges
-                if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
-                    edges.append([o, d])
-                # "infeasible" charge edges
-                if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
-                    edges.append([o, d])
-                # "unintuitive" road edges
-                if (o[0] == d[0] and (o[1] - 1 == d[1])):
-                    edges.append([o, d])
-                # self loops
-                if (o[0] == d[0] and o[1] == d[1]):
-                    edges.append([o, d])
-        
-        edge_idx = torch.tensor([[], []], dtype=torch.long)
-        for e in edges:
-            origin_node_idx = self.env.nodes.index(e[0])
-            destination_node_idx = self.env.nodes.index(e[1])
-            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-            edge_idx = torch.cat((edge_idx, new_edge), 1)
-        edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 48
-
-        # V6 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges
         # charge_delta = 4
         # max_charge = 5
         # edges = []
@@ -170,6 +141,9 @@ class GNNParser():
         #         # "unintuitive" road edges
         #         if (o[0] == d[0] and (o[1] - 1 == d[1])):
         #             edges.append([o, d])
+        #         # self loops
+        #         if (o[0] == d[0] and o[1] == d[1]):
+        #             edges.append([o, d])
         
         # edge_idx = torch.tensor([[], []], dtype=torch.long)
         # for e in edges:
@@ -179,6 +153,32 @@ class GNNParser():
         #     edge_idx = torch.cat((edge_idx, new_edge), 1)
         # edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         # edge_index = edge_idx
+        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 48
+
+        # V6 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges
+        charge_delta = 4
+        max_charge = 5
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                # artificial edges
+                if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
+                    edges.append([o, d])
+                # "infeasible" charge edges
+                if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
+                    edges.append([o, d])
+                # "unintuitive" road edges
+                if (o[0] == d[0] and (o[1] - 1 == d[1])):
+                    edges.append([o, d])
+        
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        edge_index = edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
 
 
@@ -338,6 +338,48 @@ class A2C(nn.Module):
     def parse_obs(self):
         state = self.obs_parser.parse_obs()
         return state
+    
+    def select_action_test(self):
+        concentration, non_zero, value = self.forward()
+        concentration = concentration.to(self.device)
+        non_zero = non_zero.to(self.device)
+        value = value.to(self.device)
+        # concentration, value = self.forward(obs)
+        concentration_without_zeros = torch.tensor([], dtype=torch.float32)
+        sampled_zero_bool_arr = []
+        log_prob_for_zeros = 0
+        for node in range(non_zero.shape[0]):
+            sample = torch.bernoulli(non_zero[node])
+            if sample > 0:
+                indices = torch.tensor([node])
+                new_element = torch.index_select(concentration, 0, indices)
+                concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
+                sampled_zero_bool_arr.append(False)
+                log_prob_for_zeros += torch.log(non_zero[node])
+            else:
+                sampled_zero_bool_arr.append(True)
+                log_prob_for_zeros += torch.log(1-non_zero[node])
+        if concentration_without_zeros.shape[0] != 0:
+            mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
+            std_concentration = np.std(concentration_without_zeros.detach().numpy())
+            self.means_concentration.append(mean_concentration)
+            self.std_concentration.append(std_concentration)
+            m = Dirichlet(concentration_without_zeros)
+            dirichlet_action = m.mean()
+            dirichlet_action_np = list(dirichlet_action.detach().numpy())
+            log_prob_dirichlet = m.log_prob(dirichlet_action)
+        else:
+            log_prob_dirichlet = 0
+        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value))
+        action_np = []
+        dirichlet_idx = 0
+        for node in range(non_zero.shape[0]):
+            if sampled_zero_bool_arr[node]:
+                action_np.append(0.)
+            else:
+                action_np.append(dirichlet_action_np[dirichlet_idx])
+                dirichlet_idx += 1
+        return action_np
 
     def select_action(self):
         concentration, non_zero, value = self.forward()
