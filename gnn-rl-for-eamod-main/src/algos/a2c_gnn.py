@@ -192,15 +192,15 @@ class GNNParser():
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
         for e in edges:
-            i, j = self.env.edges[self.env.edges.index(e)]
-            times_for_e = list(self.env.edges[i, j]['time'].values())
+            i, j = self.env.G.edges[self.env.G.edges.index(e)]
+            times_for_e = list(self.env.G.edges[i, j]['time'].values())
             all_times.extend(times_for_e)
         # Convert the list of 'time' values into a tensor.
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, edge_index.shape[1]).float()).squeeze(0).view(self.input_size, len(edges)).T
         data = Data(x, edge_index, edge_attr=e)
         
-        
+
         return data
     
         # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
