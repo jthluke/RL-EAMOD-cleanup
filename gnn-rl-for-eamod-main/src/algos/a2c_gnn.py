@@ -197,7 +197,7 @@ class GNNParser():
             all_times.extend(times_for_e)
         # Convert the list of 'time' values into a tensor.
         tensor = torch.tensor(all_times)
-        e = (tensor.view(1, 420).float()).squeeze(0).view(self.input_size, len(edges)).T
+        e = (tensor.view(1, 440).float()).squeeze(0).view(self.input_size, len(edges)).T
         data = Data(x, edge_index, edge_attr=e)
         
 
