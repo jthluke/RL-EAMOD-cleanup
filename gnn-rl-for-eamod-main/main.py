@@ -419,6 +419,6 @@ for step in range(T):
         break
 
 # Send current statistics to screen was episode_reward, episode_served_demand, episode_rebalancing_cost
-epochs.set_description(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
+print(f"Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
 
 print("done")
