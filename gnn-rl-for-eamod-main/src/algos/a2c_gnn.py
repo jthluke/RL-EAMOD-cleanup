@@ -192,7 +192,7 @@ class GNNParser():
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
         for e in edges:
-            i, j = self.env.G.edges[self.env.G.edges.index(e)]
+            i, j = self.env.edges[self.env.edges.index(e)]
             times_for_e = list(self.env.G.edges[i, j]['time'].values())
             all_times.extend(times_for_e)
         # Convert the list of 'time' values into a tensor.
