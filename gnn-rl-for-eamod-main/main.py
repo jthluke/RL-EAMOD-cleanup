@@ -204,6 +204,7 @@ n_episodes = args.max_episodes #set max number of training episodes
 T = tf #set episode length
 epochs = trange(n_episodes) #epoch iterator
 best_reward = -10000
+best_model = None
 if test:
     rewards_np = np.zeros(n_episodes)
     served_demands_np = np.zeros(n_episodes)
@@ -247,10 +248,7 @@ for i_episode in epochs:
             mean_log_prob = 0
             std_log_prob = 0
         else:
-            if test:
-                action_rl = model.select_action_test()
-            else:
-                action_rl = model.select_action()
+            action_rl = model.select_action()
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
@@ -309,6 +307,7 @@ for i_episode in epochs:
             for step in action_tracker:
                 print("Time step: " + str(step) + ", desired cars at nodes after policy's rebalancing action: " + str(action_tracker[step]))
         model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
+        best_model = model
         wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
         with open(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial.p", "wb") as file:
             pickle.dump(env.acc_spatial, file)
@@ -356,4 +355,70 @@ if test:
 model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
 wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
 wandb.finish()
+
+
+print("Evaluating best model with greedy mean action selection from Dirichlet distribution") 
+
+
+desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
+bool_random_random_demand = False # only use random demand during training
+obs = env.reset(bool_random_random_demand) #initialize environment
+episode_reward = 0
+episode_served_demand = 0
+episode_rebalancing_cost = 0
+time_start = time.time()
+action_tracker = {}
+for step in range(T):
+    # take matching step (Step 1 in paper)
+    if step == 0 and i_episode == 0:
+        # initialize optimization problem in the first step
+        pax_flows_solver = PaxFlowsSolver(env=env,gurobi_env=gurobi_env)
+    else:
+        pax_flows_solver.update_constraints()
+        pax_flows_solver.update_objective()
+    _, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
+    episode_reward += paxreward
+   
+    # use GNN-RL policy (Step 2 in paper)
+    action_rl = best_model.select_action(eval_model=True)
+    
+    # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
+    total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
+    desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
+    action_tracker[step] = desired_acc
+    total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+    missing_cars = total_idle_acc - total_desiredAcc
+    most_likely_node = np.argmax(action_rl)
+    if missing_cars != 0:
+        desired_acc[env.nodes[most_likely_node]] += missing_cars   
+        total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+    assert abs(total_desiredAcc - total_idle_acc) < 1e-5
+    for n in env.nodes:
+        assert desired_acc[n] >= 0
+    for n in env.nodes:
+        desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
+    # solve minimum rebalancing distance problem (Step 3 in paper)
+    if step == 0 and i_episode == 0:
+        # initialize optimization problem in the first step
+        rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
+    else:
+        rebal_flow_solver.update_constraints(desired_acc, env)
+        rebal_flow_solver.update_objective(env)
+    rebAction = rebal_flow_solver.optimize()
+       
+    # Take action in environment
+    new_obs, rebreward, done, info_reb = env.reb_step(rebAction)
+    episode_reward += rebreward
+    # Store the transition in memory
+    best_model.rewards.append(paxreward + rebreward)
+    # track performance over episode
+    episode_served_demand += info_pax['served_demand']
+    episode_rebalancing_cost += info_reb['rebalancing_cost']
+    # stop episode if terminating conditions are met
+    if done:
+        break
+
+# Send current statistics to screen was episode_reward, episode_served_demand, episode_rebalancing_cost
+epochs.set_description(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
+
 print("done")
