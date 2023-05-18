@@ -193,11 +193,11 @@ class GNNParser():
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
         for e in edges:
             i, j = self.env.edges[self.env.edges.index(e)]
-            times_for_e = list(self.env.G.edges[i, j]['time'].values())
+            times_for_e = list(self.env.G.edges[i, j]['time'].values()).sum()
             all_times.extend(times_for_e)
         # Convert the list of 'time' values into a tensor.
         tensor = torch.tensor(all_times)
-        e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, int((np.prod(tensor.shape))/(self.input_size))).T
+        e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
         data = Data(x, edge_index, edge_attr=e)
         
 
@@ -365,8 +365,7 @@ class A2C(nn.Module):
         self.grad_norm_clip_c = grad_norm_clip_c
         self.scale_factor = scale_factor
         self.scale_price = scale_price
-        # input_size = 2*T + 2
-        input_size = 20 # number of edges in the graph
+        input_size = 2*T + 2
         self.input_size = input_size
         torch.manual_seed(seed)
         self.device = device
