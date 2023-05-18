@@ -380,7 +380,7 @@ for step in range(T):
     episode_reward += paxreward
    
     # use GNN-RL policy (Step 2 in paper)
-    action_rl = best_model.select_action(eval_model=True)
+    action_rl = best_model.select_action(eval_mode=True)
     
     # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
     total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
