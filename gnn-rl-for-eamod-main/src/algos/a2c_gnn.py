@@ -365,7 +365,8 @@ class A2C(nn.Module):
         self.grad_norm_clip_c = grad_norm_clip_c
         self.scale_factor = scale_factor
         self.scale_price = scale_price
-        input_size = 2*T + 2
+        # input_size = 2*T + 2
+        input_size = 20 # number of edges in the graph
         self.input_size = input_size
         torch.manual_seed(seed)
         self.device = device
