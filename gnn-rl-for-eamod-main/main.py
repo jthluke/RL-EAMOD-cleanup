@@ -248,7 +248,12 @@ for i_episode in epochs:
             mean_log_prob = 0
             std_log_prob = 0
         else:
-            action_rl = model.select_action()
+            # vanilla GCN
+            # action_rl = model.select_action()
+
+            # MPNN implementation
+            action_rl = model.select_action_mpnn()
+
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
@@ -380,7 +385,12 @@ for step in range(T):
     episode_reward += paxreward
    
     # use GNN-RL policy (Step 2 in paper)
-    action_rl = best_model.select_action(eval_mode=True)
+
+    # vanilla GCN
+    # action_rl = best_model.select_action(eval_mode=True)
+
+    # MPNN
+    action_rl = best_model.select_action_MPNN(eval_mode=True)
     
     # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
     total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
