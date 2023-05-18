@@ -189,8 +189,7 @@ class GNNParser():
         # data = Data(x, edge_index)
 
         # edge features for MPNN implementation
-        time_dicts = [self.G.edges[edge]['time'] for edge in self.G.edges]
-
+        time_dicts = [self.env.edges[edge]['time'] for edge in self.env.edges]
         e = (torch.tensor([value for time_dict in time_dicts for value in time_dict.values()]).view(1, edge_index.shape[1]).float()).squeeze(0).view(self.input_size, len(edges)).T
         data = Data(x, edge_index, edge_attr=e)
         
