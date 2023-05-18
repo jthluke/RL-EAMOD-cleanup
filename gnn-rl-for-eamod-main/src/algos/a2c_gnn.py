@@ -48,7 +48,7 @@ class GNNParser():
         self.input_size = input_size
 
     def parse_obs(self):
-        v = 0
+        # nodes
         x = torch.cat((
             torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
                          ).view(1, 1, self.env.number_nodes).float(),
@@ -60,6 +60,9 @@ class GNNParser():
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
         
+        # edges 
+
+        # versions for edge_index
         # V0 - all edges from AMoD passed into GCN
         # edge_index = self.env.gcn_edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) = 20
@@ -80,34 +83,34 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
 
         # V2 - combination of V0 and V1
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
-
-        # V3 - grid style one-hop connections
         edges = []
         for o in self.env.nodes:
             for d in self.env.nodes:
-                if ((o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
+                if (o[0] == d[0] and o[1] == d[1]):
                     edges.append([o, d])
-        
         edge_idx = torch.tensor([[], []], dtype=torch.long)
         for e in edges:
             origin_node_idx = self.env.nodes.index(e[0])
             destination_node_idx = self.env.nodes.index(e[1])
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
-        edge_index = edge_idx
+        edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+
+        # V3 - grid style one-hop connections
+        # edges = []
+        # for o in self.env.nodes:
+        #     for d in self.env.nodes:
+        #         if ((o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
+        #             edges.append([o, d])
+        
+        # edge_idx = torch.tensor([[], []], dtype=torch.long)
+        # for e in edges:
+        #     origin_node_idx = self.env.nodes.index(e[0])
+        #     destination_node_idx = self.env.nodes.index(e[1])
+        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
+        # edge_index = edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
         
         # V4 - combination of V3 and V1
@@ -181,16 +184,23 @@ class GNNParser():
         # edge_index = edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
 
+        # e = torch.cat((
+        #     torch.tensor([obs[0].edges[e]['time'] for e in self.edge_list*2]).view(1, edge_index.shape[1]).float(),
+        #     torch.tensor([obs[0].edges[e]['cost'] for e in self.edge_list*2]).view(1, edge_index.shape[1]).float()
+        #     ), dim=0).view(2, edge_index.shape[1]).T
 
-        # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
-        # Finish V0 - V5 (with artificial edges added)
-        # Graph Convolution already implemented - try Graph Attention and Graph Message Passing (with edge features)
-        # RL Tuning (number of layers, dimensionality, step size (e-4))
+
+        
 
         # default/global return
         data = Data(x, edge_index)
         return data
     
+        # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
+        # Finish V0 - V5 (with artificial edges added)
+        # Graph Convolution already implemented - try Graph Attention and Graph Message Passing (with edge features)
+        # RL Tuning (number of layers, dimensionality, step size (e-4))
+
     def parse_obs_spatial(self):
         x = torch.cat((
             torch.tensor([self.env.acc_spatial[n][self.env.time+1]*self.scale_factor for n in self.env.nodes_spatial]).view(1, 1, self.env.number_nodes_spatial).float(), 
