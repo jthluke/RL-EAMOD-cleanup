@@ -202,7 +202,6 @@ class GNNParser():
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
         data = Data(x, edge_index, edge_attr=e)
         
-
         return data
     
         # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
@@ -378,8 +377,8 @@ class A2C(nn.Module):
         # self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         # MPNN implementation (specifically configured for V2 - default edges from AMoD plus self-loops = 32 edges for toy example)
-        self.actor = GNNActor(node_size=env.number_nodes, edge_size=20)
-        self.critic = GNNCritic(node_size=env.number_nodes, edge_size=20)
+        self.actor = GNNActor(node_size=env.number_nodes, edge_size=len(env.edges))
+        self.critic = GNNCritic(node_size=env.number_nodes, edge_size=len(env.edges))
         self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         self.optimizers = self.configure_optimizers()
