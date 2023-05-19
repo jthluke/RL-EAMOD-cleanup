@@ -191,6 +191,7 @@ class GNNParser():
         # edge features for MPNN implementation
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
+        edges.extend(self.env.edges)
         for e in edges:
             if e in self.env.edges:
                 i, j = self.env.edges[self.env.edges.index(e)]
