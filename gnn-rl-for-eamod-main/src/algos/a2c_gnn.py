@@ -201,9 +201,9 @@ class GNNParser():
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
 
-        print("x shape: " + str(x.shape))
-        print("edge_index shape: " + str(edge_index.shape)) 
-        print("edge_attr shape: " + str(e.shape))
+        # print("x shape: " + str(x.shape))
+        # print("edge_index shape: " + str(edge_index.shape)) 
+        # print("edge_attr shape: " + str(e.shape))
         data = Data(x, edge_index, edge_attr=e)
         
         return data
@@ -246,7 +246,7 @@ class EdgeConv(MessagePassing):
         # x_j has shape [E, in_channels]
 
         tmp = torch.cat([x_i, x_j, edge_attr], dim=1)  # tmp has shape [E, 2 * in_channels]
-        print("tmp shape: " + str(tmp.shape))
+        # print("tmp shape: " + str(tmp.shape))
         return self.mlp(tmp)
 
 #########################################
