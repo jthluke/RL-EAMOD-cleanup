@@ -244,7 +244,7 @@ class EdgeConv(MessagePassing):
         # x_j has shape [E, in_channels]
 
         tmp = torch.cat([x_i, x_j, edge_attr], dim=1)  # tmp has shape [E, 2 * in_channels]
-        print("tmp shape: " + str(tmp.shape)
+        print("tmp shape: " + str(tmp.shape))
         return self.mlp(tmp)
 
 #########################################
