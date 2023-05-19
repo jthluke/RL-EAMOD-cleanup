@@ -68,8 +68,8 @@ class GNNParser():
 
         # versions for edge_index
         # V0 - all edges from AMoD passed into GCN
-        edges = self.env.edges
-        edge_index = self.env.gcn_edge_idx
+        # edges = self.env.edges
+        # edge_index = self.env.gcn_edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) = 20
 
         # V1 - no edges, only self loops
@@ -88,18 +88,18 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
 
         # V2 - combination of V0 and V1
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                if (o[0] == d[0] and o[1] == d[1]):
+                    edges.append([o, d])
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
 
         # V3 - grid style one-hop connections
@@ -201,9 +201,9 @@ class GNNParser():
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
 
-        # print("x shape: " + str(x.shape))
-        # print("edge_index shape: " + str(edge_index.shape)) 
-        # print("edge_attr shape: " + str(e.shape))
+        print("x shape: " + str(x.shape))
+        print("edge_index shape: " + str(edge_index.shape)) 
+        print("edge_attr shape: " + str(e.shape))
         data = Data(x, edge_index, edge_attr=e)
         
         return data
@@ -246,7 +246,7 @@ class EdgeConv(MessagePassing):
         # x_j has shape [E, in_channels]
 
         tmp = torch.cat([x_i, x_j, edge_attr], dim=1)  # tmp has shape [E, 2 * in_channels]
-        # print("tmp shape: " + str(tmp.shape))
+        print("tmp shape: " + str(tmp.shape))
         return self.mlp(tmp)
 
 #########################################
