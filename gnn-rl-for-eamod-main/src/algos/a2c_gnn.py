@@ -229,7 +229,7 @@ class GNNParser():
 class EdgeConv(MessagePassing):
     def __init__(self, node_size=4, edge_size=0, out_channels=4):
         super().__init__(aggr='add', flow="target_to_source") #  "Max" aggregation.
-        self.mlp = Seq(Linear(2 * node_size + edge_size, out_channels),
+        self.mlp = Seq(Linear(3 * 22, out_channels),
                        ReLU(),
                        Linear(out_channels, out_channels))
 
