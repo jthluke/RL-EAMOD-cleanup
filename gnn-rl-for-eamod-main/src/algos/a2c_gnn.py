@@ -196,9 +196,7 @@ class GNNParser():
             times_for_e = list(self.env.G.edges[i, j]['time'].values())
             while (len(times_for_e) < self.input_size):
                 times_for_e.append(0)
-            all_times.append(times_for_e)
-        while (len(all_times) % self.input_size != 0):
-            all_times.append(0)
+            all_times.extend(times_for_e)
         # Convert the list of 'time' values into a tensor.
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
