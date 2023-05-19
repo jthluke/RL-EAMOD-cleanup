@@ -339,9 +339,10 @@ class GNNCritic(nn.Module):
     def __init__(self, node_size=4, edge_size=2, hidden_dim=32, out_channels=1):
         super(GNNCritic, self).__init__()
         self.hidden_dim = hidden_dim
-        
+
+        # input size = 22
         self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
-        self.g_to_v = nn.Linear(node_size + hidden_dim, out_channels)
+        self.g_to_v = nn.Linear(22 + hidden_dim, out_channels)
 
     def forward(self, x, edge_index, edge_attr):
         x_pp = self.conv1(x, edge_index, edge_attr)
