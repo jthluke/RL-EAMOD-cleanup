@@ -192,8 +192,11 @@ class GNNParser():
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
         for e in edges:
-            i, j = self.env.edges[self.env.edges.index(e)]
-            times_for_e = list(self.env.G.edges[i, j]['time'].values())
+            if e in self.env.edges:
+                i, j = self.env.edges[self.env.edges.index(e)]
+                times_for_e = list(self.env.G.edges[i, j]['time'].values())
+            else:
+                times_for_e = [0]
             while (len(times_for_e) < self.input_size):
                 times_for_e.append(0)
             all_times.extend(times_for_e)
