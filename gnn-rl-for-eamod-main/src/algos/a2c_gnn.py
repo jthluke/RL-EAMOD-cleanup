@@ -290,9 +290,9 @@ class GNNActor(nn.Module):
         self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
 
         # input size = 22
-        self.h_to_mu = nn.Linear(20 + hidden_dim, out_channels)
-        self.h_to_sigma = nn.Linear(20 + hidden_dim, out_channels)
-        self.h_to_concentration = nn.Linear(20 + hidden_dim, out_channels)
+        self.h_to_mu = nn.Linear(22 + hidden_dim, out_channels)
+        self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
+        self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
 
     def forward(self, x, edge_index, edge_attr):
         x_pp = self.conv1(x, edge_index, edge_attr)
