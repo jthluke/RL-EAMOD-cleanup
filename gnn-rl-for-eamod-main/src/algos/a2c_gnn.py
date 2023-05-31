@@ -396,7 +396,7 @@ class GNNCritic(nn.Module):
         out = self.bn(out)
         out = self.dropout(out)
         out = self.gat3(out, edge_index) 
-        return out.squeeze(-1)
+        return out.sum(dim=0)
 
 #########################################
 ############## A2C AGENT ################
