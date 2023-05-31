@@ -310,7 +310,7 @@ class GNNActor(nn.Module):
     #     return (mu, sigma), alpha
 
     # GAT implementation
-    def __init__(self, in_channels, dim_h=16, out_channels=2, heads=16, dropout_rate=0):
+    def __init__(self, in_channels, dim_h=8, out_channels=2, heads=16, dropout_rate=0):
         super().__init__()
         self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
         self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
