@@ -310,7 +310,7 @@ class GNNActor(nn.Module):
     #     return (mu, sigma), alpha
 
     # GAT implementation
-    def __init__(self, in_channels, dim_h=32, out_channels=1, heads=8, dropout_rate=0.5):
+    def __init__(self, in_channels, dim_h=32, out_channels=2, heads=8, dropout_rate=0.5):
         super().__init__()
         self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
         self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
@@ -493,7 +493,7 @@ class A2C(nn.Module):
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
         # critic: estimates V(s_t)
-        value = self.critic(x.x, x.edge_index)
+        value = self.critic(x)
         return concentration, non_zero, value
 
     def parse_obs(self):
