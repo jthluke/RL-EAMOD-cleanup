@@ -303,6 +303,7 @@ class GNNActor(nn.Module):
 
     def forward(self, x, edge_index, edge_attr):
         x_pp = self.conv1(x, edge_index, edge_attr)
+        x_pp = x_pp.to("cuda:0")
         x_pp = torch.cat([x, x_pp], dim=1)
         
         mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
@@ -505,7 +506,7 @@ class A2C(nn.Module):
         a_probs , value = self.forward()
         a_probs = a_probs.to(self.device)
         value = value.to(self.device)
-        
+
         mu, sigma = a_probs[0][0], a_probs[0][1]
         alpha = a_probs[1] + 1e-16
         
