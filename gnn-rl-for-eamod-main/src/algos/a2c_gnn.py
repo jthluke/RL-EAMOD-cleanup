@@ -488,12 +488,12 @@ class A2C(nn.Module):
 
         # MPNN implementation
         # actor: computes concentration parameters of a Dirichlet distribution
-        a_out_concentration, a_out_is_zero = self.actor(x)
+        a_out_concentration, a_out_is_zero = self.actor(x.x, x.edge_index)
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
         # critic: estimates V(s_t)
-        value = self.critic(x)
+        value = self.critic(x.x, x.edge_index)
         return concentration, non_zero, value
 
     def parse_obs(self):
