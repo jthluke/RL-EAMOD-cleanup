@@ -252,7 +252,10 @@ for i_episode in epochs:
             # action_rl = model.select_action()
 
             # MPNN implementation
-            action_rl = model.select_action_MPNN()
+            # action_rl = model.select_action_MPNN()
+
+            # GAT implementation
+            action_rl = model.select_action_GAT()
 
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
@@ -390,7 +393,10 @@ for step in range(T):
     # action_rl = best_model.select_action(eval_mode=True)
 
     # MPNN
-    action_rl = best_model.select_action_MPNN(eval_mode=True)
+    # action_rl = best_model.select_action_MPNN(eval_mode=True)
+
+    # GAT
+    action_rl = best_model.select_action_GAT(eval_mode=True)
     
     # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
     total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)

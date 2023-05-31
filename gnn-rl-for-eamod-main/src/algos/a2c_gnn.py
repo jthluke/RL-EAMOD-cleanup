@@ -19,7 +19,7 @@ from torch import nn
 import torch.nn.functional as F
 from torch.distributions import Dirichlet, Normal, LogNormal, Poisson
 from torch_geometric.data import Data
-from torch_geometric.nn import GCNConv
+from torch_geometric.nn import GCNConv, GATv2Conv
 from torch_geometric.nn import global_mean_pool, global_max_pool
 
 from torch_geometric.nn import MessagePassing
@@ -290,24 +290,43 @@ class GNNActor(nn.Module):
     #     return x[:, 0], x[:, 1]
 
     # MPNN implementation
-    def __init__(self, node_size=4, edge_size=0, hidden_dim=32, out_channels=1):
-        super(GNNActor, self).__init__()
-        self.hidden_dim = hidden_dim
+    # def __init__(self, node_size=4, edge_size=0, hidden_dim=32, out_channels=1):
+    #     super(GNNActor, self).__init__()
+    #     self.hidden_dim = hidden_dim
         
-        self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
+    #     self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
 
-        # input size = 22
-        self.h_to_mu = nn.Linear(22 + hidden_dim, out_channels)
-        self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
-        self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
+    #     # input size = 22
+    #     self.h_to_mu = nn.Linear(22 + hidden_dim, out_channels)
+    #     self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
+    #     self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
 
-    def forward(self, x, edge_index, edge_attr):
-        x_pp = self.conv1(x, edge_index, edge_attr)
-        x_pp = torch.cat([x, x_pp], dim=1)
+    # def forward(self, x, edge_index, edge_attr):
+    #     x_pp = self.conv1(x, edge_index, edge_attr)
+    #     x_pp = torch.cat([x, x_pp], dim=1)
         
-        mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
-        alpha = F.softplus(self.h_to_concentration(x_pp))
-        return (mu, sigma), alpha
+    #     mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
+    #     alpha = F.softplus(self.h_to_concentration(x_pp))
+    #     return (mu, sigma), alpha
+
+    # GAT implementation
+    def __init__(self, in_channels, dim_h, out_channels, heads=8, dropout_rate=0.5):
+        super().__init__()
+        self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
+        self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
+        self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
+        self.dropout = nn.Dropout(dropout_rate)
+        self.bn = nn.BatchNorm1d(dim_h)
+
+    def forward(self, x, edge_index):
+        out = F.relu(self.gat1(x, edge_index)) 
+        out = self.bn(out)
+        out = self.dropout(out)
+        out = F.relu(self.gat2(out, edge_index)) 
+        out = self.bn(out)
+        out = self.dropout(out)
+        out = self.gat3(out, edge_index) 
+        return out
 
 #########################################
 ############## CRITIC ###################
@@ -343,22 +362,41 @@ class GNNCritic(nn.Module):
     #     return x
 
     # MPNN implementation
-    def __init__(self, node_size=4, edge_size=2, hidden_dim=32, out_channels=1):
-        super(GNNCritic, self).__init__()
-        self.hidden_dim = hidden_dim
+    # def __init__(self, node_size=4, edge_size=2, hidden_dim=32, out_channels=1):
+    #     super(GNNCritic, self).__init__()
+    #     self.hidden_dim = hidden_dim
 
-        # input size = 22
-        self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
-        self.g_to_v = nn.Linear(22 + hidden_dim, out_channels)
+    #     # input size = 22
+    #     self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
+    #     self.g_to_v = nn.Linear(22 + hidden_dim, out_channels)
 
-    def forward(self, x, edge_index, edge_attr):
-        x_pp = self.conv1(x, edge_index, edge_attr)
+    # def forward(self, x, edge_index, edge_attr):
+    #     x_pp = self.conv1(x, edge_index, edge_attr)
 
-        x_pp = torch.cat([x, x_pp], dim=1)
-        x_pp = torch.sum(x_pp, dim=0)
+    #     x_pp = torch.cat([x, x_pp], dim=1)
+    #     x_pp = torch.sum(x_pp, dim=0)
 
-        v = self.g_to_v(x_pp)
-        return v
+    #     v = self.g_to_v(x_pp)
+    #     return v
+    
+    # GAT implementation
+    def __init__(self, in_channels, dim_h, out_channels, heads=8, dropout_rate=0.5):
+        super().__init__()
+        self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
+        self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
+        self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
+        self.dropout = nn.Dropout(dropout_rate)
+        self.bn = nn.BatchNorm1d(dim_h)
+
+    def forward(self, x, edge_index):
+        out = F.relu(self.gat1(x, edge_index)) 
+        out = self.bn(out)
+        out = self.dropout(out)
+        out = F.relu(self.gat2(out, edge_index)) 
+        out = self.bn(out)
+        out = self.dropout(out)
+        out = self.gat3(out, edge_index) 
+        return out
 
 #########################################
 ############## A2C AGENT ################
@@ -438,13 +476,23 @@ class A2C(nn.Module):
 
 
         # MPNN implementation
-        # parse raw environment data in model format
+        # # parse raw environment data in model format
+        # # actor: computes concentration parameters of a X distribution
+        # a_probs = self.actor(x.x, x.edge_index, x.edge_attr)
         
-        # actor: computes concentration parameters of a X distribution
-        a_probs = self.actor(x.x, x.edge_index, x.edge_attr)
+        # # critic: estimates V(s_t)
+        # value = self.critic(x.x, x.edge_index, x.edge_attr)
+        # return a_probs, value
+    
 
+
+        # MPNN implementation
+        # parse raw environment data in model format
+        # actor: computes concentration parameters of a X distribution
+        a_probs = self.actor(x.x, x.edge_index)
+        
         # critic: estimates V(s_t)
-        value = self.critic(x.x, x.edge_index, x.edge_attr)
+        value = self.critic(x.x, x.edge_index)
         return a_probs, value
 
     def parse_obs(self):
@@ -502,6 +550,25 @@ class A2C(nn.Module):
         return list(action)
     
     def select_action_MPNN(self, eval_mode=False):
+        a_probs , value = self.forward()
+        mu, sigma = a_probs[0][0], a_probs[0][1]
+        alpha = a_probs[1] + 1e-16
+        
+        # gaus = Normal(loc=mu.view(-1,), scale=sigma.view(-1,))
+        dirichlet_action = Dirichlet(concentration=alpha.view(-1,))
+        
+        # prod = gaus.sample()
+        if (eval_mode):
+            action = alpha / (alpha.sum() + 1e-16)
+        else:
+            action = dirichlet_action.sample()
+        # gaus_log_prob = gaus.log_prob(prod)
+        dir_log_prob = dirichlet_action.log_prob(action)
+        self.saved_actions.append(SavedAction(0.05 * dir_log_prob, value))
+        
+        return action
+    
+    def select_action_GAT(self, eval_mode=False):
         a_probs , value = self.forward()
         mu, sigma = a_probs[0][0], a_probs[0][1]
         alpha = a_probs[1] + 1e-16
