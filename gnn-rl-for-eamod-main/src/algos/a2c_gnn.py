@@ -310,7 +310,7 @@ class GNNActor(nn.Module):
     #     return (mu, sigma), alpha
 
     # GAT implementation
-    def __init__(self, in_channels, dim_h, out_channels, heads=8, dropout_rate=0.5):
+    def __init__(self, in_channels, dim_h=32, out_channels=1, heads=8, dropout_rate=0.5):
         super().__init__()
         self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
         self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
@@ -432,8 +432,8 @@ class A2C(nn.Module):
         # self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         # MPNN implementation (specifically configured for V2 - default edges from AMoD plus self-loops = 32 edges for toy example)
-        self.actor = GNNActor(node_size=env.number_nodes, edge_size=len(env.edges))
-        self.critic = GNNCritic(node_size=env.number_nodes, edge_size=len(env.edges))
+        self.actor = GNNActor(in_channels=self.input_size)
+        self.critic = GNNCritic(in_channels=self.input_size)
         self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         self.optimizers = self.configure_optimizers()
