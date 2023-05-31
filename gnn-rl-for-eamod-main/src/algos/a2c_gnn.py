@@ -503,6 +503,9 @@ class A2C(nn.Module):
     
     def select_action_MPNN(self, eval_mode=False):
         a_probs , value = self.forward()
+        a_probs = a_probs.to(self.device)
+        value = value.to(self.device)
+        
         mu, sigma = a_probs[0][0], a_probs[0][1]
         alpha = a_probs[1] + 1e-16
         
