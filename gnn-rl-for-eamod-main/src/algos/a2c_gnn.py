@@ -488,7 +488,7 @@ class A2C(nn.Module):
 
         # MPNN implementation
         # actor: computes concentration parameters of a Dirichlet distribution
-        a_out_concentration, a_out_is_zero = self.actor(x.x, x.edge_index)
+        a_out_concentration, a_out_is_zero = self.actor(x)
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
