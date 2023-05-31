@@ -316,7 +316,7 @@ class GNNActor(nn.Module):
         self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
         self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
         self.dropout = nn.Dropout(dropout_rate)
-        self.bn = nn.BatchNorm1d(out_channels)
+        self.bn = nn.BatchNorm1d(dim_h * heads)
 
     def forward(self, x, edge_index):
         out = F.relu(self.gat1(x, edge_index)) 
@@ -386,7 +386,7 @@ class GNNCritic(nn.Module):
         self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
         self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
         self.dropout = nn.Dropout(dropout_rate)
-        self.bn = nn.BatchNorm1d(out_channels)
+        self.bn = nn.BatchNorm1d(dim_h * heads)
 
     def forward(self, x, edge_index):
         out = F.relu(self.gat1(x, edge_index)) 
