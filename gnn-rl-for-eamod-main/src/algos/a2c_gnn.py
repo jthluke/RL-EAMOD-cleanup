@@ -326,7 +326,7 @@ class GNNActor(nn.Module):
         out = self.bn(out)
         out = self.dropout(out)
         out = self.gat3(out, edge_index) 
-        return out
+        return out[:, 0], out[:, 1]
 
 #########################################
 ############## CRITIC ###################
