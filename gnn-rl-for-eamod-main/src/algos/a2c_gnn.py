@@ -380,7 +380,7 @@ class GNNCritic(nn.Module):
     #     return v
     
     # GAT implementation
-    def __init__(self, in_channels, dim_h=32, out_channels=1, heads=8, dropout_rate=0.1):
+    def __init__(self, in_channels, dim_h=32, out_channels=1, heads=8, dropout_rate=0):
         super().__init__()
         self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
         self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
