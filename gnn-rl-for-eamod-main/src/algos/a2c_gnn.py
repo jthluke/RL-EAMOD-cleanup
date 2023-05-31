@@ -483,17 +483,18 @@ class A2C(nn.Module):
         # # critic: estimates V(s_t)
         # value = self.critic(x.x, x.edge_index, x.edge_attr)
         # return a_probs, value
-    
+
 
 
         # MPNN implementation
-        # parse raw environment data in model format
-        # actor: computes concentration parameters of a X distribution
-        a_probs = self.actor(x.x, x.edge_index)
+        # actor: computes concentration parameters of a Dirichlet distribution
+        a_out_concentration, a_out_is_zero = self.actor(x)
+        concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
+        non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
         # critic: estimates V(s_t)
-        value = self.critic(x.x, x.edge_index)
-        return a_probs, value
+        value = self.critic(x)
+        return concentration, non_zero, value
 
     def parse_obs(self):
         state = self.obs_parser.parse_obs()
@@ -569,23 +570,49 @@ class A2C(nn.Module):
         return action
     
     def select_action_GAT(self, eval_mode=False):
-        a_probs , value = self.forward()
-        mu, sigma = a_probs[0][0], a_probs[0][1]
-        alpha = a_probs[1] + 1e-16
-        
-        # gaus = Normal(loc=mu.view(-1,), scale=sigma.view(-1,))
-        dirichlet_action = Dirichlet(concentration=alpha.view(-1,))
-        
-        # prod = gaus.sample()
-        if (eval_mode):
-            action = alpha / (alpha.sum() + 1e-16)
+        concentration, non_zero, value = self.forward()
+        concentration = concentration.to(self.device)
+        non_zero = non_zero.to(self.device)
+        value = value.to(self.device)
+        # concentration, value = self.forward(obs)
+        concentration_without_zeros = torch.tensor([], dtype=torch.float32)
+        sampled_zero_bool_arr = []
+        log_prob_for_zeros = 0
+        for node in range(non_zero.shape[0]):
+            sample = torch.bernoulli(non_zero[node])
+            if sample > 0:
+                indices = torch.tensor([node])
+                new_element = torch.index_select(concentration, 0, indices)
+                concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
+                sampled_zero_bool_arr.append(False)
+                log_prob_for_zeros += torch.log(non_zero[node])
+            else:
+                sampled_zero_bool_arr.append(True)
+                log_prob_for_zeros += torch.log(1-non_zero[node])
+        if concentration_without_zeros.shape[0] != 0:
+            mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
+            std_concentration = np.std(concentration_without_zeros.detach().numpy())
+            self.means_concentration.append(mean_concentration)
+            self.std_concentration.append(std_concentration)
+            m = Dirichlet(concentration_without_zeros)
+            if (eval_mode):
+                dirichlet_action = concentration_without_zeros / (concentration_without_zeros.sum() + 1e-16)
+            else:
+                dirichlet_action = m.rsample()
+            dirichlet_action_np = list(dirichlet_action.detach().numpy())
+            log_prob_dirichlet = m.log_prob(dirichlet_action)
         else:
-            action = dirichlet_action.sample()
-        # gaus_log_prob = gaus.log_prob(prod)
-        dir_log_prob = dirichlet_action.log_prob(action)
-        self.saved_actions.append(SavedAction(0.05 * dir_log_prob, value))
-        
-        return action
+            log_prob_dirichlet = 0
+        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value))
+        action_np = []
+        dirichlet_idx = 0
+        for node in range(non_zero.shape[0]):
+            if sampled_zero_bool_arr[node]:
+                action_np.append(0.)
+            else:
+                action_np.append(dirichlet_action_np[dirichlet_idx])
+                dirichlet_idx += 1
+        return action_np
 
     def training_step(self):
         R = 0
