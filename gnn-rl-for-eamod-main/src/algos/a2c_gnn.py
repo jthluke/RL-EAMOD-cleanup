@@ -493,7 +493,7 @@ class A2C(nn.Module):
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
         # critic: estimates V(s_t)
-        value = self.critic(x)
+        value = self.critic(x.x, x.edge_index)
         return concentration, non_zero, value
 
     def parse_obs(self):
