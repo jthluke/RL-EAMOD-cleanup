@@ -88,7 +88,7 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
 
         # V2 - combination of V0 and V1
-        edges = []
+        # edges = []
         for o in self.env.nodes:
             for d in self.env.nodes:
                 if (o[0] == d[0] and o[1] == d[1]):
@@ -207,9 +207,9 @@ class GNNParser():
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
 
-        print("x shape: " + str(x.shape))
-        print("edge_index shape: " + str(edge_index.shape)) 
-        print("edge_attr shape: " + str(e.shape))
+        # print("x shape: " + str(x.shape))
+        # print("edge_index shape: " + str(edge_index.shape)) 
+        # print("edge_attr shape: " + str(e.shape))
         data = Data(x, edge_index, edge_attr=e)
         
         return data
