@@ -256,7 +256,7 @@ class EdgeConv(MessagePassing):
         # print("x_j shape: " + str(x_j.shape))
         # print("edge_attr shape: " + str(edge_attr.shape))
         tmp = torch.cat([x_i, x_j, edge_attr], dim=1)  # tmp has shape [E, 2 * in_channels]
-        print("tmp shape: " + str(tmp.shape))
+        # print("tmp shape: " + str(tmp.shape))
         return self.mlp(tmp)
 
 #########################################
@@ -318,6 +318,7 @@ class GNNActor(nn.Module):
         x = F.softplus(self.lin1(x_pp))
         x = F.softplus(self.lin2(x)) # second linear layer applied
         x = F.softplus(self.lin3(x)) # third linear layer applied
+        print(x.shape)
         return x[:, 0], x[:, 1]
         
         # mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
