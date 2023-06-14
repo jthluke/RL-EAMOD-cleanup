@@ -193,8 +193,7 @@ class GNNParser():
         # demand
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
-        # edges.extend(self.env.edges) needed when adding self-loops only
-        print(len(edges))
+        edges.extend(self.env.edges) # needed when adding self-loops only
         for e in edges:
             if e in self.env.edges:
                 i, j = self.env.edges[self.env.edges.index(e)]
