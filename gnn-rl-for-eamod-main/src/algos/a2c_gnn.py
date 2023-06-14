@@ -292,7 +292,7 @@ class GNNActor(nn.Module):
         self.hidden_dim = hidden_dim
         
         self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
-        self.conv2 = EdgeConv(hidden_dim, edge_size, hidden_dim) # second edge convolution layer
+        self.conv2 = EdgeConv(node_size, edge_size, hidden_dim) # second edge convolution layer
 
         self.lin1 = nn.Linear(22 + hidden_dim, hidden_dim)
         self.lin2 = nn.Linear(hidden_dim, hidden_dim) # second linear layer
