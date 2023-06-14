@@ -100,7 +100,7 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
 
         # V3 - grid style one-hop connections
         # edges = []
@@ -213,11 +213,6 @@ class GNNParser():
         data = Data(x, edge_index, edge_attr=e)
         
         return data
-    
-        # Add evaluation mode to code base with greedy mean parameter extarction from dirchilet 
-        # Finish V0 - V5 (with artificial edges added)
-        # Graph Convolution already implemented - try Graph Attention and Graph Message Passing (with edge features)
-        # RL Tuning (number of layers, dimensionality, step size (e-4))
 
     def parse_obs_spatial(self):
         x = torch.cat((
