@@ -100,7 +100,7 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
 
         # V3 - grid style one-hop connections
         # edges = []
@@ -194,7 +194,6 @@ class GNNParser():
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
         edges.extend(self.env.edges) # needed when adding self-loops only
-        print(len(edges))
         for e in edges:
             if e in self.env.edges:
                 i, j = self.env.edges[self.env.edges.index(e)]
