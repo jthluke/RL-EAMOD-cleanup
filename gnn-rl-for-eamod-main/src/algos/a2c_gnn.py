@@ -232,7 +232,7 @@ class EdgeConv(MessagePassing):
         super().__init__(aggr='add', flow="target_to_source") #  "Max" aggregation.
 
         # input size = 22: dimension 1 of node features_i + dimension 1 of node features_j + dimension 1 of edge features
-        self.mlp = Seq(Linear((3 * 22) - (node_size - 12), out_channels),
+        self.mlp = Seq(Linear((3 * 22) + (node_size - 12), out_channels),
                     ReLU(),
                     Linear(out_channels, out_channels))
 
