@@ -318,7 +318,6 @@ class GNNActor(nn.Module):
         x = F.softplus(self.lin1(x_pp))
         x = F.softplus(self.lin2(x)) # second linear layer applied
         x = F.softplus(self.lin3(x)) # third linear layer applied
-        print(x.shape)
         return x[:, 0], x[:, 1]
         
         # mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
@@ -517,11 +516,13 @@ class A2C(nn.Module):
         # MPNN implementation
         # parse raw environment data in model format
         # actor: computes concentration parameters of a X distribution
-        a_probs = self.actor(x.x, x.edge_index, x.edge_attr)
+        a_out_concentration, a_out_is_zero = self.actor(x.x, x.edge_index, x.edge_attr)
+        concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
+        non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
         # critic: estimates V(s_t)
         value = self.critic(x.x, x.edge_index, x.edge_attr)
-        return a_probs, value
+        return concentration, non_zero, value
 
 
 
