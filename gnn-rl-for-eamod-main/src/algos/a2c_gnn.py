@@ -69,7 +69,7 @@ class GNNParser():
         # versions for edge_index
         # V0 - all edges from AMoD passed into GCN
         edges = self.env.edges
-        edge_index = self.env.gcn_edge_idx
+        # edge_index = self.env.gcn_edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) = 20
 
         # V1 - no edges, only self loops
@@ -88,7 +88,7 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
 
         # V2 - combination of V0 and V1
-        edges = []
+        # edges = []
         for o in self.env.nodes:
             for d in self.env.nodes:
                 if (o[0] == d[0] and o[1] == d[1]):
