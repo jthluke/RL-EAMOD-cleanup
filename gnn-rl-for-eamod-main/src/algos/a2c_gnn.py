@@ -189,6 +189,8 @@ class GNNParser():
         # data = Data(x, edge_index)
 
         # edge features for MPNN implementation
+        # potential edge features = number of vehicles travelling on given edge at a given time, price of rebalancing, 
+        # demand
         all_times = []
         # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
         # edges.extend(self.env.edges) needed when adding self-loops only
@@ -290,43 +292,60 @@ class GNNActor(nn.Module):
     #     return x[:, 0], x[:, 1]
 
     # MPNN implementation
-    # def __init__(self, node_size=4, edge_size=0, hidden_dim=32, out_channels=1):
-    #     super(GNNActor, self).__init__()
-    #     self.hidden_dim = hidden_dim
+    def __init__(self, node_size=4, edge_size=0, hidden_dim=32, out_channels=1):
+        super(GNNActor, self).__init__()
+        self.hidden_dim = hidden_dim
         
-    #     self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
+        self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
+        self.conv2 = EdgeConv(hidden_dim, edge_size, hidden_dim) # second edge convolution layer
 
-    #     # input size = 22
-    #     self.h_to_mu = nn.Linear(22 + hidden_dim, out_channels)
-    #     self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
-    #     self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
+        self.lin1 = nn.Linear(22 + hidden_dim, hidden_dim)
+        self.lin2 = nn.Linear(hidden_dim, hidden_dim) # second linear layer
+        self.lin3 = nn.Linear(hidden_dim, 2) # third linear layer
 
-    # def forward(self, x, edge_index, edge_attr):
-    #     x_pp = self.conv1(x, edge_index, edge_attr)
-    #     x_pp = torch.cat([x, x_pp], dim=1)
+        # input size = 22
+
+        # self.h_to_mu = nn.Linear(22 + hidden_dim, out_channels)
+        # self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
+        # self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
+
+        self.lin1 = nn.Linear(22 + hidden_dim, 2)
+
+    def forward(self, x, edge_index, edge_attr):
+        x_pp = self.conv1(x, edge_index, edge_attr)
+        x_pp = self.conv2(x_pp, edge_index, edge_attr) # second convolution layer applied
+        x_pp = torch.cat([x, x_pp], dim=1)
+
+        x = F.softplus(self.lin1(x_pp))
+        x = F.softplus(self.lin2(x)) # second linear layer applied
+        x = F.softplus(self.lin3(x)) # third linear layer applied
+        return x[:, 0], x[:, 1]
         
-    #     mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
-    #     alpha = F.softplus(self.h_to_concentration(x_pp))
-    #     return (mu, sigma), alpha
+        # mu, sigma = F.softplus(self.h_to_mu(x_pp)), F.softplus(self.h_to_sigma(x_pp))
+        # alpha = F.softplus(self.h_to_concentration(x_pp))
+        # return (mu, sigma), alpha
+
+        x = F.softplus(self.h_to_concentration(x_pp))
+        return x[:, 0], x[:, 1]
 
     # GAT implementation
-    def __init__(self, in_channels, dim_h=16, out_channels=2, heads=16, dropout_rate=0):
-        super().__init__()
-        self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
-        self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
-        self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
-        self.dropout = nn.Dropout(dropout_rate)
-        self.bn = nn.BatchNorm1d(dim_h * heads)
+    # def __init__(self, in_channels, dim_h=16, out_channels=2, heads=16, dropout_rate=0):
+    #     super().__init__()
+    #     self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
+    #     self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
+    #     self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
+    #     self.dropout = nn.Dropout(dropout_rate)
+    #     self.bn = nn.BatchNorm1d(dim_h * heads)
 
-    def forward(self, x, edge_index):
-        out = F.relu(self.gat1(x, edge_index)) 
-        out = self.bn(out)
-        out = self.dropout(out)
-        out = F.relu(self.gat2(out, edge_index)) 
-        out = self.bn(out)
-        out = self.dropout(out)
-        out = self.gat3(out, edge_index) 
-        return out[:, 0], out[:, 1]
+    # def forward(self, x, edge_index):
+    #     out = F.relu(self.gat1(x, edge_index)) 
+    #     out = self.bn(out)
+    #     out = self.dropout(out)
+    #     out = F.relu(self.gat2(out, edge_index)) 
+    #     out = self.bn(out)
+    #     out = self.dropout(out)
+    #     out = self.gat3(out, edge_index) 
+    #     return out[:, 0], out[:, 1]
 
 #########################################
 ############## CRITIC ###################
@@ -362,41 +381,61 @@ class GNNCritic(nn.Module):
     #     return x
 
     # MPNN implementation
-    # def __init__(self, node_size=4, edge_size=2, hidden_dim=32, out_channels=1):
-    #     super(GNNCritic, self).__init__()
-    #     self.hidden_dim = hidden_dim
+    def __init__(self, node_size=4, edge_size=2, hidden_dim=32, out_channels=1):
+        # super(GNNCritic, self).__init__()
+        # self.hidden_dim = hidden_dim
 
-    #     # input size = 22
-    #     self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
-    #     self.g_to_v = nn.Linear(22 + hidden_dim, out_channels)
+        # # input size = 22
+        # self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
+        # self.g_to_v = nn.Linear(22 + hidden_dim, out_channels)
 
-    # def forward(self, x, edge_index, edge_attr):
-    #     x_pp = self.conv1(x, edge_index, edge_attr)
+        super(GNNCritic, self).__init__()
+        self.hidden_dim = hidden_dim
 
-    #     x_pp = torch.cat([x, x_pp], dim=1)
-    #     x_pp = torch.sum(x_pp, dim=0)
+        self.conv1 = EdgeConv(node_size, edge_size, hidden_dim)
+        self.conv2 = EdgeConv(hidden_dim, edge_size, hidden_dim)  # second edge convolution layer
 
-    #     v = self.g_to_v(x_pp)
-    #     return v
+        self.lin1 = nn.Linear(22 + hidden_dim, hidden_dim)
+        self.lin2 = nn.Linear(hidden_dim, hidden_dim)  # second linear layer
+        self.lin3 = nn.Linear(hidden_dim, out_channels)  # third linear layer
+
+    def forward(self, x, edge_index, edge_attr):
+        # x_pp = self.conv1(x, edge_index, edge_attr)
+
+        # x_pp = torch.cat([x, x_pp], dim=1)
+        # x_pp = torch.sum(x_pp, dim=0)
+
+        # v = self.g_to_v(x_pp)
+        # return v
+
+        x_pp = self.conv1(x, edge_index, edge_attr)
+        x_pp = self.conv2(x_pp, edge_index, edge_attr)  # second convolution layer applied
+        x_pp = torch.cat([x, x_pp], dim=1)
+        x_pp = torch.sum(x_pp, dim=0)
+
+        v = F.relu(self.lin1(x_pp))  # ReLU activation applied on output of first linear layer
+        v = F.relu(self.lin2(v))  # ReLU activation applied on output
+        v = self.lin3(v)  # output of third linear layer
+        return v
     
     # GAT implementation
-    def __init__(self, in_channels, dim_h=16, out_channels=1, heads=16, dropout_rate=0):
-        super().__init__()
-        self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
-        self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
-        self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
-        self.dropout = nn.Dropout(dropout_rate)
-        self.bn = nn.BatchNorm1d(dim_h * heads)
+    # def __init__(self, in_channels, dim_h=16, out_channels=1, heads=16, dropout_rate=0):
+    #     super().__init__()
+    #     self.gat1 = GATv2Conv(in_channels, dim_h, heads=heads)
+    #     self.gat2 = GATv2Conv(dim_h * heads, dim_h, heads=heads)
+    #     self.gat3 = GATv2Conv(dim_h * heads, out_channels, heads=1)
+    #     self.dropout = nn.Dropout(dropout_rate)
+    #     self.bn = nn.BatchNorm1d(dim_h * heads)
 
-    def forward(self, x, edge_index):
-        out = F.relu(self.gat1(x, edge_index)) 
-        out = self.bn(out)
-        out = self.dropout(out)
-        out = F.relu(self.gat2(out, edge_index)) 
-        out = self.bn(out)
-        out = self.dropout(out)
-        out = self.gat3(out, edge_index) 
-        return out.mean(dim=0)
+    # def forward(self, x, edge_index):
+    #     out = F.relu(self.gat1(x, edge_index)) 
+    #     out = self.bn(out)
+    #     out = self.dropout(out)
+    #     out = F.relu(self.gat2(out, edge_index)) 
+    #     out = self.bn(out)
+    #     out = self.dropout(out)
+    #     out = self.gat3(out, edge_index) 
+    #     return out.mean(dim=0)
 
 #########################################
 ############## A2C AGENT ################
@@ -476,25 +515,25 @@ class A2C(nn.Module):
 
 
         # MPNN implementation
-        # # parse raw environment data in model format
-        # # actor: computes concentration parameters of a X distribution
-        # a_probs = self.actor(x.x, x.edge_index, x.edge_attr)
+        # parse raw environment data in model format
+        # actor: computes concentration parameters of a X distribution
+        a_probs = self.actor(x.x, x.edge_index, x.edge_attr)
         
-        # # critic: estimates V(s_t)
-        # value = self.critic(x.x, x.edge_index, x.edge_attr)
-        # return a_probs, value
+        # critic: estimates V(s_t)
+        value = self.critic(x.x, x.edge_index, x.edge_attr)
+        return a_probs, value
 
 
 
         # MPNN implementation
         # actor: computes concentration parameters of a Dirichlet distribution
-        a_out_concentration, a_out_is_zero = self.actor(x.x, x.edge_index)
-        concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
-        non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
+        # a_out_concentration, a_out_is_zero = self.actor(x.x, x.edge_index)
+        # concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
+        # non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
-        # critic: estimates V(s_t)
-        value = self.critic(x.x, x.edge_index)
-        return concentration, non_zero, value
+        # # critic: estimates V(s_t)
+        # value = self.critic(x.x, x.edge_index)
+        # return concentration, non_zero, value
 
     def parse_obs(self):
         state = self.obs_parser.parse_obs()
@@ -551,23 +590,66 @@ class A2C(nn.Module):
         return list(action)
     
     def select_action_MPNN(self, eval_mode=False):
-        a_probs , value = self.forward()
-        mu, sigma = a_probs[0][0], a_probs[0][1]
-        alpha = a_probs[1] + 1e-16
+        # a_probs , value = self.forward()
+        # mu, sigma = a_probs[0][0], a_probs[0][1]
+        # alpha = a_probs[1] + 1e-16
         
-        # gaus = Normal(loc=mu.view(-1,), scale=sigma.view(-1,))
-        dirichlet_action = Dirichlet(concentration=alpha.view(-1,))
+        # # gaus = Normal(loc=mu.view(-1,), scale=sigma.view(-1,))
+        # dirichlet_action = Dirichlet(concentration=alpha.view(-1,))
         
-        # prod = gaus.sample()
-        if (eval_mode):
-            action = alpha / (alpha.sum() + 1e-16)
+        # # prod = gaus.sample()
+        # if (eval_mode):
+        #     action = alpha / (alpha.sum() + 1e-16)
+        # else:
+        #     action = dirichlet_action.sample()
+        # # gaus_log_prob = gaus.log_prob(prod)
+        # dir_log_prob = dirichlet_action.log_prob(action)
+        # self.saved_actions.append(SavedAction(0.05 * dir_log_prob, value))
+
+        concentration, non_zero, value = self.forward()
+        concentration = concentration.to(self.device)
+        non_zero = non_zero.to(self.device)
+        value = value.to(self.device)
+        # concentration, value = self.forward(obs)
+        concentration_without_zeros = torch.tensor([], dtype=torch.float32)
+        sampled_zero_bool_arr = []
+        log_prob_for_zeros = 0
+        for node in range(non_zero.shape[0]):
+            sample = torch.bernoulli(non_zero[node])
+            if sample > 0:
+                indices = torch.tensor([node])
+                new_element = torch.index_select(concentration, 0, indices)
+                concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
+                sampled_zero_bool_arr.append(False)
+                log_prob_for_zeros += torch.log(non_zero[node])
+            else:
+                sampled_zero_bool_arr.append(True)
+                log_prob_for_zeros += torch.log(1-non_zero[node])
+        if concentration_without_zeros.shape[0] != 0:
+            mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
+            std_concentration = np.std(concentration_without_zeros.detach().numpy())
+            self.means_concentration.append(mean_concentration)
+            self.std_concentration.append(std_concentration)
+            m = Dirichlet(concentration_without_zeros)
+            if (eval_mode):
+                dirichlet_action = concentration_without_zeros / (concentration_without_zeros.sum() + 1e-16)
+            else:
+                dirichlet_action = m.rsample()
+            dirichlet_action_np = list(dirichlet_action.detach().numpy())
+            log_prob_dirichlet = m.log_prob(dirichlet_action)
         else:
-            action = dirichlet_action.sample()
-        # gaus_log_prob = gaus.log_prob(prod)
-        dir_log_prob = dirichlet_action.log_prob(action)
-        self.saved_actions.append(SavedAction(0.05 * dir_log_prob, value))
+            log_prob_dirichlet = 0
+        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value))
+        action_np = []
+        dirichlet_idx = 0
+        for node in range(non_zero.shape[0]):
+            if sampled_zero_bool_arr[node]:
+                action_np.append(0.)
+            else:
+                action_np.append(dirichlet_action_np[dirichlet_idx])
+                dirichlet_idx += 1
         
-        return action
+        return action_np
     
     def select_action_GAT(self, eval_mode=False):
         concentration, non_zero, value = self.forward()
