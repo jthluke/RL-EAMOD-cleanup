@@ -238,7 +238,7 @@ class EdgeConv(MessagePassing):
                         Linear(out_channels, out_channels))
         
         if (node_size == 32):
-            self.mlp = Seq(Linear((2 * 22) + 32, out_channels),
+            self.mlp = Seq(Linear((3 * 22) + 20, out_channels),
                         ReLU(),
                         Linear(out_channels, out_channels))
 
