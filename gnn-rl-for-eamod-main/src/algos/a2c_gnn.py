@@ -88,18 +88,18 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
 
         # V2 - combination of V0 and V1
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                if (o[0] == d[0] and o[1] == d[1]):
+                    edges.append([o, d])
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
 
         # V3 - grid style one-hop connections
@@ -471,8 +471,8 @@ class A2C(nn.Module):
         # self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         # MPNN implementation (specifically configured for V2 - default edges from AMoD plus self-loops = 32 edges for toy example)
-        self.actor = GNNActor(in_channels=self.input_size)
-        self.critic = GNNCritic(in_channels=self.input_size)
+        self.actor = GNNActor(node_size=12, edge_size=32)
+        self.critic = GNNCritic(node_size=12, edge_size=32)
         self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price)
 
         self.optimizers = self.configure_optimizers()
