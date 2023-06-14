@@ -207,9 +207,9 @@ class GNNParser():
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
 
-        print("x shape: " + str(x.shape))
-        print("edge_index shape: " + str(edge_index.shape)) 
-        print("edge_attr shape: " + str(e.shape))
+        # print("x shape: " + str(x.shape))
+        # print("edge_index shape: " + str(edge_index.shape)) 
+        # print("edge_attr shape: " + str(e.shape))
         data = Data(x, edge_index, edge_attr=e)
         
         return data
@@ -303,8 +303,6 @@ class GNNActor(nn.Module):
         # self.h_to_mu = nn.Linear(22 + hidden_dim, out_channels)
         # self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
         # self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
-
-        self.lin1 = nn.Linear(22 + hidden_dim, 2)
 
     def forward(self, x, edge_index, edge_attr):
         x_pp = self.conv1(x, edge_index, edge_attr)
