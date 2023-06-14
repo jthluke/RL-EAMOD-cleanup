@@ -68,26 +68,11 @@ class GNNParser():
 
         # versions for edge_index
         # V0 - all edges from AMoD passed into GCN
-        edges = self.env.edges
-        edge_index = self.env.gcn_edge_idx
+        # edges = self.env.edges
+        # edge_index = self.env.gcn_edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) = 20
 
         # V1 - no edges, only self loops
-        # edges = []
-        for o in self.env.nodes:
-            for d in self.env.nodes:
-                if (o[0] == d[0] and o[1] == d[1]):
-                    edges.append([o, d])
-        edge_idx = torch.tensor([[], []], dtype=torch.long)
-        for e in edges:
-            origin_node_idx = self.env.nodes.index(e[0])
-            destination_node_idx = self.env.nodes.index(e[1])
-            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-            edge_idx = torch.cat((edge_idx, new_edge), 1)
-        edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
-
-        # V2 - combination of V0 and V1
         # edges = []
         # for o in self.env.nodes:
         #     for d in self.env.nodes:
@@ -99,7 +84,22 @@ class GNNParser():
         #     destination_node_idx = self.env.nodes.index(e[1])
         #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
         #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        # edge_index = edge_idx
+        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
+
+        # V2 - combination of V0 and V1
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                if (o[0] == d[0] and o[1] == d[1]):
+                    edges.append([o, d])
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
 
         # V3 - grid style one-hop connections
