@@ -100,7 +100,7 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
 
         # V3 - grid style one-hop connections
         # edges = []
@@ -207,9 +207,9 @@ class GNNParser():
         tensor = torch.tensor(all_times)
         e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
 
-        # print("x shape: " + str(x.shape))
-        # print("edge_index shape: " + str(edge_index.shape)) 
-        # print("edge_attr shape: " + str(e.shape))
+        print("x shape: " + str(x.shape))
+        print("edge_index shape: " + str(edge_index.shape)) 
+        print("edge_attr shape: " + str(e.shape))
         data = Data(x, edge_index, edge_attr=e)
         
         return data
