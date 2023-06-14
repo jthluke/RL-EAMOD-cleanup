@@ -232,15 +232,12 @@ class EdgeConv(MessagePassing):
         super().__init__(aggr='add', flow="target_to_source") #  "Max" aggregation.
 
         # input size = 22: dimension 1 of node features_i + dimension 1 of node features_j + dimension 1 of edge features
-        if (node_size == 12):
-            self.mlp = Seq(Linear(3 * 22, out_channels),
-                        ReLU(),
-                        Linear(out_channels, out_channels))
-        
-        if (node_size == 32):
-            self.mlp = Seq(Linear((3 * 22) + 20, out_channels),
-                        ReLU(),
-                        Linear(out_channels, out_channels))
+        self.mlp = Seq(
+            Linear((3 * 22) + (node_size - 12), out_channels),
+            ReLU(),
+            Linear(out_channels, out_channels),
+            ReLU(),
+            Linear(out_channels, out_channels))
 
     def forward(self, x, edge_index, edge_attr):
         # x has shape [N, in_channels]
