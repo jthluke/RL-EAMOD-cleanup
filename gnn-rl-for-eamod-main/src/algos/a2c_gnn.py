@@ -197,6 +197,8 @@ class GNNParser():
         for e in edges:
             if e in self.env.edges:
                 i, j = self.env.edges[self.env.edges.index(e)]
+                print(i)
+                print(j)
                 times_for_e = list(self.env.G.edges[i, j]['time'].values())
             else:
                 times_for_e = [0]
