@@ -65,9 +65,9 @@ else:
     # problem_folder = 'SF_5_clustered'
     # file_path = os.path.join('..', 'data', problem_folder, 'SF_5_short.json')
     problem_folder = 'NY_5'
-    file_path = os.path.join('.', 'data', problem_folder, 'NY_5.json')
+    file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     experiment = file_path +  '_mpc_horizon_' + str(mpc_horizon)
-    energy_dist_path = os.path.join('.', 'data', problem_folder, 'energy_distance.npy')
+    energy_dist_path = os.path.join('..', 'data', problem_folder, 'energy_distance.npy')
     test_scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(test_scenario)
     tf = env.tf
