@@ -1,3 +1,5 @@
+# for some reason, the MPC test run has a rebalancing cost of 0
+
 """
 Autonomous Mobility-on-Demand Environment
 -----------------------------------------
