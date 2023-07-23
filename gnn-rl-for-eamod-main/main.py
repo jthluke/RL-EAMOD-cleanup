@@ -99,7 +99,7 @@ else:
     # problem_folder = 'NY/ClusterDataset1'
     # file_path = os.path.join('data', problem_folder,  'd1.json')
     problem_folder = 'NY_5'
-    file_path = os.path.join('data', problem_folder,  'NY_5_day.json')
+    file_path = os.path.join('data', problem_folder,  'NY_5.json')
     experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
     energy_dist_path = os.path.join('data', problem_folder, 'energy_distance.npy')
     scenario = create_scenario(file_path, energy_dist_path)
