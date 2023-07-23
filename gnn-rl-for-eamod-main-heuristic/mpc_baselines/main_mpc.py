@@ -100,12 +100,12 @@ wandb.init(
 # gurobi_env.start()
 
 # set Gurobi environment Justin
-# gurobi_env = gp.Env(empty=True)
-# gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-# gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-# gurobi_env.setParam('LICENSEID', 844698)
-# gurobi_env.setParam("OutputFlag",0)
-# gurobi_env.start()
+gurobi_env = gp.Env(empty=True)
+gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+gurobi_env.setParam('LICENSEID', 844698)
+gurobi_env.setParam("OutputFlag",0)
+gurobi_env.start()
 
 # set Gurobi environment Karthik
 # gurobi_env = gp.Env(empty=True)
@@ -126,13 +126,13 @@ wandb.init(
 # gurobi_env.start()
 
 # set Gurobi environment Karthik2
-gurobi_env = gp.Env(empty=True)
-gurobi = "Karthik2"
-gurobi_env.setParam('WLSACCESSID', 'bc0f99a5-8537-45c3-89d9-53368d17e080')
-gurobi_env.setParam('WLSSECRET', '6dddd313-d8d4-4647-98ab-d6df872c6eaa')
-gurobi_env.setParam('LICENSEID', 799870)
-gurobi_env.setParam("OutputFlag",0)
-gurobi_env.start()
+# gurobi_env = gp.Env(empty=True)
+# gurobi = "Karthik2"
+# gurobi_env.setParam('WLSACCESSID', 'bc0f99a5-8537-45c3-89d9-53368d17e080')
+# gurobi_env.setParam('WLSSECRET', '6dddd313-d8d4-4647-98ab-d6df872c6eaa')
+# gurobi_env.setParam('LICENSEID', 799870)
+# gurobi_env.setParam("OutputFlag",0)
+# gurobi_env.start()
 
 opt_rew = []
 print("Episode Length", env.tf, "MPC Horizon", mpc_horizon)
