@@ -5,7 +5,7 @@ gurobipy
 
 # networkx==2.5
 networkx
-mlnumpy==1.24
+# mlnumpy==1.24
 
 wandb
 stable-baselines3[extra]
