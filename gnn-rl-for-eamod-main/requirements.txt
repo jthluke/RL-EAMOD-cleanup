@@ -2,7 +2,7 @@
 gurobipy
 # imgaug==0.2.5
 networkx==2.5
-numpy==1.23
+numpy==1.24
 wandb
 stable-baselines3[extra]
 tensorflow==2.12.0
