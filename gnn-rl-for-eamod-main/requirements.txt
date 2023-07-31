@@ -4,7 +4,7 @@ gurobipy
 
 
 networkx==2.5
-numpy==1.23
+numpy==1.19.5
 
 wandb
 stable-baselines3[extra]
