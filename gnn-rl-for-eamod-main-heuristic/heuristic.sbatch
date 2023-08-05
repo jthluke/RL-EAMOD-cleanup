@@ -3,7 +3,7 @@
 #SBATCH --output=heuristic.%j.out
 #SBATCH --error=heuristic.%j.err
 #SBATCH --time=30:00:00
-#SBATCH -p gpu
+#SBATCH -p gpu --gpus 1
 #SBATCH -c 1
 #SBATCH --mem=16GB
 
