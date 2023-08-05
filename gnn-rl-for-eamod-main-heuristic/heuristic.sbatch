@@ -1,3 +1,4 @@
+#!/home/groups/pavone/RL-EAMOD/RL-EAMOD-Public/gnn-rl-for-eamod-main-heuristic
 #SBATCH --job-name=heuristic
 #SBATCH --output=heuristic.%j.out
 #SBATCH --error=heuristic.%j.err
