@@ -1,4 +1,4 @@
-#!/
+#!/usr/bin/bash
 #SBATCH --job-name=heuristic
 #SBATCH --output=heuristic.%j.out
 #SBATCH --error=heuristic.%j.err
