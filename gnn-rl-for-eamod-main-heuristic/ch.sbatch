@@ -6,7 +6,6 @@
 #SBATCH --partition=gpu 
 #SBATCH --gpus=1
 #SBATCH --mem-per-gpu=25GB 
-#SBATCH --cpus-per-gpu=4
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1 
