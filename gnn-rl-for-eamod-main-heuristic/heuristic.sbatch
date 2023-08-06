@@ -3,9 +3,16 @@
 #SBATCH --output=heuristic.%j.out
 #SBATCH --error=heuristic.%j.err
 #SBATCH --time=30:00:00
-#SBATCH -p gpu --gpus 1
-#SBATCH -c 1
-#SBATCH --mem=16GB
+#SBATCH --partition=gpu 
+#SBATCH --gpus=4 
+#SBATCH --mem-per-gpu=25GB 
+#SBATCH --cpus-per-gpu=4
+#SBATCH --nodes=4 
+#SBATCH --ntasks=4 
+#SBATCH --ntasks-per-node=1 
+#SBATCH --cpus-per-task=4
+#SBATCH --gpus-per-task=1
+#SBATCH --gpu_cmode=exclusive
 
 
 python main.py --test True
