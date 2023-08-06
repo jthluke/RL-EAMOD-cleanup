@@ -13,5 +13,5 @@
 #SBATCH --gpus-per-task=1
 #SBATCH --gpu_cmode=exclusive
 
-
+conda activate
 python main.py --test True
