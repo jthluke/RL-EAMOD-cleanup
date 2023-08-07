@@ -249,10 +249,10 @@ for i_episode in epochs:
             std_log_prob = 0
         else:
             # vanilla GCN
-            # action_rl = model.select_action()
+            action_rl = model.select_action()
 
             # MPNN implementation
-            action_rl = model.select_action_MPNN()
+            # action_rl = model.select_action_MPNN()
 
             # GAT implementation
             # action_rl = model.select_action_GAT()
@@ -390,10 +390,10 @@ for step in range(T):
     # use GNN-RL policy (Step 2 in paper)
 
     # vanilla GCN
-    # action_rl = best_model.select_action(eval_mode=True)
+    action_rl = best_model.select_action(eval_mode=True)
 
     # MPNN
-    action_rl = best_model.select_action_MPNN(eval_mode=True)
+    # action_rl = best_model.select_action_MPNN(eval_mode=True)
 
     # GAT
     # action_rl = best_model.select_action_GAT(eval_mode=True)
