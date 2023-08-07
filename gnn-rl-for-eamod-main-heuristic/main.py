@@ -103,10 +103,10 @@ if args.toy:
     model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_85000.pth')
     tf = env.tf
 else:
-    # problem_folder = 'NY/ClusterDataset1'
-    # file_path = os.path.join('data', problem_folder,  'd1.json')
-    problem_folder = 'NY_5'
-    file_path = os.path.join('data', problem_folder,  'NY_5.json')
+    problem_folder = 'NY/ClusterDataset1'
+    file_path = os.path.join('data', problem_folder,  'd1.json')
+    # problem_folder = 'NY_5'
+    # file_path = os.path.join('data', problem_folder,  'NY_5.json')
     # problem_folder = 'SF_5_clustered'
     # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
     experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
