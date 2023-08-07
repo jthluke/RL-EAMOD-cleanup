@@ -201,10 +201,10 @@ wandb.init(
 #############Training and Eval Loop#############
 ################################################
 
-#Initialize lists for logging
-n_episodes = args.max_episodes #set max number of training episodes
-T = tf #set episode length
-epochs = trange(n_episodes) #epoch iterator
+# Initialize lists for logging
+n_episodes = args.max_episodes # set max number of training episodes
+T = tf # set episode length
+epochs = trange(n_episodes) # epoch iterator
 best_reward = -10000
 if test:
     rewards_np = np.zeros(n_episodes)
@@ -222,7 +222,7 @@ for region in env.nodes_spatial:
 for i_episode in epochs:
     desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
     bool_random_random_demand = not test # only use random demand during training
-    obs = env.reset(bool_random_random_demand) #initialize environment
+    obs = env.reset(bool_random_random_demand) # initialize environment
     episode_reward = 0
     episode_served_demand = 0
     episode_rebalancing_cost = 0
