@@ -259,7 +259,7 @@ for i_episode in epochs:
             mean_log_prob = 0
             std_log_prob = 0
         elif use_prop_distr_baseline:
-            action_rl = model.select_prop_action()
+            action_rl = model.select_proportional_action() # selects proportional distr.
             a_loss = 0
             v_loss = 0
             mean_value = 0
