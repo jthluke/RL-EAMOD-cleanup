@@ -158,7 +158,7 @@ class GNNParser():
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
         edge_index = edge_idx
-        print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) #
+        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) #
 
         # V6 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges
         # charge_delta = 4
