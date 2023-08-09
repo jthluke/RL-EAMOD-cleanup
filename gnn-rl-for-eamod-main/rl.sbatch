@@ -2,7 +2,7 @@
 #SBATCH --job-name=rl
 #SBATCH --output=rl.%j.out
 #SBATCH --error=rl.%j.err
-#SBATCH --time=5400
+#SBATCH --time=4800
 #SBATCH --partition=gpu 
 #SBATCH --gpus=1 
 #SBATCH -c 30
