@@ -5,7 +5,7 @@
 #SBATCH --time=5400
 #SBATCH --partition=gpu 
 #SBATCH --gpus=1 
-#SBATCH -c=30
+#SBATCH -c 30
 
 conda activate
 python main.py --max_episodes 32000
