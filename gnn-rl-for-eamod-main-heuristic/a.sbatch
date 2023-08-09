@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+#SBATCH --job-name=pure_heuristic
+#SBATCH --output=pure_heuristic.%j.out
+#SBATCH --error=pure_heuristic.%j.err
+#SBATCH --time=2800
+#SBATCH --partition=gpu 
+#SBATCH --gpus=1 
+#SBATCH -c 30
+
+conda activate
+
+python main.py --charging_heuristic empty_to_full --equal_distr_baseline True
+python main.py --charging_heuristic off_peak_charging --equal_distr_baseline True
+python main.py --charging_heuristic off_peak_charging --equal_distr_baseline True
+python main.py --charging_heuristic off_peak_one_step --equal_distr_baseline True
+python main.py --charging_heuristic relative_charging --equal_distr_baseline True
+
+python main.py --charging_heuristic empty_to_full --prop_distr_baseline True
+python main.py --charging_heuristic off_peak_charging --prop_distr_baseline True
+python main.py --charging_heuristic off_peak_charging --prop_distr_baseline True
+python main.py --charging_heuristic off_peak_one_step --prop_distr_baseline True
+python main.py --charging_heuristic relative_charging --prop_distr_baseline True

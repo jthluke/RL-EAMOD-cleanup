@@ -56,6 +56,8 @@ parser.add_argument('--test', type=bool, default=False,
                     help='activates test mode for agent evaluation')
 parser.add_argument('--equal_distr_baseline', type=bool, default=False,
                     help='activates the equal distribution baseline.')
+parser.add_argument('--prop_distr_baseline', type=bool, default=False,
+                    help='activates the proportional distribution baseline.')
 parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
 parser.add_argument('--directory', type=str, default='saved_files',
@@ -84,6 +86,7 @@ grad_norm_clip_a = args.grad_norm_clip_a
 grad_norm_clip_c = args.grad_norm_clip_c
 charging_heuristic = args.charging_heuristic
 use_equal_distr_baseline = args.equal_distr_baseline
+use_prop_distr_baseline = args.prop_distr_baseline
 seed = args.seed
 test = args.test
 T = args.T
@@ -128,6 +131,8 @@ else:
     tf = env.tf
 if use_equal_distr_baseline:
     experiment = 'uniform_distr_baseline_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
+if use_prop_distr_baseline:
+    experiment = 'proportional_distr_baseline_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
 if test:
     experiment += "_test_evaluation"
 
@@ -253,6 +258,15 @@ for i_episode in epochs:
             mean_std = 0
             mean_log_prob = 0
             std_log_prob = 0
+        elif use_prop_distr_baseline:
+            action_rl = model.select_prop_action()
+            a_loss = 0
+            v_loss = 0
+            mean_value = 0
+            mean_concentration = 0
+            mean_std = 0
+            mean_log_prob = 0
+            std_log_prob = 0
         else:
             action_rl = model.select_action()
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
@@ -295,7 +309,7 @@ for i_episode in epochs:
         if done:
             break
     # perform on-policy backprop
-    if not use_equal_distr_baseline and not test:
+    if not use_equal_distr_baseline and not use_prop_distr_baseline and not test:
         a_loss, v_loss, mean_value, mean_concentration, mean_std, mean_log_prob, std_log_prob = model.training_step()
 
     # Send current statistics to screen was episode_reward, episode_served_demand, episode_rebalancing_cost

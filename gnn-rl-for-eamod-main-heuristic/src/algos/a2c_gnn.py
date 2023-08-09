@@ -245,7 +245,16 @@ class A2C(nn.Module):
         return action_np
 
     def select_equal_action(self):
+        # select action equal to 1/number_nodes
         action = np.ones(self.env.number_nodes_spatial)/self.env.number_nodes_spatial
+        return list(action)
+    
+    def select_proportional_action(self):
+        # select action proportional to the demand at each node
+        action = np.zeros(self.env.number_nodes_spatial)
+        for node in range(self.env.number_nodes_spatial):
+            action[node] = self.env.demand_spatial[node][self.env.time+1]
+        action = action/np.sum(action)
         return list(action)
 
     def training_step(self):

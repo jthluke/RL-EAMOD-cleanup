@@ -9,6 +9,4 @@
 
 conda activate
 python main.py --max_episodes 20000
-# python main.py --test True --max_episodes 32000
-# python main.py --max_episodes 32000 --equal_distr_baseline True
-# python main.py --test True --max_episodes 32000 --equal_distr_baseline True
+python main.py --test True --max_episodes 20000
