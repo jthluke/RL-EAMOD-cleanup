@@ -259,6 +259,7 @@ class A2C(nn.Module):
             
             action[o] = demand_o
         action = action/np.sum(action)
+        print(action)
         return list(action)
 
     def training_step(self):
