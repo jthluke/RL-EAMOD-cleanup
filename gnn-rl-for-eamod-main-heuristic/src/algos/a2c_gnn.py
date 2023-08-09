@@ -255,7 +255,7 @@ class A2C(nn.Module):
         for o in range(self.env.number_nodes_spatial):
             demand_o = 0
             for d in range(self.env.number_nodes_spatial):
-                demand_o += self.env.demand[o,d][self.env.time+1]
+                demand_o += self.env.demand[o,d][self.env.time]
             
             action[o] = demand_o
         action = action/np.sum(action)
