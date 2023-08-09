@@ -9,4 +9,4 @@
 
 conda activate
 python main.py --max_episodes 20000
-python main.py --test True --max_episodes 20000
+python main.py --test True --max_episodes 1000
