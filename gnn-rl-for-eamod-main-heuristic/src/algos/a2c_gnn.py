@@ -252,8 +252,12 @@ class A2C(nn.Module):
     def select_proportional_action(self):
         # select action proportional to the demand at each node
         action = np.zeros(self.env.number_nodes_spatial)
-        for node in range(self.env.number_nodes_spatial):
-            action[node] = self.env.demand_spatial[node][self.env.time+1]
+        for o in range(self.env.number_nodes_spatial):
+            demand_o = 0
+            for d in range(self.env.number_nodes_spatial):
+                demand_o += self.env.demand[o,d][self.env.time+1]
+            
+            action[o] = demand_o
         action = action/np.sum(action)
         return list(action)
 
