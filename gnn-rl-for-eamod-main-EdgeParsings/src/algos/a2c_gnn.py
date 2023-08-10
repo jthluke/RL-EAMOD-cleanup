@@ -63,7 +63,7 @@ class GNNParser():
             torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
-        print(x)
+        print(self.env.dacc[n][t] for n in self.env.nodes for t in range(self.env.time+1, self.env.time+self.T+1))
         # edges 
 
         # versions for edge_index
@@ -197,7 +197,7 @@ class GNNParser():
         
         # edge features for MPNN implementation
         # potential edge features = 
-        # 'time' values for each edge, number of vehicles travelling on given edge at a given time, price of rebalancing, demand
+        # number of vehicles travelling on given edge at a given time, price of rebalancing, demand
         
             edge_demand = []
             price = []
