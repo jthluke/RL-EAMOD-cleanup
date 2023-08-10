@@ -133,13 +133,13 @@ experiment += "_RL_approach_constraint"
 # gurobi_env.start()
 
 # set Gurobi environment Justin
-# gurobi_env = gp.Env(empty=True)
-# gurobi = "Justin"
-# gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-# gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-# gurobi_env.setParam('LICENSEID', 844698)
-# gurobi_env.setParam("OutputFlag",0)
-# gurobi_env.start()
+gurobi_env = gp.Env(empty=True)
+gurobi = "Justin"
+gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+gurobi_env.setParam('LICENSEID', 844698)
+gurobi_env.setParam("OutputFlag",0)
+gurobi_env.start()
 
 # set Gurobi environment Karthik
 # gurobi_env = gp.Env(empty=True)
@@ -151,13 +151,13 @@ experiment += "_RL_approach_constraint"
 # gurobi_env.start()
 
 # set Gurobi environment Karthik2
-gurobi_env = gp.Env(empty=True)
-gurobi = "Karthik2"
-gurobi_env.setParam('WLSACCESSID', 'bc0f99a5-8537-45c3-89d9-53368d17e080')
-gurobi_env.setParam('WLSSECRET', '6dddd313-d8d4-4647-98ab-d6df872c6eaa')
-gurobi_env.setParam('LICENSEID', 799870)
-gurobi_env.setParam("OutputFlag",0)
-gurobi_env.start()
+# gurobi_env = gp.Env(empty=True)
+# gurobi = "Karthik2"
+# gurobi_env.setParam('WLSACCESSID', 'bc0f99a5-8537-45c3-89d9-53368d17e080')
+# gurobi_env.setParam('WLSSECRET', '6dddd313-d8d4-4647-98ab-d6df872c6eaa')
+# gurobi_env.setParam('LICENSEID', 799870)
+# gurobi_env.setParam("OutputFlag",0)
+# gurobi_env.start()
 
 # set up wandb
 wandb.init(
@@ -240,10 +240,10 @@ for i_episode in epochs:
             std_log_prob = 0
         else:
             # vanilla GCN
-            action_rl = model.select_action()
+            # action_rl = model.select_action()
 
             # MPNN implementation
-            # action_rl = model.select_action_MPNN()
+            action_rl = model.select_action_MPNN()
 
             # GAT implementation
             # action_rl = model.select_action_GAT()
@@ -381,10 +381,10 @@ for step in range(T):
     # use GNN-RL policy (Step 2 in paper)
 
     # vanilla GCN
-    action_rl = best_model.select_action(eval_mode=True)
+    # action_rl = best_model.select_action(eval_mode=True)
 
     # MPNN
-    # action_rl = best_model.select_action_MPNN(eval_mode=True)
+    action_rl = best_model.select_action_MPNN(eval_mode=True)
 
     # GAT
     # action_rl = best_model.select_action_GAT(eval_mode=True)

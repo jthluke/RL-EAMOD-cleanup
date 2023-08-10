@@ -118,18 +118,18 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
         
         # V4 - combination of V3 and V1
-        edges = []
-        for o in self.env.nodes:
-            for d in self.env.nodes:
-                if ((o[1] == d[1] and o[0] == d[0]) or (o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
-                    edges.append([o, d])
-        edge_idx = torch.tensor([[], []], dtype=torch.long)
-        for e in edges:
-            origin_node_idx = self.env.nodes.index(e[0])
-            destination_node_idx = self.env.nodes.index(e[1])
-            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-            edge_idx = torch.cat((edge_idx, new_edge), 1)
-        edge_index = edge_idx
+        # edges = []
+        # for o in self.env.nodes:
+        #     for d in self.env.nodes:
+        #         if ((o[1] == d[1] and o[0] == d[0]) or (o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
+        #             edges.append([o, d])
+        # edge_idx = torch.tensor([[], []], dtype=torch.long)
+        # for e in edges:
+        #     origin_node_idx = self.env.nodes.index(e[0])
+        #     destination_node_idx = self.env.nodes.index(e[1])
+        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
+        # edge_index = edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 44
 
         # V5 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges + self loops
@@ -161,28 +161,28 @@ class GNNParser():
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) #
 
         # V6 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges
-        # charge_delta = 4
-        # max_charge = 5
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         # artificial edges
-        #         if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
-        #             edges.append([o, d])
-        #         # "infeasible" charge edges
-        #         if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
-        #             edges.append([o, d])
-        #         # "unintuitive" road edges
-        #         if (o[0] == d[0] and (o[1] - 1 == d[1])):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # edge_index = edge_idx
+        charge_delta = 16
+        max_charge = 26
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                # artificial edges
+                if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
+                    edges.append([o, d])
+                # "infeasible" charge edges
+                if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
+                    edges.append([o, d])
+                # "unintuitive" road edges
+                if (o[0] == d[0] and (o[1] - 1 == d[1])):
+                    edges.append([o, d])
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        edge_index = edge_idx
         # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
 
         # default/global return (regular GCN)
@@ -198,6 +198,7 @@ class GNNParser():
             if e in self.env.edges:
                 i, j = self.env.edges[self.env.edges.index(e)]
                 times_for_e = list(self.env.G.edges[i, j]['time'].values())
+                print(times_for_e)
             else:
                 times_for_e = [0]
             while (len(times_for_e) < self.input_size):
@@ -225,7 +226,8 @@ class GNNParser():
         edge_index  = self.env.gcn_edge_idx_spatial
         data = Data(x, edge_index)
         return data
-    
+
+# COMPLETE IMPLEMENTATION FOR ARTIFICIAL MPNN
 
 class EdgeConv(MessagePassing):
     def __init__(self, node_size=4, edge_size=0, out_channels=4):
