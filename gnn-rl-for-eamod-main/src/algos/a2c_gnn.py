@@ -64,6 +64,8 @@ class GNNParser():
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
         
+        print(self.env.dacc[n][t] for n in self.env.nodes for t in range(1, 5))
+        
         # edges 
 
         # versions for edge_index
