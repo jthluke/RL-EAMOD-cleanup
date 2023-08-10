@@ -51,7 +51,7 @@ class GNNParser():
         self.price_scale_factor = scale_price
         self.input_size = input_size
 
-    def parse_obs(self):
+    def parse_obs(self, version=0, charge_delta=0, max_charge=0, MPNN=False):
         # nodes
         x = torch.cat((
             torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
@@ -63,156 +63,175 @@ class GNNParser():
             torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
                           for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
                       dim=1).squeeze(0).view(self.input_size, self.env.number_nodes).T
-        
+        print(x)
         # edges 
 
         # versions for edge_index
-        # V0 - all edges from AMoD passed into GCN
-        # edges = self.env.edges
-        # edge_index = self.env.gcn_edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) = 20
-
-        # V1 - no edges, only self loops
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
-
-        # V2 - combination of V0 and V1
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
-
-        # V3 - grid style one-hop connections
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if ((o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
         
+        if version == 0:
+        # V0 - all edges from AMoD passed into GCN
+            edges = self.env.edges
+            edge_index = self.env.gcn_edge_idx
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) = 20
+        
+        if version == 1:
+        # V1 - no edges, only self loops
+            edges = []
+            for o in self.env.nodes:
+                for d in self.env.nodes:
+                    if (o[0] == d[0] and o[1] == d[1]):
+                        edges.append([o, d])
+            edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for e in edges:
+                origin_node_idx = self.env.nodes.index(e[0])
+                destination_node_idx = self.env.nodes.index(e[1])
+                new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+                edge_idx = torch.cat((edge_idx, new_edge), 1)
+            edge_index = edge_idx
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 12
+        
+        if version == 2:
+        # V2 - combination of V0 and V1
+            edges = []
+            for o in self.env.nodes:
+                for d in self.env.nodes:
+                    if (o[0] == d[0] and o[1] == d[1]):
+                        edges.append([o, d])
+            edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for e in edges:
+                origin_node_idx = self.env.nodes.index(e[0])
+                destination_node_idx = self.env.nodes.index(e[1])
+                new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+                edge_idx = torch.cat((edge_idx, new_edge), 1)
+            edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+        
+        if version == 3:
+        # V3 - grid style one-hop connections
+            edges = []
+            for o in self.env.nodes:
+                for d in self.env.nodes:
+                    if ((o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
+                        edges.append([o, d])
+            edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for e in edges:
+                origin_node_idx = self.env.nodes.index(e[0])
+                destination_node_idx = self.env.nodes.index(e[1])
+                new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+                edge_idx = torch.cat((edge_idx, new_edge), 1)
+            edge_index = edge_idx
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 32
+        
+        if version == 4:
         # V4 - combination of V3 and V1
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         if ((o[1] == d[1] and o[0] == d[0]) or (o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 44
-
+            edges = []
+            for o in self.env.nodes:
+                for d in self.env.nodes:
+                    if ((o[1] == d[1] and o[0] == d[0]) or (o[1] == d[1] and o[0] != d[0]) or ((o[1] == d[1] - 1) and (o[0] == d[0])) or ((o[1] == d[1] + 1) and (o[0] == d[0]))):
+                        edges.append([o, d])
+            edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for e in edges:
+                origin_node_idx = self.env.nodes.index(e[0])
+                destination_node_idx = self.env.nodes.index(e[1])
+                new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+                edge_idx = torch.cat((edge_idx, new_edge), 1)
+            edge_index = edge_idx
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 44
+        
+        if version == 5:
         # V5 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges + self loops
-        # charge_delta = 16
-        # max_charge = 26
-        # edges = []
-        # for o in self.env.nodes:
-        #     for d in self.env.nodes:
-        #         # artificial edges
-        #         if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
-        #             edges.append([o, d])
-        #         # "infeasible" charge edges
-        #         if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
-        #             edges.append([o, d])
-        #         # "unintuitive" road edges
-        #         if (o[0] == d[0] and (o[1] - 1 == d[1])):
-        #             edges.append([o, d])
-        #         # self loops
-        #         if (o[0] == d[0] and o[1] == d[1]):
-        #             edges.append([o, d])
-        # edge_idx = torch.tensor([[], []], dtype=torch.long)
-        # for e in edges:
-        #     origin_node_idx = self.env.nodes.index(e[0])
-        #     destination_node_idx = self.env.nodes.index(e[1])
-        #     new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-        #     edge_idx = torch.cat((edge_idx, new_edge), 1)
-        # edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) #
+            edges = []
+            for o in self.env.nodes:
+                for d in self.env.nodes:
+                    # artificial edges
+                    if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
+                        edges.append([o, d])
+                    # "infeasible" charge edges
+                    if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
+                        edges.append([o, d])
+                    # "unintuitive" road edges
+                    if (o[0] == d[0] and (o[1] - 1 == d[1])):
+                        edges.append([o, d])
+                    # self loops
+                    if (o[0] == d[0] and o[1] == d[1]):
+                        edges.append([o, d])
+            edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for e in edges:
+                origin_node_idx = self.env.nodes.index(e[0])
+                destination_node_idx = self.env.nodes.index(e[1])
+                new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+                edge_idx = torch.cat((edge_idx, new_edge), 1)
+            edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+            edge_index = edge_idx
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1]))
 
+        if version == 6:
         # V6 - all edges + artificial edges + "infeasible" charge edges + "unintuitive" road edges
-        charge_delta = 16
-        max_charge = 26
-        edges = []
-        for o in self.env.nodes:
-            for d in self.env.nodes:
-                # artificial edges
-                if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
-                    edges.append([o, d])
-                # "infeasible" charge edges
-                if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
-                    edges.append([o, d])
-                # "unintuitive" road edges
-                if (o[0] == d[0] and (o[1] - 1 == d[1])):
-                    edges.append([o, d])
-        edge_idx = torch.tensor([[], []], dtype=torch.long)
-        for e in edges:
-            origin_node_idx = self.env.nodes.index(e[0])
-            destination_node_idx = self.env.nodes.index(e[1])
-            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
-            edge_idx = torch.cat((edge_idx, new_edge), 1)
-        edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        edge_index = edge_idx
-        # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
+            edges = []
+            for o in self.env.nodes:
+                for d in self.env.nodes:
+                    # artificial edges
+                    if ((o[0] != d[0]) and (o[1] + (charge_delta - 1) == d[1]) and (d[1] != max_charge)):
+                        edges.append([o, d])
+                    # "infeasible" charge edges
+                    if ((o[0] == d[0]) and (o[1] + (charge_delta + 1) == d[1])):
+                        edges.append([o, d])
+                    # "unintuitive" road edges
+                    if (o[0] == d[0] and (o[1] - 1 == d[1])):
+                        edges.append([o, d])
+            edge_idx = torch.tensor([[], []], dtype=torch.long)
+            for e in edges:
+                origin_node_idx = self.env.nodes.index(e[0])
+                destination_node_idx = self.env.nodes.index(e[1])
+                new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+                edge_idx = torch.cat((edge_idx, new_edge), 1)
+            edge_idx = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+            edge_index = edge_idx
+            # print("# of EDGES PASSED TO GCN" + str(edge_index.shape[1])) # = 36
 
         # default/global return (regular GCN)
-        # data = Data(x, edge_index)
-
-        # edge features for MPNN implementation
-        # potential edge features = number of vehicles travelling on given edge at a given time, price of rebalancing, 
-        # demand
-        all_times = []
-        # Loop over edges, get 'time' values for each edge, and add to 'all_times' list.
-        edges.extend(self.env.edges) # needed when adding self-loops only
-        for e in edges:
-            if e in self.env.edges:
-                i, j = self.env.edges[self.env.edges.index(e)]
-                times_for_e = list(self.env.G.edges[i, j]['time'].values())
-            else:
-                times_for_e = [0]
-            while (len(times_for_e) < self.input_size):
-                times_for_e.append(0)
-            all_times.extend(times_for_e)
-        # Convert the list of 'time' values into a tensor.
-        tensor = torch.tensor(all_times)
-        e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
-
-        # print("x shape: " + str(x.shape))
-        # print("edge_index shape: " + str(edge_index.shape)) 
-        # print("edge_attr shape: " + str(e.shape))
-        data = Data(x, edge_index, edge_attr=e)
+        if not MPNN: 
+            data = Data(x, edge_index)
+            return data
+        else:
         
-        return data
+        # edge features for MPNN implementation
+        # potential edge features = 
+        # 'time' values for each edge, number of vehicles travelling on given edge at a given time, price of rebalancing, demand
+        
+            edge_demand = []
+            price = []
+            # edges.extend(self.env.edges) # needed when adding self-loops only
+            for edg_idx in edge_index:
+                e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
+
+                # reb_time, demand
+                if e in self.env.edges:
+                    i, j = self.env.edges[self.env.edges.index(e)]
+
+                    # from Scenario class
+                    rebalancing_time_e = list(self.env.G.demand_input[i, j].values())
+                    price_for_e = list(self.env.G.rebTime[i, j].values())
+
+                    # from Environment class
+
+                else:
+                    rebalancing_time_e = [0] * self.input_size
+                    price_for_e = [0] * self.input_size
+                
+                reb_times.extend(rebalancing_time_e)
+                price.extend(price_for_e)
+        
+            # Convert the list of 'time' values into a tensor.
+            tensor = torch.tensor(all_times)
+            e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.input_size, len(edges)).T
+
+            # print("x shape: " + str(x.shape))
+            # print("edge_index shape: " + str(edge_index.shape)) 
+            # print("edge_attr shape: " + str(e.shape))
+            data = Data(x, edge_index, edge_attr=e)
+            
+            return data
 
     def parse_obs_spatial(self):
         x = torch.cat((
