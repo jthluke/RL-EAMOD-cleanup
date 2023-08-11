@@ -297,11 +297,11 @@ class GNNActor(nn.Module):
     """
 
     # MPNN implementation
-    def __init__(self, in_channels, hidden_channels):
+    def __init__(self, in_channels, hidden_channels, T=10):
         super(GNNActor, self).__init__()
 
         self.conv1 = GCNConv(in_channels, hidden_channels)
-        self.econv1 = EdgeConv(in_channels, hidden_channels)
+        self.econv1 = EdgeConv(T * 3, hidden_channels)
         
         self.conv2 = GCNConv(hidden_channels * 2, hidden_channels)  # second convolution layer
         self.conv3 = GCNConv(hidden_channels, in_channels) # third convolution layer
@@ -352,11 +352,11 @@ class GNNCritic(nn.Module):
     """
 
     # MPNN implementation
-    def __init__(self, in_channels, hidden_channels):
+    def __init__(self, in_channels, hidden_channels, T=10):
         super(GNNCritic, self).__init__()
 
         self.conv1 = GCNConv(in_channels, hidden_channels)
-        self.econv1 = EdgeConv(in_channels, hidden_channels)
+        self.econv1 = EdgeConv(T * 3, hidden_channels)
         
         self.conv2 = GCNConv(hidden_channels * 2, hidden_channels)  # second convolution layer
         self.conv3 = GCNConv(hidden_channels, in_channels) # third convolution layer
@@ -414,8 +414,8 @@ class A2C(nn.Module):
         self.device = device
 
         # MPNN implementation
-        self.actor = GNNActor(in_channels=self.input_size, hidden_channels=self.input_size * 2)
-        self.critic = GNNCritic(in_channels=self.input_size, hidden_channels=self.input_size * 2)
+        self.actor = GNNActor(in_channels=self.input_size, hidden_channels=self.input_size * 2, T=T)
+        self.critic = GNNCritic(in_channels=self.input_size, hidden_channels=self.input_size * 2, T=T)
         self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price, MPNN=True)
 
         self.optimizers = self.configure_optimizers()
