@@ -212,11 +212,12 @@ class GNNParser():
             # edges.extend(self.env.edges) # needed when adding self-loops only
             for edg_idx in edge_index:
                 e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
-                print(e)
 
                 # reb_time, demand
                 if e in self.env.edges:
                     i, j = self.env.edges[self.env.edges.index(e)]
+                    print(i)
+                    print(j)
 
                     demand_for_e_t = list(self.env.demand[i, j][t] for t in range(self.env.time+1, self.env.time+self.T+1))
                     price_for_e_t  = list(self.env.price[i, j][t] for t in range(self.env.time+1, self.env.time+self.T+1))
