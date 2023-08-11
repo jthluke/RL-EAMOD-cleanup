@@ -573,7 +573,7 @@ class A2C(nn.Module):
         concentration, non_zero, value = self.forward()
         concentration = concentration.to(self.device)
         non_zero = non_zero.to(self.device)
-        # value = value.to(self.device)
+        value = value.to(self.device)
         # concentration, value = self.forward(obs)
         concentration_without_zeros = torch.tensor([], dtype=torch.float32)
         sampled_zero_bool_arr = []
@@ -633,6 +633,7 @@ class A2C(nn.Module):
 
         log_probs = []
         values = []
+        print("saved_actions: " + np.shape(saved_actions))
         for (log_prob, value) in saved_actions:
             log_probs.append(log_prob.item())
             values.append(value.item())
