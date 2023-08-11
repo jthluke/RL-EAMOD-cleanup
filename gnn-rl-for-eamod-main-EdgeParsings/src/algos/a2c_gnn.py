@@ -227,8 +227,10 @@ class GNNParser():
                     price_for_e_t = [0] * self.T
                     energy_distance_e_t = [0] * self.T
                 
-                while len(demand_for_e_t) < self.T:
+                while len(demand_for_e_t) < self.T or len(price_for_e_t) < self.T or len(energy_distance_e_t) < self.T:
                     demand_for_e_t.append(0)
+                    price_for_e_t.append(0)
+                    energy_distance_e_t.append(0)
                 
                 q = [demand_for_e_t + price_for_e_t + energy_distance_e_t]
                 edge_attr.append(q)
@@ -236,7 +238,6 @@ class GNNParser():
             # Convert the list of edge attributes into a tensor
             tensor = torch.tensor(edge_attr)
             e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T * 3, len(edge_index)).T
-            print(e.shape)
 
             # print("x shape: " + str(x.shape))
             # print("edge_index shape: " + str(edge_index.shape)) 
