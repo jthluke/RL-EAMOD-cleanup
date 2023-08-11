@@ -633,11 +633,9 @@ class A2C(nn.Module):
 
         log_probs = []
         values = []
-        print(len(saved_actions[0]))
-        print(len(saved_actions[0]))
         for (log_prob, value) in saved_actions:
             log_probs.append(log_prob.item())
-            values.append(value.item())
+            values.append(value.detach().cpu().numpy().item())
 
         mean_value = np.mean(values)
         mean_concentration = np.mean(self.means_concentration)
