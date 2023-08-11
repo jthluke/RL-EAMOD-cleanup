@@ -536,9 +536,6 @@ class A2C(nn.Module):
 
     def select_action(self, eval_mode=False):
         concentration, non_zero, value = self.forward()
-        print(concentration.shape)
-        print(non_zero.shape)
-        print(value.shape)
         concentration = concentration.to(self.device)
         non_zero = non_zero.to(self.device)
         value = value.to(self.device)

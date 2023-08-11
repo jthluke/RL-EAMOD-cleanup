@@ -377,6 +377,7 @@ class GNNCritic(nn.Module):
         out_e1 = F.relu(self.econv1(data.x, data.edge_index, data.edge_attr))
 
         out_1c = torch.cat([out_1, out_e1], dim=1)
+        out_1c = torch.sum(out_1c, dim=0)
         
         out_2 = F.relu(self.conv2(out_1c, data.edge_index))
         out_3 = F.relu(self.conv3(out_2, data.edge_index))
