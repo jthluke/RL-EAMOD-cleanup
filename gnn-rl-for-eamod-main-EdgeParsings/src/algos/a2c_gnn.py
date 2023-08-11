@@ -633,7 +633,8 @@ class A2C(nn.Module):
 
         log_probs = []
         values = []
-        print(saved_actions[0])
+        print(saved_actions[0][0])
+        print(saved_actions[0][1])
         for (log_prob, value) in saved_actions:
             log_probs.append(log_prob.item())
             values.append(value.item())
