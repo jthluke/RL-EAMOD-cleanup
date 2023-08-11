@@ -213,6 +213,8 @@ class GNNParser():
             for edg_idx in edge_index:
                 e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
 
+                print(len(self.env.edges))
+
                 # reb_time, demand
                 if e in self.env.edges:
                     i, j = self.env.edges[self.env.edges.index(e)]
@@ -230,8 +232,9 @@ class GNNParser():
                 edge_attr.append(q)
         
             # Convert the list of edge attributes into a tensor
-            tensor = torch.tensor(edge_attr)
+            tensor = torch.tensor(edge_attr).view()
             e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0)
+            
             print(e.shape)
             # .view(self.T, len(edge_index)).T
 
@@ -454,7 +457,7 @@ class A2C(nn.Module):
         value = self.critic(x.x, x.edge_index, x.edge_attr)
         return concentration, non_zero, value
 
-    def parse_obs(self, version=0, charge_delta=0, max_charge=0, MPNN=False):
+    def parse_obs(self, version, charge_delta, max_charge, MPNN):
         state = self.obs_parser.parse_obs(version, charge_delta, max_charge, MPNN)
         return state
 
