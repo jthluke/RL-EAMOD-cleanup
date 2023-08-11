@@ -209,9 +209,11 @@ class GNNParser():
         # number of vehicles travelling on given edge at a given time, price of rebalancing, demand
         
             edge_attr = []
+            count = 0
             # edges.extend(self.env.edges) # needed when adding self-loops only
             for edg_idx in edge_index:
                 e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
+                count += 1
 
                 # reb_time, demand
                 if e in self.env.edges:
@@ -233,6 +235,7 @@ class GNNParser():
                 
                 q = [demand_for_e_t + price_for_e_t + energy_distance_e_t]
                 edge_attr.append(q)
+            print(count)
         
             # Convert the list of edge attributes into a tensor
             tensor = torch.tensor(edge_attr)
