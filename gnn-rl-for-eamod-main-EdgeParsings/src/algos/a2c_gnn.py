@@ -429,7 +429,7 @@ class A2C(nn.Module):
         forward of both actor and critic
         """
         # parse raw environment data in model format
-        x = self.parse_obs(version=0, charge_delta=self.env.G.charge_levels_per_charge_step, max_charge=self.env.G.number_charge_levels, MPNN=True).to(self.device)
+        x = self.parse_obs(version=0, charge_delta=self.env.scenario.charge_levels_per_charge_step, max_charge=self.env.scenario.number_charge_levels, MPNN=True).to(self.device)
 
         # MPNN implementation
 
