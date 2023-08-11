@@ -541,7 +541,7 @@ class A2C(nn.Module):
                 sampled_zero_bool_arr.append(True)
                 log_prob_for_zeros += torch.log(1-non_zero[node]).to(self.device)
         if concentration_without_zeros.shape[0] != 0:
-            mean_concentration = np.mean(concentration_without_zeros.cpu().numpy())
+            mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
             std_concentration = np.std(concentration_without_zeros)
             self.means_concentration.append(mean_concentration)
             self.std_concentration.append(std_concentration)
