@@ -541,7 +541,7 @@ class A2C(nn.Module):
                 sampled_zero_bool_arr.append(True)
                 log_prob_for_zeros += torch.log(1-non_zero[node]).to(self.device)
         if concentration_without_zeros.shape[0] != 0:
-            mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
+            mean_concentration = np.mean(concentration_without_zeros.cpu().detach().numpy())
             std_concentration = np.std(concentration_without_zeros)
             self.means_concentration.append(mean_concentration)
             self.std_concentration.append(std_concentration)
@@ -550,7 +550,7 @@ class A2C(nn.Module):
                 dirichlet_action = concentration_without_zeros / (concentration_without_zeros.sum() + 1e-16)
             else:
                 dirichlet_action = m.rsample()
-            dirichlet_action_np = list(dirichlet_action.detach().numpy())
+            dirichlet_action_np = list(dirichlet_action.cpu().detach().numpy())
             log_prob_dirichlet = m.log_prob(dirichlet_action)
         else:
             log_prob_dirichlet = 0
