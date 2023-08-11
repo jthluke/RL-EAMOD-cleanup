@@ -526,20 +526,20 @@ class A2C(nn.Module):
         value = value.to(self.device)
 
         # concentration, value = self.forward(obs)
-        concentration_without_zeros = torch.tensor([], dtype=torch.float32)
+        concentration_without_zeros = torch.tensor([], dtype=torch.float32).to(self.device)
         sampled_zero_bool_arr = []
         log_prob_for_zeros = 0
         for node in range(non_zero.shape[0]):
-            sample = torch.bernoulli(non_zero[node])
+            sample = torch.bernoulli(non_zero[node]).to(self.device)
             if sample > 0:
-                indices = torch.tensor([node])
-                new_element = torch.index_select(concentration, 0, indices)
+                indices = torch.tensor([node]).to(self.device).to(self.device)
+                new_element = torch.index_select(concentration, 0, indices).to(self.device)
                 concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
-                log_prob_for_zeros += torch.log(non_zero[node])
+                log_prob_for_zeros += torch.log(non_zero[node]).to(self.device)
             else:
                 sampled_zero_bool_arr.append(True)
-                log_prob_for_zeros += torch.log(1-non_zero[node])
+                log_prob_for_zeros += torch.log(1-non_zero[node]).to(self.device)
         if concentration_without_zeros.shape[0] != 0:
             mean_concentration = np.mean(concentration_without_zeros.detach().numpy())
             std_concentration = np.std(concentration_without_zeros.detach().numpy())
