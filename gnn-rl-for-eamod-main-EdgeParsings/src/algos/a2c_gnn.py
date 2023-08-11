@@ -451,7 +451,6 @@ class A2C(nn.Module):
 
         # MPNN implementation
 
-        # parse raw environment data in model format
         # actor: computes concentration parameters of a X distribution
         a_out_concentration, a_out_is_zero = self.actor(x)
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
@@ -503,7 +502,6 @@ class A2C(nn.Module):
         else:
             log_prob_dirichlet = 0
         self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value.detach().numpy()))
-        print("value: " + str(value.detach().numpy()))
         action_np = []
         dirichlet_idx = 0
         for node in range(non_zero.shape[0]):
@@ -525,6 +523,10 @@ class A2C(nn.Module):
         concentration = concentration.to(self.device)
         non_zero = non_zero.to(self.device)
         value = value.to(self.device)
+
+        print(concentration.shape)
+        print(non_zero.shape)
+        print(value.shape)
 
         # concentration, value = self.forward(obs)
         concentration_without_zeros = torch.tensor([], dtype=torch.float32).to(self.device)
