@@ -210,7 +210,6 @@ class GNNParser():
         
             edge_attr = []
             # edges.extend(self.env.edges) # needed when adding self-loops only
-            print("edge_index shape: " + str(edge_index.shape))
             for edg_idx in edge_index:
                 e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
 
@@ -231,10 +230,10 @@ class GNNParser():
                 edge_attr.append(q)
         
             # Convert the list of edge attributes into a tensor
-            print("edge_attr shape: " + str(np.shape(edge_attr)))
-            
             tensor = torch.tensor(edge_attr)
-            e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T, len(edge_index)).T
+            e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0)
+            print(e.shape)
+            # .view(self.T, len(edge_index)).T
 
             # print("x shape: " + str(x.shape))
             # print("edge_index shape: " + str(edge_index.shape)) 
