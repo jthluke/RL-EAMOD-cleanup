@@ -338,6 +338,8 @@ class GNNCritic(nn.Module):
 
     # MPNN implementation
     def __init__(self, in_channels, hidden_channels):
+        super(GNNCritic, self).__init__()
+
         self.conv1 = GCNConv(in_channels, hidden_channels)
         self.econv1 = EdgeConv(in_channels, hidden_channels)
         
