@@ -210,9 +210,9 @@ class GNNParser():
         
             edge_attr = []
             # edges.extend(self.env.edges) # needed when adding self-loops only
-            print(np.shape(edge_index))
             for edg_idx in edge_index:
                 e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
+                print(e)
 
                 # reb_time, demand
                 if e in self.env.edges:
