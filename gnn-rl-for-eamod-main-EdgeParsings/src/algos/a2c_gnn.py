@@ -231,8 +231,7 @@ class GNNParser():
         
             # Convert the list of edge attributes into a tensor
             tensor = torch.tensor(edge_attr)
-            print(tensor.shape)
-            e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T, len(edges)).T
+            e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T, len(edge_attr)).T
 
             # print("x shape: " + str(x.shape))
             # print("edge_index shape: " + str(edge_index.shape)) 
