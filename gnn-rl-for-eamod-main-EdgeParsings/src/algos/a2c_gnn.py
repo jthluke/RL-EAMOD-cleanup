@@ -261,7 +261,7 @@ class EdgeConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
         super().__init__(aggr='max') #  "Max" aggregation.
 
-        self.mlp = Seq(Linear((3 * in_channels), out_channels),
+        self.mlp = Seq(Linear((in_channels), out_channels),
                         ReLU(),
                         Linear(out_channels, out_channels))
 
