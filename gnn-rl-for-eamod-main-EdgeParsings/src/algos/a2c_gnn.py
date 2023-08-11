@@ -301,7 +301,9 @@ class GNNActor(nn.Module):
         super(GNNActor, self).__init__()
 
         self.conv1 = GCNConv(in_channels, hidden_channels)
-        self.econv1 = EdgeConv(T * 3, hidden_channels)
+
+        # in_channels = 2 * in_channels_from_nodes + 3 * in_channels_from_edges
+        self.econv1 = EdgeConv((in_channels * 2) + (T * 3), hidden_channels)
         
         self.conv2 = GCNConv(hidden_channels * 2, hidden_channels)  # second convolution layer
         self.conv3 = GCNConv(hidden_channels, in_channels) # third convolution layer
