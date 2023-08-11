@@ -227,11 +227,13 @@ class GNNParser():
                     price_for_e_t = [0] * self.T
                     energy_distance_e_t = [0] * self.T
                 
-                q = demand_for_e_t + price_for_e_t + energy_distance_e_t
+                q = [demand_for_e_t + price_for_e_t + energy_distance_e_t]
                 edge_attr.append(q)
         
             # Convert the list of edge attributes into a tensor
             tensor = torch.tensor(edge_attr)
+            tensor.view(self.T, len(edge_index))
+            print(tensor.shape)
             e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T, len(edge_index)).T
 
             # print("x shape: " + str(x.shape))
