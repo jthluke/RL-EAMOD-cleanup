@@ -501,7 +501,7 @@ class A2C(nn.Module):
             log_prob_dirichlet = m.log_prob(dirichlet_action)
         else:
             log_prob_dirichlet = 0
-        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value.detach().numpy()))
+        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value))
         action_np = []
         dirichlet_idx = 0
         for node in range(non_zero.shape[0]):
