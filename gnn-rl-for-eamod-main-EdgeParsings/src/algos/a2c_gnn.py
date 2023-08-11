@@ -54,6 +54,8 @@ class GNNParser():
 
     def parse_obs(self, version=0, charge_delta=0, max_charge=0, MPNN=False):
         # nodes
+        print(torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
+                         ).view(1, 1, self.env.number_nodes).float().shape)
         x = torch.cat((
             torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
                          ).view(1, 1, self.env.number_nodes).float(),
