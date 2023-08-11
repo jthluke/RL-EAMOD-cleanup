@@ -54,7 +54,7 @@ class GNNParser():
 
     def parse_obs(self, version=0, charge_delta=0, max_charge=0, MPNN=False):
         # nodes
-        
+
         # print(torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
         #                  ).view(1, 1, self.env.number_nodes).float().shape)
         # print(torch.tensor([self.env.acc[n][self.env.time+1]*self.scale_factor for n in self.env.nodes]
@@ -210,6 +210,7 @@ class GNNParser():
         
             edge_attr = []
             # edges.extend(self.env.edges) # needed when adding self-loops only
+            print(edge_index)
             for edg_idx in edge_index:
                 e = [self.env.nodes[edg_idx[0]], self.env.nodes[edg_idx[1]]]
 
