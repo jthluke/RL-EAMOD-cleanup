@@ -330,9 +330,9 @@ class GNNActor(nn.Module):
 
         out_3c = torch.cat([data.x, out_3], dim=1)
 
-        x = F.relu(self.lin1(out_3c))
-        x = F.relu(self.lin2(x))
-        x = F.relu(self.lin3(x))
+        x = F.softplus(self.lin1(out_3c))
+        x = F.softplus(self.lin2(x))
+        x = F.softplus(self.lin3(x))
         x = self.lin4(x)
         return x[:, 0], x[:, 1]
         
@@ -384,9 +384,9 @@ class GNNCritic(nn.Module):
         out_3c = torch.cat([data.x, out_3], dim=1)
         out_3c = torch.sum(out_3c, dim=0)
 
-        x = F.relu(self.lin1(out_3c))
-        x = F.relu(self.lin2(x))
-        x = F.relu(self.lin3(x))
+        x = F.softplus(self.lin1(out_3c))
+        x = F.softplus(self.lin2(x))
+        x = F.softplus(self.lin3(x))
         x = self.lin4(x)
         return x
 
