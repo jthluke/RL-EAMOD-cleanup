@@ -320,13 +320,13 @@ class GNNActor(nn.Module):
     def forward(self, data):
         data = data.to("cuda:0")
 
-        out_1 = F.relu(self.conv1(data.x, data.edge_index))
-        out_e1 = F.relu(self.econv1(data.x, data.edge_index, data.edge_attr))
+        out_1 = F.softplus(self.conv1(data.x, data.edge_index))
+        out_e1 = F.softplus(self.econv1(data.x, data.edge_index, data.edge_attr))
 
         out_1c = torch.cat([out_1, out_e1], dim=1)
         
-        out_2 = F.relu(self.conv2(out_1c, data.edge_index))
-        out_3 = F.relu(self.conv3(out_2, data.edge_index))
+        out_2 = F.softplus(self.conv2(out_1c, data.edge_index))
+        out_3 = F.softplus(self.conv3(out_2, data.edge_index))
 
         out_3c = torch.cat([data.x, out_3], dim=1)
 
@@ -373,13 +373,13 @@ class GNNCritic(nn.Module):
     def forward(self, data):
         data = data.to("cuda:0")
 
-        out_1 = F.relu(self.conv1(data.x, data.edge_index))
-        out_e1 = F.relu(self.econv1(data.x, data.edge_index, data.edge_attr))
+        out_1 = F.softplus(self.conv1(data.x, data.edge_index))
+        out_e1 = F.softplus(self.econv1(data.x, data.edge_index, data.edge_attr))
 
         out_1c = torch.cat([out_1, out_e1], dim=1)
         
-        out_2 = F.relu(self.conv2(out_1c, data.edge_index))
-        out_3 = F.relu(self.conv3(out_2, data.edge_index))
+        out_2 = F.softplus(self.conv2(out_1c, data.edge_index))
+        out_3 = F.softplus(self.conv3(out_2, data.edge_index))
 
         out_3c = torch.cat([data.x, out_3], dim=1)
         out_3c = torch.sum(out_3c, dim=0)
