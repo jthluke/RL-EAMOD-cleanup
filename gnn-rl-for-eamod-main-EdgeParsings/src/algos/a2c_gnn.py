@@ -474,13 +474,13 @@ class A2C(nn.Module):
         
         # concentration, value = self.forward(obs)
         
-        concentration_without_zeros = torch.tensor([], dtype=torch.float32)
+        concentration_without_zeros = torch.tensor([], dtype=torch.float32).to(self.device)
         sampled_zero_bool_arr = []
         log_prob_for_zeros = 0
         for node in range(non_zero.shape[0]):
             sample = torch.bernoulli(non_zero[node])
             if sample > 0:
-                indices = torch.tensor([node])
+                indices = torch.tensor([node]).to(self.device)
                 new_element = torch.index_select(concentration, 0, indices)
                 concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
