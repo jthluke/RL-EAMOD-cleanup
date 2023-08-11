@@ -56,6 +56,12 @@ class GNNParser():
         # nodes
         print(torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
                          ).view(1, 1, self.env.number_nodes).float().shape)
+        print(torch.tensor([self.env.acc[n][self.env.time+1]*self.scale_factor for n in self.env.nodes]
+                         ).view(1, 1, self.env.number_nodes).float().shape)
+        print(torch.tensor([[(self.env.acc[n][self.env.time+1] + self.env.dacc[n][t])*self.scale_factor for n in self.env.nodes]
+                          for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float().shape)
+        print(torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
+                          for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float().shape)        
         x = torch.cat((
             torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]
                          ).view(1, 1, self.env.number_nodes).float(),
