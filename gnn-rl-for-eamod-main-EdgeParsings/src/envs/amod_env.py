@@ -112,8 +112,6 @@ class AMoD:
             self.obs = (self.acc, self.time, self.dacc, self.demand)
             self.obs_spatial = (self.acc_spatial, self.time,
                                 self.dacc_spatial, self.demand)
-            
-            print([self.dacc[n][t] for n in self.nodes for t in range(1, 5)])
 
     def create_edge_maps(self):
         self.map_o_d_regions_to_pax_edges = dict([])

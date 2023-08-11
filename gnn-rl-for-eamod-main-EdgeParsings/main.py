@@ -243,7 +243,7 @@ for i_episode in epochs:
             # action_rl = model.select_action()
 
             # MPNN implementation
-            action_rl = model.select_action_MPNN()
+            action_rl = model.select_action_MPNN(len(env.nodes), len(env.edges))
 
             # GAT implementation
             # action_rl = model.select_action_GAT()

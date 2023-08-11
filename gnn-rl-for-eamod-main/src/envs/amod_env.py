@@ -228,8 +228,6 @@ class AMoD:
        self.obs = (self.acc, self.time, self.dacc, self.demand) # for acc, the time index would be t+1, but for demand, the time index would be t
        self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
        done = False # if passenger matching is executed first
-       
-       print([self.dacc[n][t] for n in self.nodes for t in range(1, 10)])
 
        return self.obs, max(0,self.reward), done, self.info
     
