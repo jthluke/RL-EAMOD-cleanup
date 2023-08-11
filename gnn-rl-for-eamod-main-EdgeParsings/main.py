@@ -70,7 +70,8 @@ parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
 
 args = parser.parse_args()
 args.cuda = torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+# device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cuda")
 lr_a = args.lr_a
 lr_c = args.lr_c
 grad_norm_clip_a = args.grad_norm_clip_a
