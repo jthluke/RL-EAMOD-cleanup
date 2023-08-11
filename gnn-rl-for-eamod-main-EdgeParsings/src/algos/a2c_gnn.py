@@ -49,7 +49,7 @@ class GNNParser():
         self.T = T
         self.scale_factor = scale_factor
         self.price_scale_factor = scale_price
-        self.input_size = input_size
+        self.input_size = 2 + (2 * T) # features in first two tensors = 2, features in last two tensors = 2 * T
         self.isMPNN = MPNN
 
     def parse_obs(self, version=0, charge_delta=0, max_charge=0, MPNN=False):
@@ -402,7 +402,7 @@ class A2C(nn.Module):
         self.grad_norm_clip_c = grad_norm_clip_c
         self.scale_factor = scale_factor
         self.scale_price = scale_price
-        self.input_size = T
+        self.input_size = 2 + (2 * T) # features in first two tensors = 2, features in last two tensors = 2 * T
 
         torch.manual_seed(seed)
         self.device = device
