@@ -277,9 +277,9 @@ class EdgeConv(MessagePassing):
         # x_j has shape [E, in_channels] - target node features
         # edge_attr has shape [E, in_channels]
 
-        # print("x_i shape: " + str(x_i.shape))
-        # print("x_j shape: " + str(x_j.shape))
-        # print("edge_attr shape: " + str(edge_attr.shape))
+        print("x_i shape: " + str(x_i.shape))
+        print("x_j shape: " + str(x_j.shape))
+        print("edge_attr shape: " + str(edge_attr.shape))
 
         tmp = torch.cat([x_i, x_j, edge_attr], dim=1)  
         # print("tmp shape: " + str(tmp.shape))
