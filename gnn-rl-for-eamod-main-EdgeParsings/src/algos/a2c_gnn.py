@@ -277,9 +277,9 @@ class EdgeConv(MessagePassing):
         # x_j has shape [E, in_channels] - target node features
         # edge_attr has shape [E, in_channels]
 
-        print("x_i shape: " + str(x_i.shape))
-        print("x_j shape: " + str(x_j.shape))
-        print("edge_attr shape: " + str(edge_attr.shape))
+        # print("x_i shape: " + str(x_i.shape))
+        # print("x_j shape: " + str(x_j.shape))
+        # print("edge_attr shape: " + str(edge_attr.shape))
 
         tmp = torch.cat([x_i, x_j, edge_attr], dim=1)  
         # print("tmp shape: " + str(tmp.shape))
@@ -502,7 +502,7 @@ class A2C(nn.Module):
             log_prob_dirichlet = m.log_prob(dirichlet_action)
         else:
             log_prob_dirichlet = 0
-        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value))
+        self.saved_actions.append(SavedAction(log_prob_dirichlet+log_prob_for_zeros, value.detach()))
         action_np = []
         dirichlet_idx = 0
         for node in range(non_zero.shape[0]):
