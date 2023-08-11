@@ -215,6 +215,7 @@ class GNNParser():
 
                 # reb_time, demand
                 if e in self.env.edges:
+                    print('Hello')
                     i, j = self.env.edges[self.env.edges.index(e)]
 
                     demand_for_e_t = list(self.env.demand[i, j][t] for t in range(self.env.time+1, self.env.time+self.T+1))
@@ -230,7 +231,6 @@ class GNNParser():
                 edge_attr.append(q)
         
             # Convert the list of edge attributes into a tensor
-            print(len(edge_attr))
             tensor = torch.tensor(edge_attr)
             e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T, len(edges)).T
 
