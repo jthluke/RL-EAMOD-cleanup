@@ -222,7 +222,6 @@ class GNNParser():
                     energy_distance_e_t = [self.env.scenario.energy_distance[i, j]] * self.T
 
                 else:
-                    
                     demand_for_e_t = [0] * self.T
                     price_for_e_t = [0] * self.T
                     energy_distance_e_t = [0] * self.T
@@ -316,7 +315,7 @@ class GNNActor(nn.Module):
         # self.h_to_sigma = nn.Linear(22 + hidden_dim, out_channels)
         # self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
 
-    def forward(self, x, edge_index, edge_attr):
+    def forward(self, data):
         data = data.to("cuda:0")
 
         out_1 = F.relu(self.conv1(data.x, data.edge_index))
@@ -367,7 +366,7 @@ class GNNCritic(nn.Module):
         self.lin3 = nn.Linear(128, 32)
         self.lin4 = nn.Linear(32, 1)
 
-    def forward(self, x, edge_index, edge_attr):
+    def forward(self, data):
         data = data.to("cuda:0")
 
         out_1 = F.relu(self.conv1(data.x, data.edge_index))
@@ -450,12 +449,12 @@ class A2C(nn.Module):
 
         # parse raw environment data in model format
         # actor: computes concentration parameters of a X distribution
-        a_out_concentration, a_out_is_zero = self.actor(x.x, x.edge_index, x.edge_attr)
+        a_out_concentration, a_out_is_zero = self.actor(x)
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
         # critic: estimates V(s_t)
-        value = self.critic(x.x, x.edge_index, x.edge_attr)
+        value = self.critic(x)
         return concentration, non_zero, value
 
     def parse_obs(self, version, charge_delta, max_charge, MPNN):
