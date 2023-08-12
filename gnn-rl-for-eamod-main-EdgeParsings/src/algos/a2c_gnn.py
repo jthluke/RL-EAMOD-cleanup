@@ -451,7 +451,7 @@ class A2C(nn.Module):
         self.grad_norm_clip_c = grad_norm_clip_c
         self.scale_factor = scale_factor
         self.scale_price = scale_price
-        self.input_size = 2 + (2 * T) # features in first two tensors = 2, features in last two tensors = 2 * T
+        self.input_size = 1 + (2 * T) # features in first two tensors = 2, features in last two tensors = 2 * T
 
         torch.manual_seed(seed)
         self.device = device
