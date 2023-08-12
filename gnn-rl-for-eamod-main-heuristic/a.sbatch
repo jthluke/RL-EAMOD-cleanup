@@ -2,7 +2,7 @@
 #SBATCH --job-name=pure_heuristic
 #SBATCH --output=pure_heuristic.%j.out
 #SBATCH --error=pure_heuristic.%j.err
-#SBATCH --time=3-00:00:00
+#SBATCH --time=1-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=normal
 #SBATCH -c 30
