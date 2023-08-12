@@ -64,7 +64,7 @@ if args.toy:
 else:
     # problem_folder = 'SF_5_clustered'
     # file_path = os.path.join('..', 'data', problem_folder, 'SF_5_short.json')
-    problem_folder = 'NY'
+    problem_folder = 'NY/ClusterDataset1'
     file_path = os.path.join('..', 'data', problem_folder, 'd1.json')
     experiment = file_path +  '_mpc_horizon_' + str(mpc_horizon)
     energy_dist_path = os.path.join('..', 'data', problem_folder, 'energy_distance.npy')
