@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+#SBATCH --job-name=charge_heuristic_spatial_rl_off_peak_one_step
+#SBATCH --output=charge_heuristic_spatial_rl_off_peak_one_step.%j.out
+#SBATCH --error=charge_heuristic_spatial_rl_off_peak_one_step.%j.err
+#SBATCH --time=2800
+#SBATCH --partition=gpu 
+#SBATCH --gpus=1 
+#SBATCH -c 30
+
+conda activate
+
+python main.py --charging_heuristic off_peak_one_step --max_episodes 20000
+
+# tags = charge_heuristic, spatial_rl, c_batch, spatial_graph
+# job not submitted
