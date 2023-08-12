@@ -213,7 +213,6 @@ class GNNParser():
             for idx in range(edge_index.shape[1]):
                 e = [self.env.nodes[edge_index[0, idx]], self.env.nodes[edge_index[1, idx]]]
 
-                # reb_time, demand
                 if e in self.env.edges:
                     i, j = self.env.edges[self.env.edges.index(e)]
 
@@ -255,6 +254,47 @@ class GNNParser():
               dim=1).squeeze(0).view(self.input_size, self.env.number_nodes_spatial).T
         edge_index  = self.env.gcn_edge_idx_spatial
         data = Data(x, edge_index)
+        return data
+    
+    def parse_obs_spatial_with_edge(self):
+        x = torch.cat((
+            torch.tensor([self.env.acc_spatial[n][self.env.time+1]*self.scale_factor for n in self.env.nodes_spatial]).view(1, 1, self.env.number_nodes_spatial).float(), 
+            torch.tensor([[(self.env.acc_spatial[n][self.env.time+1] + self.env.dacc_spatial[n][t])*self.scale_factor for n in self.env.nodes_spatial] \
+                          for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float(),
+            torch.tensor([[sum([self.env.price[o,j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o,j][t]) \
+                          for j in self.env.region]) for o in self.env.region] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes_spatial).float()),
+              dim=1).squeeze(0).view(self.input_size, self.env.number_nodes_spatial).T
+        edge_index  = self.env.gcn_edge_idx_spatial
+
+        edge_attr = []
+        for idx in range(edge_index.shape[1]):
+            e = [self.env.nodes[edge_index[0, idx]], self.env.nodes[edge_index[1, idx]]]
+
+            if e in self.env.edges:
+                i, j = self.env.edges[self.env.edges.index(e)]
+
+                demand_for_e_t = list(self.env.demand[i, j][t] for t in range(self.env.time+1, self.env.time+self.T+1))
+                price_for_e_t  = list(self.env.price[i, j][t] for t in range(self.env.time+1, self.env.time+self.T+1))
+                energy_distance_e_t = [self.env.scenario.energy_distance[i, j]] * self.T
+
+            else:
+                demand_for_e_t = [0] * self.T
+                price_for_e_t = [0] * self.T
+                energy_distance_e_t = [0] * self.T
+            
+            while len(demand_for_e_t) < self.T or len(price_for_e_t) < self.T or len(energy_distance_e_t) < self.T:
+                demand_for_e_t.append(0)
+                price_for_e_t.append(0)
+                energy_distance_e_t.append(0)
+            
+            q = [demand_for_e_t + price_for_e_t + energy_distance_e_t]
+            edge_attr.append(q)
+    
+        # Convert the list of edge attributes into a tensor
+        tensor = torch.tensor(edge_attr)
+        e = (tensor.view(1, np.prod(tensor.shape)).float()).squeeze(0).view(self.T * 3, edge_index.shape[1]).T
+        
+        data = Data(x, edge_index, edge_attr=e)
         return data
 
 class EdgeConv(MessagePassing):
@@ -417,8 +457,8 @@ class A2C(nn.Module):
         self.device = device
 
         # MPNN implementation
-        self.actor = GNNActor(in_channels=self.input_size, hidden_channels=self.input_size * 2, T=T)
-        self.critic = GNNCritic(in_channels=self.input_size, hidden_channels=self.input_size * 2, T=T)
+        self.actor = GNNActor(in_channels=self.input_size, hidden_channels=self.input_size, T=T)
+        self.critic = GNNCritic(in_channels=self.input_size, hidden_channels=self.input_size, T=T)
         self.obs_parser = GNNParser(self.env, T=T, input_size=self.input_size, scale_factor=scale_factor, scale_price=scale_price, MPNN=True)
 
         self.optimizers = self.configure_optimizers()
@@ -459,8 +499,13 @@ class A2C(nn.Module):
         value = self.critic(x)
         return concentration, non_zero, value
 
-    def parse_obs(self, version, charge_delta, max_charge, MPNN):
-        state = self.obs_parser.parse_obs(version, charge_delta, max_charge, MPNN)
+    def parse_obs(self, version, charge_delta, max_charge, MPNN, spatial=False):
+
+        if spatial:
+            state = self.obs_parser.parse_obs_spatial_with_edge()
+        else:
+            state = self.obs_parser.parse_obs(version, charge_delta, max_charge, MPNN)
+        
         return state
 
     def select_action(self, eval_mode=False):
