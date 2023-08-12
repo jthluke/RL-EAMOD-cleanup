@@ -189,12 +189,12 @@ class A2C(nn.Module):
         x = self.parse_obs_spatial().to(self.device)
 
         # actor: computes concentration parameters of a Dirichlet distribution
-        a_out_concentration, a_out_is_zero = self.actor(x)
+        a_out_concentration, a_out_is_zero = self.actor(x).to(self.device)
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
 
         # critic: estimates V(s_t)
-        value = self.critic(x)
+        value = self.critic(x).to(self.device)
         return concentration, non_zero, value
     
     def parse_obs_spatial(self):
