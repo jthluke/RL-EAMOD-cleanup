@@ -400,7 +400,7 @@ class A2C(nn.Module):
     Advantage Actor Critic algorithm for the AMoD control problem. 
     """
 
-    def __init__(self, env, eps=np.finfo(np.float32).eps.item(), device=torch.device("cuda:0"), T=10, lr_a=1.e-3, lr_c=1.e-3, grad_norm_clip_a=0.5, grad_norm_clip_c=0.5, seed=10, scale_factor=0.01, scale_price=0.1):
+    def __init__(self, env, eps=np.finfo(np.float32).eps.item(), device=torch.device("cpu"), T=10, lr_a=1.e-3, lr_c=1.e-3, grad_norm_clip_a=0.5, grad_norm_clip_c=0.5, seed=10, scale_factor=0.01, scale_price=0.1):
         super(A2C, self).__init__()
         self.env = env
         self.eps = eps
@@ -536,7 +536,7 @@ class A2C(nn.Module):
         for node in range(non_zero.shape[0]):
             sample = torch.bernoulli(non_zero[node]).to(self.device)
             if sample > 0:
-                indices = torch.tensor([node]).to(self.device).to(self.device)
+                indices = torch.tensor([node]).to(self.device)
                 new_element = torch.index_select(concentration, 0, indices).to(self.device)
                 concentration_without_zeros = torch.cat((concentration_without_zeros, new_element), 0)
                 sampled_zero_bool_arr.append(False)
