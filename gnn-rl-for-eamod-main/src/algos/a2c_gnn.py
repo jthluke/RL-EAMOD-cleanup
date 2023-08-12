@@ -275,7 +275,7 @@ class GNNActor(nn.Module):
         self.lin4 = nn.Linear(32, 2)
 
     def forward(self, data):
-        data = data.to("cuda:0")
+        
         out = F.relu(self.conv1(data.x, data.edge_index))  # , data.edge_weight
         out = F.relu(self.conv2(out, data.edge_index))
         out = F.relu(self.conv3(out, data.edge_index))
