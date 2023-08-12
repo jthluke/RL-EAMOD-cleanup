@@ -39,6 +39,8 @@ parser = argparse.ArgumentParser(description='A2C-GNN')
 
 parser.add_argument('--test', type=bool, default=False,
                     help='activates test mode for agent evaluation')
+parser.add_argument('--exact', type=bool, default=True,
+                    help='uses MPC exact instead of trilevel')
 parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
 parser.add_argument('--mpc_horizon', type=int, default=60, metavar='N',
@@ -139,7 +141,10 @@ t_0 = time.time()
 time_list = []
 while(not done):
     time_i_start = time.time()
-    paxAction, rebAction = mpc.MPC_exact() 
+    if args.exact:
+        paxAction, rebAction = mpc.MPC_exact() 
+    else:
+        paxAction, rebAction = mpc.MPC_trilevel()
     time_i_end = time.time()
     t_i = time_i_end - time_i_start
     time_list.append(t_i)
