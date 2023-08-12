@@ -318,7 +318,6 @@ class GNNActor(nn.Module):
         # self.h_to_concentration = nn.Linear(22 + hidden_dim, out_channels)
 
     def forward(self, data):
-        data = data.to("cuda:0")
 
         out_1 = F.softplus(self.conv1(data.x, data.edge_index))
         out_e1 = F.softplus(self.econv1(data.x, data.edge_index, data.edge_attr))
@@ -371,7 +370,6 @@ class GNNCritic(nn.Module):
         self.lin4 = nn.Linear(32, 1)
 
     def forward(self, data):
-        data = data.to("cuda:0")
 
         out_1 = F.softplus(self.conv1(data.x, data.edge_index))
         out_e1 = F.softplus(self.econv1(data.x, data.edge_index, data.edge_attr))
