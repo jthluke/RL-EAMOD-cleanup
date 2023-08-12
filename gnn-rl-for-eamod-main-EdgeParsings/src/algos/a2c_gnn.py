@@ -451,7 +451,7 @@ class A2C(nn.Module):
         self.grad_norm_clip_c = grad_norm_clip_c
         self.scale_factor = scale_factor
         self.scale_price = scale_price
-        self.input_size = 1 + (2 * T) # features in first two tensors = 2, features in last two tensors = 2 * T
+        self.input_size = 2 + (2 * T) # features in first two tensors = 2, features in last two tensors = 2 * T
 
         torch.manual_seed(seed)
         self.device = device
@@ -486,7 +486,7 @@ class A2C(nn.Module):
         forward of both actor and critic
         """
         # parse raw environment data in model format
-        x = self.parse_obs(version=5, charge_delta=self.env.scenario.charge_levels_per_charge_step, max_charge=self.env.scenario.number_charge_levels, MPNN=True, spatial=True).to(self.device)
+        x = self.parse_obs(version=5, charge_delta=self.env.scenario.charge_levels_per_charge_step, max_charge=self.env.scenario.number_charge_levels, MPNN=True).to(self.device)
 
         # MPNN implementation
 
