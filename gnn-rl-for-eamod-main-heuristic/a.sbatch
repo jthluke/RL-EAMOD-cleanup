@@ -2,10 +2,10 @@
 #SBATCH --job-name=pure_heuristic
 #SBATCH --output=pure_heuristic.%j.out
 #SBATCH --error=pure_heuristic.%j.err
-#SBATCH --time=1000
-#SBATCH --partition=gpu 
-#SBATCH --gpus=1 
-#SBATCH -c 30
+#SBATCH --time=3-00:00:00
+#SBATCH --qos=long
+#SBATCH --partition=normal
+#SBATCH -c 40
 
 conda activate
 
