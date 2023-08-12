@@ -2,7 +2,7 @@
 #SBATCH --job-name=charge_heuristic_spatial_rl
 #SBATCH --output=charge_heuristic_spatial_rl.%j.out
 #SBATCH --error=charge_heuristic_spatial_rl.%j.err
-#SBATCH --time=4-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=gpu 
 #SBATCH --gpus=1 
