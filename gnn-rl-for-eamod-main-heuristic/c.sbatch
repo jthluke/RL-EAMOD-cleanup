@@ -4,9 +4,8 @@
 #SBATCH --error=charge_heuristic_spatial_rl.%j.err
 #SBATCH --time=3-00:00:00
 #SBATCH --qos=long
-#SBATCH --partition=gpu 
-#SBATCH --gpus=1 
-#SBATCH -c 30
+#SBATCH --partition=normal
+#SBATCH -c 40
 
 conda activate
 
