@@ -323,7 +323,6 @@ class AMoD:
                 self.acc_spatial[d[0]][t+1] += self.paxFlow[o, d][t]
                 self.n_customer_vehicles_spatial[o[0]][t+1] -= self.paxFlow[o, d][t]
         
-
         # rebreward_internal takes into account a penalty for vehicles
         # that are not above 30% charge in subsequent step
 
@@ -339,8 +338,16 @@ class AMoD:
         for c in range(charge_limit, self.scenario.number_charge_levels):
             for region in self.nodes_spatial:
                 charging_penalty += self.acc[(region, c)][self.time+1] * (5) * ((c)/(self.scenario.number_charge_levels))
+
+        wasted_customers_penalty = 0
+        for region in self.nodes_spatial:
+            demand = 0
+            for region2 in self.nodes_spatial:
+                demand += self.demand[region, region2][self.time+1]
+            unserved_demand = demand - self.acc_spatial[region][self.time+1]
+            wasted_customers_penalty = unserved_demand * (-10)
         
-        rebreward_internal = self.reward + charging_penalty
+        rebreward_internal = self.reward + charging_penalty + wasted_customers_penalty
             
         self.time += 1
         # use self.time to index the next time step
