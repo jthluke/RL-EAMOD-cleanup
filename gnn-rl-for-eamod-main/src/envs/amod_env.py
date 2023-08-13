@@ -333,7 +333,7 @@ class AMoD:
         charge_limit = math.ceil(self.scenario.number_charge_levels*0.3)
         for c in range(charge_limit):
             for region in self.nodes_spatial:
-                charging_penalty += self.acc[(region, c)][self.time+1] * (-10)
+                charging_penalty += self.acc[(region, c)][self.time+1] * (-5)
         
         for c in range(charge_limit, self.scenario.number_charge_levels):
             for region in self.nodes_spatial:
@@ -345,7 +345,7 @@ class AMoD:
             for region2 in self.nodes_spatial:
                 demand += self.demand[region, region2][self.time+1]
             unserved_demand = demand - self.acc_spatial[region][self.time+1]
-            wasted_customers_penalty = min(0, unserved_demand * (-20))
+            wasted_customers_penalty = min(0, unserved_demand * (-10))
 
         # print("reward: " + str(self.reward))
         # print("charging_penalty: " + str(charging_penalty))
