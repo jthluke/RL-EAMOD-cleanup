@@ -345,7 +345,7 @@ class AMoD:
             for region2 in self.nodes_spatial:
                 demand += self.demand[region, region2][self.time+1]
             unserved_demand = demand - self.acc_spatial[region][self.time+1]
-            wasted_customers_penalty = unserved_demand * (-10)
+            wasted_customers_penalty = min(0, unserved_demand * (-10))
 
         print("reward: " + str(self.reward))
         print("charging_penalty: " + str(charging_penalty))
