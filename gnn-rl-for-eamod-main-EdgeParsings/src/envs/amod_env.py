@@ -322,11 +322,41 @@ class AMoD:
                 self.acc_spatial[d[0]][t+1] += self.paxFlow[o, d][t]
                 self.n_customer_vehicles_spatial[o[0]][t+1] -= self.paxFlow[o, d][t]
             
+        # rebreward_internal takes into account a penalty for vehicles
+        # that are not above 30% charge in subsequent step
+
+        # -5 penalty for vehicles in bottom third of charge
+        # otherwise, +5 * fraction of charge per vehicle 
+
+        charging_penalty = 0
+        charge_limit = math.ceil(self.scenario.number_charge_levels*0.3)
+        for c in range(charge_limit):
+            for region in self.nodes_spatial:
+                charging_penalty += self.acc[(region, c)][self.time+1] * (-5)
+        
+        for c in range(charge_limit, self.scenario.number_charge_levels):
+            for region in self.nodes_spatial:
+                charging_penalty += self.acc[(region, c)][self.time+1] * (5) * ((c)/(self.scenario.number_charge_levels))
+
+        wasted_customers_penalty = 0
+        for region in self.nodes_spatial:
+            demand = 0
+            for region2 in self.nodes_spatial:
+                demand += self.demand[region, region2][self.time+1]
+            unserved_demand = demand - self.acc_spatial[region][self.time+1]
+            wasted_customers_penalty = min(0, unserved_demand * (-10))
+
+        # print("reward: " + str(self.reward))
+        # print("charging_penalty: " + str(charging_penalty))
+        # print("wasted_customers_penalty: " + str(wasted_customers_penalty))
+        
+        rebreward_internal = self.reward + charging_penalty + wasted_customers_penalty
+        
         self.time += 1
         # use self.time to index the next time step
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         done = (self.tf == t+1) # if the episode is completed
-        return self.obs, self.reward, done, self.info
+        return self.obs, self.reward, rebreward_internal, done, self.info
     
     def reset(self, bool_sample_demand=True):
         # reset the episode

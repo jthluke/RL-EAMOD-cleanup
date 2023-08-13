@@ -273,10 +273,10 @@ for i_episode in epochs:
         rebAction = rebal_flow_solver.optimize()
 
         # Take action in environment
-        new_obs, rebreward, done, info_reb = env.reb_step(rebAction)
+        new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
         episode_reward += rebreward
         # Store the transition in memory
-        model.rewards.append(paxreward + rebreward)
+        model.rewards.append(rebreward_internal)
         # track performance over episode
         episode_served_demand += info_pax['served_demand']
         episode_rebalancing_cost += info_reb['rebalancing_cost']
