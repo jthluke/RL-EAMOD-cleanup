@@ -304,6 +304,7 @@ class AMoD:
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 
                 self.reward -= (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+        
         # arrival for the next time step, executed in the last state of a time step
         # this makes the code slightly different from the previous version, where the following codes are executed between matching and rebalancing  
         for k in range(len(self.edges)):
@@ -321,12 +322,32 @@ class AMoD:
                 self.acc[d][t+1] += self.paxFlow[o, d][t]
                 self.acc_spatial[d[0]][t+1] += self.paxFlow[o, d][t]
                 self.n_customer_vehicles_spatial[o[0]][t+1] -= self.paxFlow[o, d][t]
+        
+
+        # rebreward_internal takes into account a penalty for vehicles
+        # that are not above 30% charge in subsequent step
+
+        # -5 penalty for vehicles in bottom third of charge
+        # otherwise, +5 * fraction of charge per vehicle 
+
+        charging_penalty = 0
+        charge_limit = math.ceil(self.scenario.number_charge_levels*0.3)
+        for c in range(charge_limit):
+            for region in self.nodes_spatial:
+                charging_penalty += self.acc[(region, c)][self.time+1] * (-5)
+        
+        for c in range(charge_limit, self.scenario.number_charge_levels):
+            for region in self.nodes_spatial:
+                charging_penalty += self.acc[(region, c)][self.time+1] * (5) * ((c)/(self.scenario.number_charge_levels))
+        
+        rebreward_internal = self.reward + charging_penalty
             
         self.time += 1
         # use self.time to index the next time step
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         done = (self.tf == t+1) # if the episode is completed
-        return self.obs, self.reward, done, self.info
+
+        return self.obs, self.reward, rebreward_internal, done, self.info
     
     def reset(self, bool_sample_demand=True):
         # reset the episode
