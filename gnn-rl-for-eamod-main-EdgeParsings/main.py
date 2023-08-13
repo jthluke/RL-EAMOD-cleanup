@@ -271,10 +271,6 @@ for i_episode in epochs:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
-        # if (i_episode % 1000 == 0):
-        #     for i in range(len(env.edges)):
-        #         print(str(env.edges[i]) + ", rebAction: " + str(rebAction[i]))
-        # currently, rebAction is not returning a rebalancing action - hence, there is an error with rebal_flow_solver
 
         # Take action in environment
         new_obs, rebreward, done, info_reb = env.reb_step(rebAction)
