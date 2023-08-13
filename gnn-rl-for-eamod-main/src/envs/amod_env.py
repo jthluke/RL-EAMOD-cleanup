@@ -347,9 +347,9 @@ class AMoD:
             unserved_demand = demand - self.acc_spatial[region][self.time+1]
             wasted_customers_penalty = min(0, unserved_demand * (-10))
 
-        print("reward: " + str(self.reward))
-        print("charging_penalty: " + str(charging_penalty))
-        print("wasted_customers_penalty: " + str(wasted_customers_penalty))
+        # print("reward: " + str(self.reward))
+        # print("charging_penalty: " + str(charging_penalty))
+        # print("wasted_customers_penalty: " + str(wasted_customers_penalty))
         
         rebreward_internal = self.reward + charging_penalty + wasted_customers_penalty
             
