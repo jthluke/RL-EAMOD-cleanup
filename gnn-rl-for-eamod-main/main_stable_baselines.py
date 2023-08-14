@@ -310,11 +310,11 @@ def main():
         gym_env = FleetEnv(env=env, gurobi_env=gurobi_env, T=args.T, scale_factor_reward=scale_factor_reward,
                            scale_factor=scale_factor, price_scale_factor=scale_price, test=args.test)
     else:
-        problem_folder = 'NY_5'
-        file_path = os.path.join('data', problem_folder,  'NY_5_day.json')
+        problem_folder = 'NY/ClusterDataset1'
+        file_path = os.path.join('data', problem_folder,  'd1.json')
         # problem_folder = 'SF_5_clustered'
         # file_path = os.path.join('data', problem_folder,  'SF_5_short_afternoon_test.json')
-        model_name = "model_NY.json"
+        model_name = "model_NYd1.json"
         experiment = 'training_stable_baselines_' + file_path + '_' + \
             str(args.max_episodes) + '_episodes_T_' + str(args.T)
         energy_dist_path = os.path.join(
