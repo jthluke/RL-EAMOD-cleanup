@@ -148,7 +148,7 @@ class CustomNetwork(nn.Module):
     ):
         super(CustomNetwork, self).__init__()
 
-        self.latent_dim_pi = 190 # TODO: change for every experiment, needs to be #nodes x2 -> think of better way 192
+        self.latent_dim_pi = 130 * 2 # TODO: change for every experiment, needs to be #nodes x2 -> think of better way 192
         self.latent_dim_vf = last_layer_dim_vf
 
         # Policy network
