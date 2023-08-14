@@ -247,13 +247,13 @@ def main():
     # gurobi_env.start()
 
     # set Gurobi environment mine2
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Dominik2"
-    gurobi_env.setParam('WLSACCESSID', 'ab720bb4-cdd4-40c0-a07f-79ac1ac8b13a')
-    gurobi_env.setParam('WLSSECRET', '42b278c4-57fa-4ac4-a963-9edf5cad4719')
-    gurobi_env.setParam('LICENSEID', 856171)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
+    # gurobi_env = gp.Env(empty=True)
+    # gurobi = "Dominik2"
+    # gurobi_env.setParam('WLSACCESSID', 'ab720bb4-cdd4-40c0-a07f-79ac1ac8b13a')
+    # gurobi_env.setParam('WLSSECRET', '42b278c4-57fa-4ac4-a963-9edf5cad4719')
+    # gurobi_env.setParam('LICENSEID', 856171)
+    # gurobi_env.setParam("OutputFlag",0)
+    # gurobi_env.start()
 
     # set Gurobi environment Justin
     # gurobi_env = gp.Env(empty=True)
@@ -265,13 +265,13 @@ def main():
     # gurobi_env.start()
 
     # set Gurobi environment Karthik
-    # gurobi_env = gp.Env(empty=True)
-    # gurobi = "Karthik"
-    # gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
-    # gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
-    # gurobi_env.setParam('LICENSEID', 849913)
-    # gurobi_env.setParam("OutputFlag", 0)
-    # gurobi_env.start()
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Karthik"
+    gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
+    gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
+    gurobi_env.setParam('LICENSEID', 849913)
+    gurobi_env.setParam("OutputFlag", 0)
+    gurobi_env.start()
 
     # set Gurobi environment Karthik2
     # gurobi_env = gp.Env(empty=True)
