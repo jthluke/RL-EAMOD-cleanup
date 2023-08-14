@@ -265,13 +265,13 @@ def main():
     # gurobi_env.start()
 
     # set Gurobi environment Karthik
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Karthik"
-    gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
-    gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
-    gurobi_env.setParam('LICENSEID', 849913)
-    gurobi_env.setParam("OutputFlag", 0)
-    gurobi_env.start()
+    # gurobi_env = gp.Env(empty=True)
+    # gurobi = "Karthik"
+    # gurobi_env.setParam('WLSACCESSID', 'ad632625-ffd3-460a-92a0-6fef5415c40d')
+    # gurobi_env.setParam('WLSSECRET', '60bd07d8-4295-4206-96e2-bb0a99b01c2f')
+    # gurobi_env.setParam('LICENSEID', 849913)
+    # gurobi_env.setParam("OutputFlag", 0)
+    # gurobi_env.start()
 
     # set Gurobi environment Karthik2
     # gurobi_env = gp.Env(empty=True)
@@ -281,6 +281,16 @@ def main():
     # gurobi_env.setParam('LICENSEID', 799870)
     # gurobi_env.setParam("OutputFlag",0)
     # gurobi_env.start()
+
+    # set Gurobi environment Justin
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Justin"
+    gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+    gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+    gurobi_env.setParam('LICENSEID', 844698)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
+
 
     if args.toy:
         problem_folder = 'Toy'
