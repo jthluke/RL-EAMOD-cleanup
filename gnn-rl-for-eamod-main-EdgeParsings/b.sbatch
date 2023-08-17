@@ -5,7 +5,7 @@
 #SBATCH --time=2-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=normal
-#SBATCH -c 25
+#SBATCH -c 7
 
 conda activate
 python main.py --max_episodes 20000
