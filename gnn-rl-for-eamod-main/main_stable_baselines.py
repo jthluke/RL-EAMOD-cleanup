@@ -237,6 +237,17 @@ class CustomActorCriticPolicy(ActorCriticPolicy):
 
 
 def main():
+
+    # set Gurobi environment mine
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Aaryan"
+    gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
+    gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
+    gurobi_env.setParam('LICENSEID', 2403727)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
+
+
     # set Gurobi environment mine
     # gurobi_env = gp.Env(empty=True)
     # gurobi = "Dominik"
@@ -283,13 +294,13 @@ def main():
     # gurobi_env.start()
 
     # set Gurobi environment Justin
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Justin"
-    gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-    gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-    gurobi_env.setParam('LICENSEID', 844698)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
+    # gurobi_env = gp.Env(empty=True)
+    # gurobi = "Justin"
+    # gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+    # gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+    # gurobi_env.setParam('LICENSEID', 844698)
+    # gurobi_env.setParam("OutputFlag",0)
+    # gurobi_env.start()
 
 
     if args.toy:

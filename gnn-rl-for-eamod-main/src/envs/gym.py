@@ -164,10 +164,10 @@ class FleetEnv(gym.Env):
         self.rebal_flow_solver.update_objective(self.env)
 
         rebAction = self.rebal_flow_solver.optimize()
-        _, reb_reward, _, done, info = self.env.reb_step(rebAction)
+        _, reb_reward, reb_reward_internal, done, info = self.env.reb_step(rebAction)
         self.episode_rebalancing_cost += info['rebalancing_cost']
         self.episode_reward += reb_reward
-        reward = reb_reward
+        reward = reb_reward_internal
         if not done:
             self.pax_flows_solver.update_constraints()
             self.pax_flows_solver.update_objective()
