@@ -491,11 +491,11 @@ class A2C(nn.Module):
         # MPNN implementation
 
         # actor: computes concentration parameters of a X distribution
-        a_out_concentration, a_out_is_zero = self.actor(x)
+        a_out_concentration, a_out_is_zero = self.actor(x).to(self.device)
 
         a_out_concentration = a_out_concentration.to(self.device)
         a_out_is_zero = a_out_is_zero.to(self.device)
-        
+
         concentration = F.softplus(a_out_concentration).reshape(-1) + jitter
         non_zero = torch.sigmoid(a_out_is_zero).reshape(-1)
         
