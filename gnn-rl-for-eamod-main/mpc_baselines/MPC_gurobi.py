@@ -24,6 +24,15 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
             dacc[n][t] = 0
     pax_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="pax_flow")
     rebal_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="rebal_flow")
+    charge_in_system = m.addMVar(shape=(mpc_horizon), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="charge_in_system")
+    
+    initial_charge_in_system = 0 # equal to charge level * number of vehicles at charge level
+    for node in env.nodes:
+        initial_accumulation = env.scenario.G.nodes[node]['accInit']
+        charge_level = (node[1]/env.scenario.number_charge_levels) * 100
+        initial_charge_in_system += initial_accumulation * charge_level
+    charge_in_system[0] = initial_charge_in_system
+
     charging_cars_per_location = defaultdict(dict)
     for n in env.nodes_spatial:
         charging_cars_per_location[n] = defaultdict(float)
@@ -31,23 +40,22 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
             # print(env.scenario.cars_charging_per_station[n][t+time+1])
             charging_cars_per_location[n][t] = copy.copy(env.scenario.cars_charging_per_station[n][t+time+1])
     for t in range(mpc_horizon):
+
+        # Constraint: charge_in_system never drops below 25% of initial charge in system
+        m.addConstr(charge_in_system[t] >= initial_charge_in_system * 0.25)
+
         for o in env.region:
             for d in env.region:
                 # Constraint: no more passenger flow than demand on pax edges
-                m.addConstr(
-                    sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= env.demand[o, d][t + time]
-                )
+                m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= env.demand[o, d][t + time])
         # pax flow should be zero on rebal edges
-        m.addConstr(
-                    sum(pax_flow[t, env.charging_edges]) == 0
-                )
+        m.addConstr(sum(pax_flow[t, env.charging_edges]) == 0)
         for n in env.nodes:
             outgoing_edges = env.map_node_to_outgoing_edges[n]
             
             # Constraint: We can not have more vehicles flowing out of a node, than vehicles at the node
-            m.addConstr(
-                sum(rebal_flow[t, outgoing_edges]) +  sum(pax_flow[t, outgoing_edges]) <= acc[n][t] 
-            )
+            m.addConstr(sum(rebal_flow[t, outgoing_edges]) +  sum(pax_flow[t, outgoing_edges]) <= acc[n][t])
+
             for e in outgoing_edges:
                 o_node, d_node = env.edges[e]
                 # add incoming flow from earlier optimizations -> should be stored in rebal_flow and pax_flow
@@ -57,14 +65,14 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                         dacc[d_node][t+1] += env.rebFlow[o_node,d_node][t + time]
                     if env.paxFlow[o_node,d_node][t + time] != 0.0:
                         dacc[d_node][t+1] += env.paxFlow[o_node,d_node][t + time]
+                
                 # regular opimization
                 dacc[d_node][t+env.G.edges[o_node,d_node]['time'][t + time]] += pax_flow[t,e] + rebal_flow[t,e] # adding one because of design decision to appear later
+                
                 # charge station constraint
                 if d_node[1] > o_node[1] or (o_node[1] - env.scenario.energy_distance[o_node[0], d_node[0]] < d_node[1] and o_node[0] != d_node[0]):
                     # Constraint: no more charging vehicles than there are charging stations
-                    m.addConstr(
-                        charging_cars_per_location[o_node[0]][t] + rebal_flow[t,e] <= env.scenario.cars_per_station_capacity[o_node[0]]
-                    )
+                    m.addConstr(charging_cars_per_location[o_node[0]][t] + rebal_flow[t,e] <= env.scenario.cars_per_station_capacity[o_node[0]])
 
                     if d_node[1] > o_node[1] and o_node[0] == d_node[0]:
                         change_dist = d_node[1] - o_node[1]
@@ -76,10 +84,14 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                     for future_time_step in range(t,t+time_spent_charging):
                         charging_cars_per_location[o_node[0]][future_time_step] = charging_cars_per_location[o_node[0]][future_time_step] + rebal_flow[t,e] 
             
-        
+        charge_in_system[t + 1] = 0
         for n in env.nodes:
             outgoing_edges = env.map_node_to_outgoing_edges[n]
             acc[n][t+1] = acc[n][t] + dacc[n][t] - sum(rebal_flow[t, outgoing_edges]) - sum(pax_flow[t, outgoing_edges]) 
+
+            charge_level = (n[1]/env.scenario.number_charge_levels) * 100
+            acc_at_charge_level = acc[n][t+1]
+            charge_in_system[t + 1] += acc_at_charge_level * charge_level
 
 
     obj = 0
