@@ -31,7 +31,8 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
         initial_accumulation = env.scenario.G.nodes[node]['accInit']
         charge_level = (node[1]/env.scenario.number_charge_levels) * 100
         initial_charge_in_system += initial_accumulation * charge_level
-    charge_in_system[0] = initial_charge_in_system
+    # charge_in_system[0] = initial_charge_in_system
+    m.addConstr(charge_in_system[0] == initial_charge_in_system)
 
     charging_cars_per_location = defaultdict(dict)
     for n in env.nodes_spatial:
@@ -42,7 +43,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
     for t in range(mpc_horizon):
 
         # Constraint: charge_in_system never drops below 25% of initial charge in system
-        m.addConstr(charge_in_system[t] >= initial_charge_in_system * 0.25)
+        m.addConstr(charge_in_system[t+1] >= initial_charge_in_system * 0.25)
 
         for o in env.region:
             for d in env.region:
