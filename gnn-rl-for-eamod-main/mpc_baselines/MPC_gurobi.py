@@ -24,7 +24,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
             dacc[n][t] = 0
     pax_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="pax_flow")
     rebal_flow = m.addMVar(shape=(mpc_horizon, len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="rebal_flow")
-    charge_in_system = m.addVar(shape=(mpc_horizon), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="charge_in_system")
+    charge_in_system = m.addVar(lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="charge_in_system")
     
     initial_charge_in_system = 0 # equal to charge level * number of vehicles at charge level
     for node in env.nodes:
