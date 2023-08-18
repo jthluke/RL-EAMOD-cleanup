@@ -31,8 +31,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
         initial_accumulation = env.scenario.G.nodes[node]['accInit']
         charge_level = (node[1]/env.scenario.number_charge_levels) * 100
         initial_charge_in_system += initial_accumulation * charge_level
-    # charge_in_system[0] = initial_charge_in_system
-    m.addConstr(charge_in_system[0] == initial_charge_in_system)
+    
 
     charging_cars_per_location = defaultdict(dict)
     for n in env.nodes_spatial:
@@ -43,7 +42,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
     for t in range(mpc_horizon):
 
         # Constraint: charge_in_system never drops below 25% of initial charge in system
-        m.addConstr(charge_in_system[t+1] >= initial_charge_in_system * 0.25)
+        m.addConstr(charge_in_system >= initial_charge_in_system * 0.25)
 
         for o in env.region:
             for d in env.region:
@@ -85,14 +84,14 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
                     for future_time_step in range(t,t+time_spent_charging):
                         charging_cars_per_location[o_node[0]][future_time_step] = charging_cars_per_location[o_node[0]][future_time_step] + rebal_flow[t,e] 
             
-        charge_in_system[t + 1] = 0
+        charge_in_system = 0
         for n in env.nodes:
             outgoing_edges = env.map_node_to_outgoing_edges[n]
             acc[n][t+1] = acc[n][t] + dacc[n][t] - sum(rebal_flow[t, outgoing_edges]) - sum(pax_flow[t, outgoing_edges]) 
 
             charge_level = (n[1]/env.scenario.number_charge_levels) * 100
             acc_at_charge_level = acc[n][t+1]
-            charge_in_system[t + 1] += acc_at_charge_level * charge_level
+            charge_in_system += acc_at_charge_level * charge_level
 
 
     obj = 0
