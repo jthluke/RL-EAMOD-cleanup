@@ -19,4 +19,4 @@ python main.py --test True --max_episodes 100
 # these iterations outperform a.sbatch
 
 
-# iteration two = changed waster customer penalty to customer reward (since no more paxReward) - added overconcentration penalty 
+# iteration two = added overconcentration penalty 

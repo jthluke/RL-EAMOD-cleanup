@@ -353,7 +353,7 @@ class AMoD:
         for region in self.nodes_spatial:
             total_vehicles_region = sum(self.acc[(region, charge_level)][self.time+1] for charge_level in range(self.scenario.number_charge_levels))
             if total_vehicles_region >= 0.8 * total_vehicles:
-                overconcentration_penalty += 1000
+                overconcentration_penalty -= 1000
         
 
         # print("reward: " + str(self.reward))
