@@ -345,18 +345,7 @@ class AMoD:
             for region2 in self.nodes_spatial:
                 demand += self.demand[region, region2][self.time+1]
             unserved_demand = demand - self.acc_spatial[region][self.time+1]
-            # high reward for having acc_spatial == demand
-            # med reward for having acc_spatial > demand
-            # negative reward for having acc_spatial < demand
-
-            if unserved_demand == 0:
-                customers_reward += demand * 10
-            
-            if unserved_demand < 0:
-                customers_reward += demand * 5
-            
-            if unserved_demand > 0:
-                customers_reward += unserved_demand * (-10)
+            customers_reward += unserved_demand * (-10)
         
         overconcentration_penalty = 0
         total_vehicles = sum(self.acc[(region, charge_level)][self.time+1] for region in self.nodes_spatial for charge_level in range(self.scenario.number_charge_levels))
