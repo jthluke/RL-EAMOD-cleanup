@@ -13,3 +13,10 @@ python main.py --test True --max_episodes 100
 
 # tags = charge_rl, spatial_rl, b_batch, (2nd) test, space_charge_graph
 # job submitted
+
+# iteration one complete = separation of rebreward internal added, also added charge penalty + wasted customer penalty
+# https://wandb.ai/aaryan04/e-amod/runs/9ph8y8px/overview?workspace=user-aaryan04, https://wandb.ai/aaryan04/e-amod/runs/vl8dakr8?workspace=user-aaryan04
+# these iterations outperform a.sbatch
+
+
+# iteration two = add overconcentration penalty 
