@@ -292,8 +292,6 @@ class AMoD:
                     assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
                     self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                rebreward_internal += avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
-                
             # road edge
             elif self.rebAction[k] > 0:
                 self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
@@ -339,7 +337,7 @@ class AMoD:
         
         for c in range(charge_limit, self.scenario.number_charge_levels):
             for region in self.nodes_spatial:
-                charging_penalty += self.acc[(region, c)][self.time+1] * (5) * ((c)/(self.scenario.number_charge_levels))
+                charging_penalty += self.acc[(region, c)][self.time+1] * (10) * ((c)/(self.scenario.number_charge_levels))
 
         customers_reward = 0
         for region in self.nodes_spatial:
@@ -351,21 +349,11 @@ class AMoD:
         
         overconcentration_penalty = 0
         total_vehicles = sum(self.acc[(region, charge_level)][self.time+1] for region in self.nodes_spatial for charge_level in range(self.scenario.number_charge_levels))
-        equal_distribution = total_vehicles/self.scenario.spatial_nodes
 
         for region in self.nodes_spatial:
             total_vehicles_region = sum(self.acc[(region, charge_level)][self.time+1] for charge_level in range(self.scenario.number_charge_levels))
-            if total_vehicles_region > equal_distribution:
-                # look at all other regions and amplify penalty of not serving customers there
-                for region_a in self.nodes_spatial:
-                    demand_a = 0
-                    if region_a == region:
-                        continue
-                    else:
-                        for region_b in self.nodes_spatial:
-                            demand_a += self.demand[region_a, region_b][self.time+1]
-                    unserved_demand_a = demand_a - self.acc_spatial[region_a][self.time+1]
-                    overconcentration_penalty += min(0, unserved_demand_a * (-10))
+            if total_vehicles_region >= 0.8 * total_vehicles:
+                overconcentration_penalty += 1000
         
 
         # print("reward: " + str(self.reward))
