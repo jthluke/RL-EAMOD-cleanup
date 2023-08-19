@@ -235,7 +235,7 @@ class AMoD:
     def reb_step(self, rebAction):
         t = self.time
         self.reward = 0 # reward is calculated from before this to the next rebalancing, we may also have two rewards, one for pax matching and one for rebalancing
-        
+        rebreward_internal = 0
         self.rebAction = rebAction      
         # rebalancing
         for k in range(len(self.edges)):
@@ -264,6 +264,7 @@ class AMoD:
                 self.info['rebalancing_cost'] += avg_energy_price * self.rebAction[k]*charge_difference
                 # charge cost negatively influences the reward
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
+                rebreward_internal += avg_energy_price * self.rebAction[k]*charge_difference
                 # we have to add plus one because charging starts in the next timestep
                 for future_time in range(t+1, t+charge_time+1):
                     self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
@@ -304,6 +305,7 @@ class AMoD:
                 self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
                 
                 self.reward -= (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+
         
         # arrival for the next time step, executed in the last state of a time step
         # this makes the code slightly different from the previous version, where the following codes are executed between matching and rebalancing  
