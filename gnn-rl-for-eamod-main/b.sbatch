@@ -9,7 +9,7 @@
 
 conda activate
 python main.py --max_episodes 20000
-python main.py --test True --max_episodes 100
+python main.py --test True --max_episodes 10
 
 # tags = charge_rl, spatial_rl, b_batch, (2nd) test, space_charge_graph
 # job submitted
