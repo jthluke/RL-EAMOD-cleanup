@@ -344,13 +344,22 @@ class AMoD:
             for region2 in self.nodes_spatial:
                 demand += self.demand[region, region2][self.time+1]
             unserved_demand = demand - self.acc_spatial[region][self.time+1]
-            wasted_customers_penalty = min(0, unserved_demand * (-10))
+            wasted_customers_penalty += min(0, unserved_demand * (-10))
+        
+        overconcentration_penalty = 0
+        total_vehicles = sum(self.acc[(region, charge_level)][self.time+1] for region in self.nodes_spatial for charge_level in range(self.scenario.number_charge_levels))
+
+        for region in self.nodes_spatial:
+            total_vehicles_region = sum(self.acc[(region, charge_level)][self.time+1] for charge_level in range(self.scenario.number_charge_levels))
+            if total_vehicles_region >= 0.8 * total_vehicles:
+                overconcentration_penalty -= 1000
+        
 
         # print("reward: " + str(self.reward))
         # print("charging_penalty: " + str(charging_penalty))
         # print("wasted_customers_penalty: " + str(wasted_customers_penalty))
         
-        rebreward_internal = self.reward + charging_penalty + wasted_customers_penalty
+        rebreward_internal = self.reward + charging_penalty + wasted_customers_penalty + overconcentration_penalty
         
         self.time += 1
         # use self.time to index the next time step
