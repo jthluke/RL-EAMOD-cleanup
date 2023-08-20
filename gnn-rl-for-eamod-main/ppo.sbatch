@@ -17,6 +17,4 @@ python main_stable_baselines.py --test True --max_episodes 100
 # synced wih b.batch
 # iteration 1 = https://wandb.ai/aaryan04/e-amod/runs/5ftydl4w/overview?workspace=user-aaryan04
 
-# iteration 2 = 
-
-# iteration 3 =
+# iteration 2 =
