@@ -19,4 +19,6 @@ python main.py --test True --max_episodes 100
 # these iterations outperform a.sbatch
 
 
-# iteration two = added overconcentration penalty 
+# iteration two = added overconcentration penalty (accidentally positive)
+
+# iteration three = added overconcentration penalty (negative) - started 13+ hrs after iteration two
