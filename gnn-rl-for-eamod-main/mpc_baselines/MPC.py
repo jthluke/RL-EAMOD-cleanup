@@ -14,13 +14,14 @@ from copy import deepcopy
 import re
 
 class MPC:
-    def __init__(self, env, gurobi_env, mpc_horizon):
+    def __init__(self, env, gurobi_env, mpc_horizon, initial_state):
         self.env = env
         self.gurobi_env = gurobi_env
         self.mpc_horizon = mpc_horizon
+        self.return_to_initial_state = initial_state
         
     def MPC_exact(self):
-        paxAction, rebAction = solve_mpc(env=self.env, gurobi_env=self.gurobi_env, mpc_horizon=self.mpc_horizon)
+        paxAction, rebAction = solve_mpc(env=self.env, gurobi_env=self.gurobi_env, mpc_horizon=self.mpc_horizon, return_initial_state=self.return_to_initial_state)
         return paxAction,rebAction
     
     def MPC_trilevel(self):

@@ -8,7 +8,7 @@ from collections import defaultdict
 from src.misc.utils import mat2str
 import copy
 
-def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
+def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False):
     time = env.time
     discount_factor = 0.99
     if mpc_horizon+time >= env.tf:
@@ -31,7 +31,6 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
         charge_level = (node[1]/env.scenario.number_charge_levels) * 100
         initial_charge_in_system += initial_accumulation * charge_level
     
-
     charging_cars_per_location = defaultdict(dict)
     for n in env.nodes_spatial:
         charging_cars_per_location[n] = defaultdict(float)
@@ -83,8 +82,9 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30):
             outgoing_edges = env.map_node_to_outgoing_edges[n]
             acc[n][t+1] = acc[n][t] + dacc[n][t] - sum(rebal_flow[t, outgoing_edges]) - sum(pax_flow[t, outgoing_edges]) 
 
-    # Constraint: charge_in_system never drops below 25% of initial charge in system
-    m.addConstr(sum(acc[n][mpc_horizon - 1] * (n[1]/env.scenario.number_charge_levels) * 100 for n in env.nodes) >= initial_charge_in_system)
+    if return_initial_state:
+        # Constraint: charge_in_system is equal to or more than initially
+        m.addConstr(sum(acc[n][mpc_horizon - 1] * (n[1]/env.scenario.number_charge_levels) * 100 for n in env.nodes) >= initial_charge_in_system)
 
     obj = 0
     for t in range(mpc_horizon):

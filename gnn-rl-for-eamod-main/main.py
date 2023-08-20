@@ -115,7 +115,8 @@ else:
     scale_factor = 0.0001
     scale_price = 0.1
     model = A2C(env=env, T=T, lr_a=lr_a, lr_c=lr_c, grad_norm_clip_a=grad_norm_clip_a, grad_norm_clip_c=grad_norm_clip_c, seed=seed, scale_factor=scale_factor, scale_price=scale_price).to(device)
-    # model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_40000.pth')
+    if test and not use_equal_distr_baseline:
+        model.load_checkpoint(path=f'saved_files/ckpt/{problem_folder}/a2c_gnn_final.pth')
     tf = env.tf
 if use_equal_distr_baseline:
     experiment = 'uniform_distr_baseline_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
@@ -366,8 +367,9 @@ for i_episode in epochs:
 if test:
     print(rewards_np)
     wandb.log({"AVG Reward ": rewards_np.mean(), "Std Reward ": rewards_np.std(), "AVG Satisfied Demand ": served_demands_np.mean(), "AVG Rebalancing Cost": episode_rebalancing_cost.mean(), "AVG Epoch Time": epoch_times.mean()})
-model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
-wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
+if not test and not use_equal_distr_baseline:
+    model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
+    wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_final.pth")
 wandb.finish()
 
 

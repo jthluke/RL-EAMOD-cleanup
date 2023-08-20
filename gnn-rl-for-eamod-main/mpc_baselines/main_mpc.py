@@ -41,6 +41,8 @@ parser.add_argument('--test', type=bool, default=False,
                     help='activates test mode for agent evaluation')
 parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
+parser.add_argument('--initial_state', type=bool, default=False,
+                    help='forces MPC to return system to initial charge')
 parser.add_argument('--mpc_horizon', type=int, default=60, metavar='N',
                     help='MPC horizon (default: 60)')
 parser.add_argument('--subproblem', type=int, default=0, metavar='N',
@@ -129,7 +131,7 @@ wandb.init(
 
 opt_rew = []
 # obs = env.reset() # TODO: determine if we should do this
-mpc = MPC(env, gurobi_env, mpc_horizon)
+mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
 served = 0
 rebcost = 0
