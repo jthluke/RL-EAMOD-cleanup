@@ -24,4 +24,7 @@ python main.py --charging_heuristic relative_charging --max_episodes 10 --test T
 # tags = charge_heuristic, spatial_rl, c_batch, spatial_graph
 # job submitted
 
-# etf = https://wandb.ai/aaryan04/e-amod/runs/zs6c1bgo/overview?workspace=user-aaryan04
+# etf = 
+# opc =
+# opos = 
+# rc =

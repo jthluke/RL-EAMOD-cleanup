@@ -11,4 +11,4 @@ conda activate
 python main.py --test True --max_episodes 10 --equal_distr_baseline True
 
 # tags = charge_heuristic, spatial_heuristic, a_batch, test, space_charge_graph
-# job complete = 
+# job complete

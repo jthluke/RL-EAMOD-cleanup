@@ -20,4 +20,4 @@ python main.py --charging_heuristic off_peak_one_step --prop_distr_baseline True
 python main.py --charging_heuristic relative_charging --prop_distr_baseline True --test True --max_episodes 10
 
 # tags = charge_heuristic, spatial_heuristic, a_batch, test, spatial_graph
-# job submitted
+# job complete
