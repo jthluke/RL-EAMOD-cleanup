@@ -9,9 +9,11 @@
 
 conda activate
 
-python main.py --charging_heuristic off_peak_charging --max_episodes 15000
-python main.py --charging_heuristic off_peak_one_step --max_episodes 15000
-python main.py --charging_heuristic relative_charging --max_episodes 15000
+python main.py --charging_heuristic empty_to_full --max_episodes 10 --test True
+# python main.py --charging_heuristic empty_to_full --max_episodes 20000
+# python main.py --charging_heuristic off_peak_charging --max_episodes 20000
+# python main.py --charging_heuristic off_peak_one_step --max_episodes 20000
+# python main.py --charging_heuristic relative_charging --max_episodes 20000
 
 # tags = charge_heuristic, spatial_rl, c_batch, spatial_graph
 # job submitted
