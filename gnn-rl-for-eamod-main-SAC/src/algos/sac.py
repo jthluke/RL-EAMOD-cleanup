@@ -384,7 +384,7 @@ class SAC(nn.Module):
             backup = reward_batch + self.gamma * \
                 (q_pi_targ - self.alpha * logp_a2)
 
-        loss_q1 = F.mse_loss(q1.float(), backup.float()
+        loss_q1 = F.mse_loss(q1.float(), backup.float())
         loss_q2 = F.mse_loss(q2.float(), backup.float())
 
         return loss_q1.float(), loss_q2.float()
