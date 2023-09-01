@@ -197,7 +197,6 @@ if not args.test:
         input_size=13,
         hidden_size=args.hidden_size,
         alpha=args.alpha,
-        batch_size=args.batch_size,
         use_automatic_entropy_tuning=False,
         load_memory=False,
         critic_version=args.critic_version,
