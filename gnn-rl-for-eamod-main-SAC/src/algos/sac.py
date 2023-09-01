@@ -19,6 +19,7 @@ import torch.nn.functional as F
 from torch.distributions import Dirichlet
 from torch_geometric.data import Data, Batch
 from torch_geometric.nn import GCNConv
+from src.algos.pax_flows_solver import PaxFlowsSolver
 from src.algos.reb_flows_solver import RebalFlowSolver
 from src.misc.utils import dictsum
 import random
@@ -478,21 +479,27 @@ class SAC(nn.Module):
 
     ########
 
-    def test_agent(self, test_episodes, env, cplexpath, directory, parser):
+    def test_agent(self, test_episodes, env, pax_flows_solver, rebal_flow_solver, parser):
         epochs = range(test_episodes)  # epoch iterator
         episode_reward = []
         episode_served_demand = []
         episode_rebalancing_cost = []
-        for _ in epochs:
+        for i_episode in epochs:
+            desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
             eps_reward = 0
             eps_served_demand = 0
             eps_rebalancing_cost = 0
-            obs = env.reset()
+
+            bool_random_random_demand = False
+            obs = env.reset(bool_random_random_demand)
+
             actions = []
             done = False
-            while (not done):
-                obs, paxreward, done, info, _, _ = env.pax_step(
-                    CPLEXPATH=cplexpath, PATH="scenario_nyc4_test", directory=directory)
+
+            while (not done):                
+                pax_flows_solver.update_constraints()
+                pax_flows_solver.update_objective()
+                obs, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
                 eps_reward += paxreward
 
                 o = parser.parse_obs(obs)
@@ -500,19 +507,35 @@ class SAC(nn.Module):
                 action_rl = self.select_action(o, deterministic=True)
                 actions.append(action_rl)
 
-                desiredAcc = {env.region[i]: int(
-                    action_rl[i] * dictsum(env.acc, env.time + 1))for i in range(len(env.region))}
+                total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
+                desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
+                total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+                missing_cars = total_idle_acc - total_desiredAcc
+                most_likely_node = np.argmax(action_rl)
+                if missing_cars != 0:
+                    desired_acc[env.nodes[most_likely_node]] += missing_cars   
+                    total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+                assert abs(total_desiredAcc - total_idle_acc) < 1e-5
+                for n in env.nodes:
+                    assert desired_acc[n] >= 0
+                for n in env.nodes:
+                    desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
+                
+                rebal_flow_solver.update_constraints(desired_acc, env)
+                rebal_flow_solver.update_objective(env)
+                rebAction = rebal_flow_solver.optimize()
 
-                rebAction = solveRebFlow(
-                    env, "scenario_nyc4_test", desiredAcc, cplexpath, directory)
-
-                _, rebreward, done, info, _, _ = env.reb_step(rebAction)
-                eps_reward += rebreward
-                eps_served_demand += info["served_demand"]
-                eps_rebalancing_cost += info["rebalancing_cost"]
-            episode_reward.append(eps_reward)
-            episode_served_demand.append(eps_served_demand)
-            episode_rebalancing_cost.append(eps_rebalancing_cost)
+                # take action in environment
+                new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
+                episode_reward += rebreward
+                
+                # track performance over episode
+                episode_served_demand += info_pax['served_demand']
+                episode_rebalancing_cost += info_reb['rebalancing_cost']
+            
+            episode_reward.append(episode_reward)
+            episode_served_demand.append(episode_served_demand)
+            episode_rebalancing_cost.append(episode_rebalancing_cost)
 
         return (
             np.mean(episode_reward),

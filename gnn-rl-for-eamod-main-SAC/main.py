@@ -294,7 +294,7 @@ if not args.test:
 
         if i_episode % 10 == 0:  # test model every 10th episode
             test_reward, test_served_demand, test_rebalancing_cost = model.test_agent(
-                1, env, args.cplexpath, args.directory, parser=parser)
+                1, env, pax_flows_solver, rebal_flow_solver, parser=parser)
             if test_reward >= best_reward_test:
                 best_reward_test = test_reward
                 path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
