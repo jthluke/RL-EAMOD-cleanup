@@ -189,6 +189,9 @@ wandb.init(
         "licence": gurobi,
       })
 
+if args.checkpoint_path is None:
+    args.checkpoint_path = "NY_CD1"
+
 if not args.test:
     parser = GNNParser(env)
 
