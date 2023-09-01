@@ -15,10 +15,8 @@ python main.py --test True --max_episodes 10
 # job submitted
 
 # iteration one complete = separation of rebreward internal added, also added charge penalty + wasted customer penalty
-# https://wandb.ai/aaryan04/e-amod/runs/9ph8y8px/overview?workspace=user-aaryan04, https://wandb.ai/aaryan04/e-amod/runs/vl8dakr8?workspace=user-aaryan04
+# https://wandb.ai/aaryan04/e-amod/runs/9ph8y8px/overview?workspace=user-aaryan04
 # these iterations outperform a.sbatch
 
-
-# iteration two = added overconcentration penalty (accidentally positive)
-
-# iteration three = added overconcentration penalty (negative) - started 13+ hrs after iteration two
+# iteration two = added overconcentration penalty (negative)
+# https://wandb.ai/aaryan04/e-amod/runs/ywfrt93u/overview?workspace=user-aaryan04 

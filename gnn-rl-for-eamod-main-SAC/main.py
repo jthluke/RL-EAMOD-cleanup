@@ -198,7 +198,6 @@ if not args.test:
         hidden_size=args.hidden_size,
         alpha=args.alpha,
         use_automatic_entropy_tuning=False,
-        load_memory=False,
         critic_version=args.critic_version,
     ).to(device)
 
