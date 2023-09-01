@@ -16,6 +16,7 @@ import copy
 
 from src.envs.amod_env import Scenario, AMoD
 from src.algos.a2c_gnn import A2C
+from src.algos.sac import SAC
 from src.misc.utils import dictsum
 
 from torch_geometric.data import Data
