@@ -287,8 +287,9 @@ if not args.test:
             f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
         # Checkpoint best performing model
         if episode_reward >= best_reward:
+            path = os.path.join('ckpt', f'{checkpoint_path}_sample.pth')
             model.save_checkpoint(
-                path=f"ckpt/{checkpoint_path}_sample.pth")
+                path=path)
             best_reward = episode_reward
 
         if i_episode % 10 == 0:  # test model every 10th episode
@@ -296,8 +297,9 @@ if not args.test:
                 1, env, args.cplexpath, args.directory, parser=parser)
             if test_reward >= best_reward_test:
                 best_reward_test = test_reward
+                path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
                 model.save_checkpoint(
-                    path=f"ckpt/{checkpoint_path}_test.pth")
+                    path=path)
 else:
     parser = GNNParser(env, T=6, json_file=file_path)
     model = SAC(
@@ -312,8 +314,8 @@ else:
         load_memory=False,
         critic_version=args.critic_version,
     ).to(device)
-
-    model.load_checkpoint(path=f"ckpt/{checkpoint_path}.pth")
+    path = os.path.join('ckpt', f'{checkpoint_path}.pth')
+    model.load_checkpoint(path=path)
 
     test_episodes = args.max_episodes  # set max number of training episodes
     T = args.max_steps  # set episode length
