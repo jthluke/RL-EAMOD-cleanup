@@ -189,8 +189,7 @@ wandb.init(
         "licence": gurobi,
       })
 
-if args.checkpoint_path is None:
-    args.checkpoint_path = "NY_CD1"
+checkpoint_path = "NY_CD1"
 
 if not args.test:
     parser = GNNParser(env)
@@ -289,7 +288,7 @@ if not args.test:
         # Checkpoint best performing model
         if episode_reward >= best_reward:
             model.save_checkpoint(
-                path=f"/ckpt/{args.checkpoint_path}_sample.pth")
+                path=f"/ckpt/{checkpoint_path}_sample.pth")
             best_reward = episode_reward
 
         if i_episode % 10 == 0:  # test model every 10th episode
@@ -298,7 +297,7 @@ if not args.test:
             if test_reward >= best_reward_test:
                 best_reward_test = test_reward
                 model.save_checkpoint(
-                    path=f"/ckpt/{args.checkpoint_path}_test.pth")
+                    path=f"/ckpt/{checkpoint_path}_test.pth")
 else:
     parser = GNNParser(env, T=6, json_file=file_path)
     model = SAC(
@@ -314,7 +313,7 @@ else:
         critic_version=args.critic_version,
     ).to(device)
 
-    model.load_checkpoint(path=f"/ckpt/{args.checkpoint_path}.pth")
+    model.load_checkpoint(path=f"/ckpt/{checkpoint_path}.pth")
 
     test_episodes = args.max_episodes  # set max number of training episodes
     T = args.max_steps  # set episode length
