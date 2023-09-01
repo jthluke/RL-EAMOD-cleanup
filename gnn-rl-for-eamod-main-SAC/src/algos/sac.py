@@ -19,7 +19,7 @@ import torch.nn.functional as F
 from torch.distributions import Dirichlet
 from torch_geometric.data import Data, Batch
 from torch_geometric.nn import GCNConv
-from src.algos.reb_flow_solver import solveRebFlow
+from src.algos.reb_flows_solver import RebalFlowSolver
 from src.misc.utils import dictsum
 import random
 
