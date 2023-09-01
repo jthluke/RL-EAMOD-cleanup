@@ -384,10 +384,10 @@ class SAC(nn.Module):
             backup = reward_batch + self.gamma * \
                 (q_pi_targ - self.alpha * logp_a2)
 
-        loss_q1 = F.mse_loss(q1, backup)
-        loss_q2 = F.mse_loss(q2, backup)
+        loss_q1 = F.mse_loss(q1.float(), backup.float()
+        loss_q2 = F.mse_loss(q2.float(), backup.float())
 
-        return loss_q1, loss_q2
+        return loss_q1.float(), loss_q2.float()
 
     def compute_loss_pi(self, data):
 
@@ -417,7 +417,7 @@ class SAC(nn.Module):
 
         loss_q1 = loss_q1.float()
         loss_q2 = loss_q2.float()
-        
+
         self.optimizers["c1_optimizer"].zero_grad()
         loss_q1.backward()
         nn.utils.clip_grad_norm_(self.critic1.parameters(),  self.clip)

@@ -280,7 +280,7 @@ if not args.test:
             if i_episode > 10:
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
-
+                model = model.float()
                 model.update(data=batch)  # update model
 
         epochs.set_description(
