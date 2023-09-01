@@ -194,7 +194,7 @@ if not args.test:
 
     model = SAC(
         env=env,
-        input_size=13,
+        input_size=22,
         hidden_size=args.hidden_size,
         alpha=args.alpha,
         use_automatic_entropy_tuning=False,
