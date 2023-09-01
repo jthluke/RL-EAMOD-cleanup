@@ -527,15 +527,12 @@ class SAC(nn.Module):
 
                 # take action in environment
                 new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
-                episode_reward += rebreward
-                
-                # track performance over episode
-                episode_served_demand += info_pax['served_demand']
-                episode_rebalancing_cost += info_reb['rebalancing_cost']
-            
-            episode_reward.append(episode_reward)
-            episode_served_demand.append(episode_served_demand)
-            episode_rebalancing_cost.append(episode_rebalancing_cost)
+                eps_reward += rebreward
+                eps_served_demand += info_pax["served_demand"]
+                eps_rebalancing_cost += info_reb["rebalancing_cost"]
+            episode_reward.append(eps_reward)
+            episode_served_demand.append(eps_served_demand)
+            episode_rebalancing_cost.append(eps_rebalancing_cost)
 
         return (
             np.mean(episode_reward),
