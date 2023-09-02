@@ -49,11 +49,11 @@ class ReplayData:
         self.data_list = []
         self.rew_scale = rew_scale
 
-    def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
+    def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False, model):
         w = open(f'replaymemories/{memory_path}.pkl', "rb")
 
-        replay_buffer = pickle.load(w)
-        data = replay_buffer.sample_all(size)
+        model.replay_buffer = pickle.load(w)
+        data = model.replay_buffer.sample_all(size)
         print(data)
         if st:
             mean = data['rew'].mean()
@@ -196,7 +196,7 @@ if not args.test:
     # Initialize Dataset
     Dataset = ReplayData(device=device, rew_scale=args.rew_scale)
     Dataset.create_dataset(edge_index=edge_index, memory_path=args.memory,
-                           size=args.samples_buffer, st=args.st, sc=args.sc)
+                           size=args.samples_buffer, st=args.st, sc=args.sc, model=model)
     # Initialize lists for logging
     log = {'train_reward': [],
            'train_served_demand': [],
