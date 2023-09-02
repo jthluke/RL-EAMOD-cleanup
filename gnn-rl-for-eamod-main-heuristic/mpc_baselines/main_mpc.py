@@ -163,7 +163,7 @@ while(not done):
         if t > 0:
             action = [0] * len(env.nodes)
             acc, _, dacc, demand = obs_2
-            total_vehicles = sum(acc[region][c] for c in range(env.number_charge_levels) for region in range(env.number_spatial_nodes))
+            total_vehicles = sum(acc[region][c] for c in env.scenario.number_charge_levels for region in range(env.number_spatial_nodes))
             for i in range(env.number_nodes):
                 action[i] = acc[env.nodes[i][0]][env.nodes[i][1]]/total_vehicles
             SARS[t] = [obs_1, action, reward2, obs_2]
