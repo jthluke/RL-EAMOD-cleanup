@@ -195,7 +195,7 @@ if not args.test:
                                torch.tensor([edge['j'] for edge in data["topology_graph"]]).view(1, -1))).long()
     # Initialize Dataset
     Dataset = ReplayData(device=device, rew_scale=args.rew_scale)
-    Dataset.create_dataset(edge_index=edge_index, memory_path=args.memory_path,
+    Dataset.create_dataset(edge_index=edge_index, memory_path=args.memory,
                            size=args.samples_buffer, st=args.st, sc=args.sc)
     # Initialize lists for logging
     log = {'train_reward': [],
