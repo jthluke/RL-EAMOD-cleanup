@@ -184,7 +184,6 @@ if not args.test:
         min_q_weight=args.min_q_weight,
         use_automatic_entropy_tuning=False,
         lagrange_thresh=args.lagrange_thresh,
-        n=args.n,
         device=device,
         json_file=f'data/scenario_{city}.json',
         min_q_version=3,
