@@ -157,7 +157,7 @@ city = args.city
 if not args.test:
     if args.load_yaml == True:
         # print current path location
-        print(os.getcwd())
+        print("current path location = " + os.getcwd())
         with open(f"src/conf/config_{city}.yaml", 'r') as f:
             parameter = yaml.load(f"src/conf/config_{city}.yaml")
         args.memory = parameter.memory_path
