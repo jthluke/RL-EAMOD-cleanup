@@ -159,13 +159,13 @@ if not args.test:
         # print current path location
         print("current path location = " + os.getcwd())
         with open(f"src/conf/config_{city}.yaml", 'r') as f:
-            parameter = yaml.load(f"src/conf/config_{city}.yaml", Loader=yaml.FullLoader)
-        args.memory = parameter.memory_path
-        args.min_q_weight = parameter.min_q_weight
-        args.samples_buffer = parameter.samples_buffer
-        args.lagrange_thresh = parameter.lagrange_thresh
-        args.rew_scale = parameter.rew_scale
-        args.max_episodes = parameter.max_episodes
+            parameter = yaml.load(f, Loader=yaml.FullLoader)
+        args.memory = parameter['memory_path']
+        args.min_q_weight = parameter['min_q_weight']
+        args.samples_buffer = parameter['samples_buffer']
+        args.lagrange_thresh = parameter['lagrange_thresh']
+        args.rew_scale = parameter['rew_scale']
+        args.max_episodes = parameter['max_episodes']
 
     scenario = Scenario(json_file=f"data/scenario_{city}.json", demand_ratio=demand_ratio[city],
                         json_hr=json_hr[city], sd=args.seed, json_tstep=args.json_tstep, tf=args.max_steps)
