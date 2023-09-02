@@ -209,6 +209,12 @@ if not args.test:
     best_reward_test = -np.inf  # set best reward
     model.train()  # set model in train mode
 
+    total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
+    for region in env.nodes_spatial:
+        for destination in env.nodes_spatial:
+            for t in range(env.tf):
+                total_demand_per_spatial_node[region] += env.demand[region,destination][t]
+
     for i_episode in epochs:
         desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
         bool_random_random_demand = not test # only use random demand during training
@@ -285,13 +291,26 @@ if not args.test:
 
         epochs.set_description(
             f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
+        
+        # Send current statistics to wandb
+        for spatial_node in range(env.scenario.spatial_nodes):
+            wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
+            wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
+            if total_demand_per_spatial_node[spatial_node] > 0:
+                wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
+
         # Checkpoint best performing model
         if episode_reward >= best_reward:
             path = os.path.join('ckpt', f'{checkpoint_path}.pth')
             model.save_checkpoint(
                 path=path)
             best_reward = episode_reward
+            best_rebal_cost = episode_rebalancing_cost
+            best_served_demand  = episode_served_demand
             best_model = model
+
+        wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
+        "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward})
 
         if i_episode % 10 == 0:  # test model every 10th episode
             test_reward, test_served_demand, test_rebalancing_cost = model.test_agent(
@@ -299,8 +318,8 @@ if not args.test:
             if test_reward >= best_reward_test:
                 best_reward_test = test_reward
                 path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
-                model.save_checkpoint(
-                    path=path)
+                model.save_checkpoint(path=path)
+                print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
 else:
     parser = GNNParser(env)
 
@@ -392,6 +411,8 @@ else:
         epochs.set_description(
             f"Episode {episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost}")
         # Log KPIs
+    
+wandb.finish()
 
 
 
