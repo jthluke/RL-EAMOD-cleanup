@@ -311,8 +311,8 @@ else:
         use_automatic_entropy_tuning=False,
         critic_version=args.critic_version,
     ).to(device)
-    
-    path = os.path.join('ckpt', f'{checkpoint_path}.pth')
+
+    path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
     model.load_checkpoint(path=path)
 
     test_episodes = args.max_episodes  # set max number of training episodes
