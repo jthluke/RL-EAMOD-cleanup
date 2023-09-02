@@ -316,7 +316,6 @@ else:
     model.load_checkpoint(path=path)
 
     test_episodes = args.max_episodes  # set max number of training episodes
-    T = args.max_steps  # set episode length
     epochs = trange(test_episodes)  # epoch iterator
     # Initialize lists for logging
     log = {'test_reward': [],
