@@ -179,7 +179,6 @@ if not args.test:
         p_lr=1e-4,
         q_lr=3e-4,
         alpha=args.alpha,
-        batch_size=args.batch_size,
         deterministic_backup=True,
         min_q_weight=args.min_q_weight,
         use_automatic_entropy_tuning=False,
