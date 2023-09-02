@@ -53,6 +53,7 @@ class ReplayData:
 
         replay_buffer = pickle.load(w)
         data = replay_buffer.sample_all(size)
+        print(data)
         if st:
             mean = data['rew'].mean()
             std = data['rew'].std()
