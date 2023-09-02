@@ -149,6 +149,9 @@ revenue = 0
 t_0 = time.time()
 time_list = []
 SARS = {}
+print(len(env.nodes))
+print(len(env.nodes[0]))
+print(env.number_nodes)
 while(not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact() 
