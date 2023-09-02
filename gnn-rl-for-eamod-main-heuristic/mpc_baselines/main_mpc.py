@@ -166,11 +166,9 @@ while(not done):
         if t > 0:
             action = [0 for i in range(env.number_nodes)]
             acc, _, dacc, demand = obs_2
-            print(acc)
-            break
-            total_vehicles = sum(acc[env.nodes[i][0]][env.nodes[i][1]] for i in range(env.number_nodes))
+            total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
             for i in range(env.number_nodes):
-                action[i] = acc[env.nodes[i][0]][env.nodes[i][1]]/total_vehicles
+                action[i] = acc[env.nodes[i]][1]/total_vehicles
             SARS[t] = [obs_1, action, reward2, obs_2]
         obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)    
         if t > 0:
