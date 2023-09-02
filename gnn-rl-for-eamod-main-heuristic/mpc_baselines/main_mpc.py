@@ -161,7 +161,7 @@ while(not done):
         timesteps = [0]
     for t in timesteps:
         if t > 0:
-            action = [0] * env.nodes
+            action = [0] * len(env.nodes)
             acc, _, dacc, demand = obs_2
             total_vehicles = sum(acc)
             for i in range(env.number_nodes):
