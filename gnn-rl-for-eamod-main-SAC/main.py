@@ -287,10 +287,11 @@ if not args.test:
             f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
         # Checkpoint best performing model
         if episode_reward >= best_reward:
-            path = os.path.join('ckpt', f'{checkpoint_path}_sample.pth')
+            path = os.path.join('ckpt', f'{checkpoint_path}.pth')
             model.save_checkpoint(
                 path=path)
             best_reward = episode_reward
+            best_model = model
 
         if i_episode % 10 == 0:  # test model every 10th episode
             test_reward, test_served_demand, test_rebalancing_cost = model.test_agent(
