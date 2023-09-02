@@ -219,8 +219,8 @@ class SAC(nn.Module):
             p.requires_grad = False
 
         self.obs_parser = GNNParser(self.env, json_file=json_file, T=6)
-        if self.wandb != None:
-            self.wandb.watch(self.actor, log_freq=60)
+        # if self.wandb != None:
+        #     self.wandb.watch(self.actor, log_freq=60)
             # self.wandb.watch(self.critic1, log_freq=60)
 
         self.optimizers = self.configure_optimizers()
