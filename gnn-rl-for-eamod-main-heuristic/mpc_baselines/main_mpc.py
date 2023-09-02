@@ -148,6 +148,7 @@ opcost = 0
 revenue = 0
 t_0 = time.time()
 time_list = []
+SARS = {}
 while(not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact() 
@@ -159,8 +160,12 @@ while(not done):
     else:
         timesteps = [0]
     for t in timesteps:
-        obs, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)    
-        obs, reward2, done, info = env.reb_step(rebAction[t])
+        if t > 0:
+            SARS[t] = [obs_1, rebAction[t - 1], reward2, obs_2]
+        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)    
+        if t > 0:
+            SARS[t][2] += reward1
+        obs_2, reward2, done, info = env.reb_step(rebAction[t])
         opt_rew.append(reward1+reward2) 
         served += info['served_demand']
         rebcost += info['rebalancing_cost']
@@ -168,7 +173,9 @@ while(not done):
         spatial_rebal_cost += info['spatial_rebalancing_cost']
         opcost += info['operating_cost']
         revenue += info['revenue'] 
+
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue},Served demand {served}, Rebalancing Cost {rebcost}, Charge Rebalancing Cost {charge_rebal_cost}, Spatial Rebalancing Cost {spatial_rebal_cost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+print(f'Reb Action at t = 0: {rebAction[0]}')
 # Send current statistics to wandb
 
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Charge Rebalancing Cost": charge_rebal_cost, "Spatial Rebalancing Cost": spatial_rebal_cost, "Avg.Time": np.array(time_list).mean()})
