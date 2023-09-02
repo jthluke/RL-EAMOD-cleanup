@@ -155,7 +155,7 @@ city = args.city
 
 if not args.test:
     if args.load_yaml == True:
-        with open(f"src/conf/config_{city}.yaml", 'r') as f:
+        with open(f"./src/conf/config_{city}.yaml", 'r') as f:
             parameter = yaml.load(f"./src/conf/config_{city}.yaml")
         args.memory = parameter.memory_path
         args.min_q_weight = parameter.min_q_weight
