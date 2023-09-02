@@ -12,7 +12,7 @@ import random
 import pickle
 from torch_geometric.data import Data, Batch
 import json
-import omegaconf
+import yaml
 
 
 class PairData(Data):
@@ -155,7 +155,8 @@ city = args.city
 
 if not args.test:
     if args.load_yaml == True:
-        parameter = omegaconf.load(f"src/conf/config_{city}.yaml")
+        with open(f"src/conf/config_{city}.yaml", 'r') as f:
+            parameter = yaml.load(f"src/conf/config_{city}.yaml")
         args.memory = parameter.memory_path
         args.min_q_weight = parameter.min_q_weight
         args.samples_buffer = parameter.samples_buffer
