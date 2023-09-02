@@ -12,7 +12,7 @@ import random
 import pickle
 from torch_geometric.data import Data, Batch
 import json
-import OmegaConf
+# import OmegaConf
 
 
 class PairData(Data):
