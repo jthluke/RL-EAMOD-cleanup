@@ -301,19 +301,17 @@ if not args.test:
                 model.save_checkpoint(
                     path=path)
 else:
-    parser = GNNParser(env, T=6, json_file=file_path)
+    parser = GNNParser(env)
+
     model = SAC(
         env=env,
-        input_size=13,
+        input_size=22,
         hidden_size=args.hidden_size,
-        p_lr=args.p_lr,
-        q_lr=args.q_lr,
         alpha=args.alpha,
-        batch_size=args.batch_size,
         use_automatic_entropy_tuning=False,
-        load_memory=False,
         critic_version=args.critic_version,
     ).to(device)
+    
     path = os.path.join('ckpt', f'{checkpoint_path}.pth')
     model.load_checkpoint(path=path)
 
