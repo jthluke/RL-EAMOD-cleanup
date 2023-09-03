@@ -124,6 +124,15 @@ parser.add_argument("--hidden_size", type=int, default=256,
 parser.add_argument("--checkpoint_path", type=str, default='SAC',
                     help='path, where to save model checkpoints')
 
+parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
+                    help='Learning rate for the actor')
+parser.add_argument('--lr_c', type=float, default=1e-3, metavar='N',
+                    help='Learning rate for the critic')
+parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
+                    help='Gradient norm clipping for the actor')
+parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
+                    help='Gradient norm clipping for the critic')
+
 # CQL parameters
 parser.add_argument("--load_yaml", type=bool, default=False,
                     help='to load CQL parameters from a yaml file')
