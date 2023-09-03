@@ -270,8 +270,7 @@ class SAC(nn.Module):
          edge_index2,
          reward_batch,
          action_batch) = np.array(data.x_s), data.edge_index_s, np.array(data.x_t), data.edge_index_t, data.reward, np.array(data.action).reshape(-1, self.env.number_nodes)
-        print(state_batch[0])
-        print(edge_index)
+        
         q1 = self.critic1(state_batch, edge_index, action_batch)
         q2 = self.critic2(state_batch, edge_index, action_batch)
         with torch.no_grad():
@@ -451,6 +450,13 @@ class SAC(nn.Module):
                 eps_reward += paxreward
 
                 o = parser.parse_obs(obs)
+
+                print("Number of nodes: ", env.number_nodes)
+                print("Number of edges: ", env.number_edges)
+                print(o.x.shape)
+                print(o.edge_index.shape)
+                print(o.x)
+                print(o.edge_index)
 
                 action_rl = self.select_action(o.x, o.edge_index, deterministic=True)
                 actions.append(action_rl)
