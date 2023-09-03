@@ -85,6 +85,8 @@ class ReplayData:
             reward_batch.append(rewards[i - 1] * self.rew_scale)
             next_state_batch.append(object[i][3])
 
+        print(state_batch[0])
+
         for i in range(len(state_batch)):
             self.data_list.append(PairData(
                 edge_index, state_batch[i], reward_batch[i], action_batch[i], edge_index, next_state_batch[i]))
