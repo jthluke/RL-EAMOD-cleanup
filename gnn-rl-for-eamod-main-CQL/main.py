@@ -53,20 +53,38 @@ class ReplayData:
     def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
         with open(f'data/NY/ClusterDataset1/{memory_path}.pkl', 'rb') as f:
             object = pickle.load(f)
-        print(object)
+        
+        timesteps = len(object)
+
+        rewards = []
+        for i in range(timesteps):
+            rewards.append(object[i][2])
+        
         if st:
-            mean = data['rew'].mean()
-            std = data['rew'].std()
-            data['rew'] = (data['rew']-mean)/(std + 1e-16)
+            mean = np.mean(rewards)
+            std = np.std(rewards)
+            for idx in range(len(rewards)):
+                rewards[idx] = (rewards[idx]-mean)/(std + 1e-16)
         elif sc:
-            data['rew'] = (data['rew'] - data['rew'].min()) / \
-                (data['rew'].max() - data['rew'].min())
+            minimum_reward = np.min(rewards)
+            maximum_reward = np.max(rewards)
+            for idx in range(len(rewards)):
+                rewards[idx] = (rewards[idx]-minimum_reward)/(maximum_reward - minimum_reward)
 
-        print(data['rew'].min())
-        print(data['rew'].max())
+        print(rewards.min())
+        print(rewards.max())
 
-        (state_batch, action_batch, reward_batch, next_state_batch) = (
-            data["obs"], data["act"], args.rew_scale*data["rew"], data["obs2"])
+        state_batch = []
+        action_batch = []
+        reward_batch = []
+        next_state_batch = []
+
+        for i in range(timesteps):
+            state_batch.append(object[i][0])
+            action_batch.append(object[i][1])
+            reward_batch.append(rewards[i] * self.rew_scale)
+            next_state_batch.append(object[i][3])
+
         for i in range(len(state_batch)):
             self.data_list.append(PairData(
                 edge_index, state_batch[i], reward_batch[i], action_batch[i], edge_index, next_state_batch[i]))
