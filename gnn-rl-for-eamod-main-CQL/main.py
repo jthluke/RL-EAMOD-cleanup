@@ -322,11 +322,17 @@ if not args.test:
 
             epochs.set_description(f"Episode {step} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
 
-        # Checkpoint best performing model
+            # Checkpoint best performing model
             if episode_reward >= best_reward and step > 1000:
                 model.save_checkpoint(
                     path=f"ckpt/{args.checkpoint_path}.pth")
                 best_reward = episode_reward
+                best_rebal_cost = episode_rebalancing_cost
+                best_served_demand  = episode_served_demand
+                best_model = model
+            
+            wandb.log({"Episode": step+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
+                       "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -episode_rebalancing_cost})
 
         batch = Dataset.sample_batch(args.batch_size)
         model = model.float()
