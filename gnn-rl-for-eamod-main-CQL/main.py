@@ -152,7 +152,6 @@ def create_scenario(json_file_path, energy_file_path, seed=10):
     tripAttr = data['demand']
     reb_time = data['rebTime']
     total_acc = data['totalAcc']
-    # additional_vehicles_peak_demand = data['additionalVehiclesPeakDemand']
     spatial_nodes = data['spatialNodes']
     tf = data['episodeLength']
     number_charge_levels = data['chargelevels']
@@ -162,12 +161,8 @@ def create_scenario(json_file_path, energy_file_path, seed=10):
     p_energy = data["energy_prices"]
     time_granularity = data["timeGranularity"]
     operational_cost_per_timestep = data['operationalCostPerTimestep']
-    try:
-        peak_hours = data['peakHours']
-    except:
-        peak_hours = []
 
-    scenario = Scenario(spatial_nodes=spatial_nodes, charging_stations=chargers, cars_per_station_capacity = cars_per_station_capacity, number_charge_levels=number_charge_levels, charge_levels_per_charge_step=charge_levels_per_charge_step, peak_hours=peak_hours, 
+    scenario = Scenario(spatial_nodes=spatial_nodes, charging_stations=chargers, cars_per_station_capacity = cars_per_station_capacity, number_charge_levels=number_charge_levels, charge_levels_per_charge_step=charge_levels_per_charge_step, 
                         energy_distance=energy_dist, tf=tf, sd=seed, tripAttr = tripAttr, demand_ratio=1, reb_time=reb_time, total_acc = total_acc, p_energy=p_energy, time_granularity=time_granularity, operational_cost_per_timestep=operational_cost_per_timestep)
     return scenario
 
