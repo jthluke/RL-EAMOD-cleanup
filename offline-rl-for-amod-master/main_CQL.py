@@ -49,7 +49,7 @@ class ReplayData:
         self.data_list = []
         self.rew_scale = rew_scale
 
-    def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False, model):
+    def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False, model=None):
         w = open(f'replaymemories/{memory_path}.pkl', "rb")
 
         model.replay_buffer = pickle.load(w)
