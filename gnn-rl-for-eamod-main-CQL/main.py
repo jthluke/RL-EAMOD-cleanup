@@ -15,6 +15,7 @@ import json
 import yaml
 import os
 import wandb
+import struct
 
 
 class PairData(Data):
@@ -51,10 +52,12 @@ class ReplayData:
         self.rew_scale = rew_scale
 
     def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
-        w = open(f'replaymemories/{memory_path}.pkl', "rb")
-        replay_buffer = pickle.load(w)
-        data = replay_buffer.sample_all(size)
-        print(data)
+        with open(f'data/NY/ClusterDataset1/{memory_path}.pkl', 'rb') as f:
+            header = struct.unpack('>I', f.read(4))
+            packet_type = header[0]
+            packet_length = header[1]
+            packet_data = f.read(packet_length)
+        print(packet_data)
         if st:
             mean = data['rew'].mean()
             std = data['rew'].std()
