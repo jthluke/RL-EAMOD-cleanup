@@ -51,7 +51,7 @@ class ReplayData:
 
     def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
         w = open(f'replaymemories/{memory_path}.pkl', "rb")
-        print(pickle.load(w)
+        print(pickle.load(w))
         replay_buffer = pickle.load(w)
         data = replay_buffer.sample_all(size)
         print(data)
