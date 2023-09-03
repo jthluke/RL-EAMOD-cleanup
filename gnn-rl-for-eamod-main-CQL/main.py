@@ -53,6 +53,11 @@ class ReplayData:
     def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
         with open(f'data/NY/ClusterDataset1/{memory_path}.pkl', 'rb') as f:
             object = pickle.load(f)
+
+        print(object[0][0])
+        print(object[0][1])
+        print(object[0][2])
+        print(object[0][3])
         
         timesteps = len(object)
 
