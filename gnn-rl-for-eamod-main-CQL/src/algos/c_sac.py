@@ -460,6 +460,9 @@ class SAC(nn.Module):
 
                 o = parser.parse_obs(obs)
 
+                o.x = o.x.to('cuda:0')
+                o.edge_index = o.edge_index.to('cuda:0')
+
                 action_rl = self.select_action(o.x, o.edge_index, deterministic=True)
                 actions.append(action_rl)
 
