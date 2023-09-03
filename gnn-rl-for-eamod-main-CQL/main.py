@@ -145,6 +145,14 @@ args = parser.parse_args()
 args.cuda = args.cuda and torch.cuda.is_available()
 device = torch.device("cuda" if args.cuda else "cpu")
 
+lr_a = args.lr_a
+lr_c = args.lr_c
+grad_norm_clip_a = args.grad_norm_clip_a
+grad_norm_clip_c = args.grad_norm_clip_c
+seed = args.seed
+test = args.test
+T = args.T
+
 def create_scenario(json_file_path, energy_file_path, seed=10):
     f = open(json_file_path)
     energy_dist = np.load(energy_file_path)
@@ -208,10 +216,15 @@ wandb.init(
         "number_vehicles_per_node_init": env.G.nodes[(0,1)]['accInit'],
         "charging_stations": list(env.scenario.charging_stations),
         "charging_station_capacities": list(env.scenario.cars_per_station_capacity),
+        "learning_rate_actor": lr_a,
+        "learning_rate_critic": lr_c,
+        "gradient_norm_clip_actor": grad_norm_clip_a,
+        "gradient_norm_clip_critic": grad_norm_clip_c,
         "scale_factor": scale_factor,
         "scale_price": scale_price,
         "time_horizon": T,
         "episode_length": env.tf,
+        "seed": seed,
         "charge_levels_per_timestep": env.scenario.charge_levels_per_charge_step, 
         "licence": gurobi})
 
