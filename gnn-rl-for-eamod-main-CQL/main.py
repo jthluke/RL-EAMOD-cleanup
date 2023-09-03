@@ -80,10 +80,10 @@ class ReplayData:
         next_state_batch = []
 
         for i in range(0, timesteps - 1):
-            state_batch.append(object[i][0])
+            state_batch.append(object[i][0].x)
             action_batch.append(object[i][1])
             reward_batch.append(rewards[i] * self.rew_scale)
-            next_state_batch.append(object[i][3])
+            next_state_batch.append(object[i][3].x)
         
         print(len(state_batch))
         print(len(action_batch))
