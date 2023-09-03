@@ -57,7 +57,7 @@ class ReplayData:
         timesteps = len(object)
 
         rewards = []
-        for i in range(1, timesteps + 1):
+        for i in range(0, timesteps - 1):
             rewards.append(object[i][2])
         
         if st:
@@ -79,11 +79,16 @@ class ReplayData:
         reward_batch = []
         next_state_batch = []
 
-        for i in range(1, timesteps + 1):
+        for i in range(0, timesteps - 1):
             state_batch.append(object[i][0])
             action_batch.append(object[i][1])
-            reward_batch.append(rewards[i - 1] * self.rew_scale)
+            reward_batch.append(rewards[i] * self.rew_scale)
             next_state_batch.append(object[i][3])
+        
+        print(len(state_batch))
+        print(len(action_batch))
+        print(len(reward_batch))
+        print(len(next_state_batch))
 
         for i in range(len(state_batch)):
             self.data_list.append(PairData(
