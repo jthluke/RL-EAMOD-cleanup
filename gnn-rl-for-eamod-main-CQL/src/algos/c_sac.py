@@ -168,7 +168,7 @@ class SAC(nn.Module):
         lagrange_thresh=-1,
         min_q_weight=10,  # conservative weight eta
         deterministic_backup=True,  # determinsitic backup of the q-function
-        device=torch.device("cpu"),
+        device=torch.device("cuda"),
         min_q_version=3,  # version 2: CQL(rho), version 3: CQL(H)
         clip=200,
         json_file=None,  # data file for parser

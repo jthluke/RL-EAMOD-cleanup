@@ -172,7 +172,7 @@ parser.add_argument("--sc", type=bool, default=False,
                     help='wether to scale data')
 args = parser.parse_args()
 args.cuda = args.cuda and torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cuda")
 
 lr_a = args.lr_a
 lr_c = args.lr_c
