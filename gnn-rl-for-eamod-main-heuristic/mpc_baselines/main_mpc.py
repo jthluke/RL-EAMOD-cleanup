@@ -204,21 +204,29 @@ while(not done):
         timesteps = range(mpc_horizon)
     else:
         timesteps = [0]
+    
     for t in timesteps:
-        if t > 0:
-            action = [0 for i in range(env.number_nodes)]
-            acc, _, dacc, demand = obs_2
-            total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
-            for i in range(env.number_nodes):
-                action[i] = acc[env.nodes[i]][1]/total_vehicles
-            SARS[t] = [obs_1_parsed, action, reward2, obs_2_parsed]
-        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)   
-        obs_1_parsed = GNNParser(env).parse_obs(obs_1)
-        if t > 0:
-            SARS[t][2] += reward1
+        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)
+
+        if t == 0:
+            SARS[t][0] = GNNParser(env).parse_obs(obs_1)
+        else:
+            SARS[t - 1][3] = GNNParser(env).parse_obs(obs_1)
+            SARS[t][0] = SARS[t - 1][3]
+        
         obs_2, reward2, done, info = env.reb_step(rebAction[t])
-        obs_2_parsed = GNNParser(env).parse_obs(obs_2)
+        
+        action = [0 for i in range(env.number_nodes)]
+        acc, _, dacc, demand = obs_2
+        total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
+        for i in range(env.number_nodes):
+            action[i] = acc[env.nodes[i]][1]/total_vehicles
+        SARS[t][1] = action
+        
         opt_rew.append(reward1+reward2) 
+
+        SARS[t][2]= reward1 + reward2
+
         served += info['served_demand']
         rebcost += info['rebalancing_cost']
         charge_rebal_cost += info['charge_rebalancing_cost']
