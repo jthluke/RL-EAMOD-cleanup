@@ -208,15 +208,10 @@ wandb.init(
         "number_vehicles_per_node_init": env.G.nodes[(0,1)]['accInit'],
         "charging_stations": list(env.scenario.charging_stations),
         "charging_station_capacities": list(env.scenario.cars_per_station_capacity),
-        "learning_rate_actor": lr_a,
-        "learning_rate_critic": lr_c,
-        "gradient_norm_clip_actor": grad_norm_clip_a,
-        "gradient_norm_clip_critic": grad_norm_clip_c,
         "scale_factor": scale_factor,
         "scale_price": scale_price,
         "time_horizon": T,
         "episode_length": env.tf,
-        "seed": seed,
         "charge_levels_per_timestep": env.scenario.charge_levels_per_charge_step, 
         "licence": gurobi})
 
