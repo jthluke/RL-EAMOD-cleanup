@@ -452,7 +452,6 @@ class SAC(nn.Module):
                 o = parser.parse_obs(obs)
 
                 print("Number of nodes: ", env.number_nodes)
-                print("Number of edges: ", env.number_edges)
                 print(o.x.shape)
                 print(o.edge_index.shape)
                 print(o.x)
