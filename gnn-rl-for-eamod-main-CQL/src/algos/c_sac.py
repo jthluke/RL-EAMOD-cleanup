@@ -269,8 +269,9 @@ class SAC(nn.Module):
          next_state_batch,
          edge_index2,
          reward_batch,
-         action_batch) = data.x_s, data.edge_index_s, data.x_t, data.edge_index_t, data.reward, np.array(data.action).reshape(-1, self.env.number_nodes)
-        
+         action_batch) = np.array(data.x_s), data.edge_index_s, np.array(data.x_t), data.edge_index_t, data.reward, np.array(data.action).reshape(-1, self.env.number_nodes)
+        print(state_batch[0])
+        print(edge_index[0])
         q1 = self.critic1(state_batch, edge_index, action_batch)
         q2 = self.critic2(state_batch, edge_index, action_batch)
         with torch.no_grad():
