@@ -371,7 +371,7 @@ class SAC(nn.Module):
          edge_index2,
          reward_batch,
          action_batch) = (data.x_s, data.edge_index_s, data.x_t, data.edge_index_t, data.reward, data.action.reshape(-1, self.nodes))
-
+        print(data.x_s)
         q1 = self.critic1(state_batch, edge_index, action_batch)
         q2 = self.critic2(state_batch, edge_index, action_batch)
         with torch.no_grad():

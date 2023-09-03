@@ -371,6 +371,8 @@ else:
             episode_reward += paxreward
             # use GNN-RL policy (Step 2 in paper)
             o = model.parse_obs(obs, device=device)
+            print(o.x)
+            print(o.edge_index)
             action_rl = model.select_action(
                 o.x, o.edge_index, deterministic=True)
             # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
