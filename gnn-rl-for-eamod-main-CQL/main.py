@@ -51,7 +51,7 @@ class ReplayData:
         self.rew_scale = rew_scale
 
     def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
-        with open('file.pkl', 'rb') as f:
+        with open(f'data/NY/ClusterDataset1/{memory_path}.pkl', 'rb') as f:
             object = pickle.load(f)
         print(object)
         if st:
