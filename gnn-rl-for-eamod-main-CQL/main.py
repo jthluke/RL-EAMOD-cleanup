@@ -53,16 +53,11 @@ class ReplayData:
     def create_dataset(self, edge_index, memory_path, size=60000, st=False, sc=False):
         with open(f'data/NY/ClusterDataset1/{memory_path}.pkl', 'rb') as f:
             object = pickle.load(f)
-
-        print(object)
-        print(object[0][1])
-        print(object[0][2])
-        print(object[0][3])
         
         timesteps = len(object)
 
         rewards = []
-        for i in range(timesteps):
+        for i in range(1, timesteps + 1):
             rewards.append(object[i][2])
         
         if st:
