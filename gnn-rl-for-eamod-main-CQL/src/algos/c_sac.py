@@ -451,6 +451,9 @@ class SAC(nn.Module):
 
                 o = parser.parse_obs(obs)
 
+                print(o.x)
+                print(o.edge_index)
+
                 action_rl = self.select_action(o.x, o.edge_index, deterministic=True)
                 actions.append(action_rl)
 
