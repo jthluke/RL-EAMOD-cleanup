@@ -185,7 +185,7 @@ while(not done):
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue},Served demand {served}, Rebalancing Cost {rebcost}, Charge Rebalancing Cost {charge_rebal_cost}, Spatial Rebalancing Cost {spatial_rebal_cost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
 
-with open("MPC_SARS.pkt", "wb") as f:
+with open("MPC_SARS.pkl", "wb") as f:
     pickle.dump(SARS, f)
 
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Charge Rebalancing Cost": charge_rebal_cost, "Spatial Rebalancing Cost": spatial_rebal_cost, "Avg.Time": np.array(time_list).mean()})
