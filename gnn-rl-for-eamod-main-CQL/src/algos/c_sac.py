@@ -373,6 +373,9 @@ class SAC(nn.Module):
 
         loss_q1, loss_q2 = self.compute_loss_q(data, conservative)
 
+        loss_q1 = loss_q1.float()
+        loss_q2 = loss_q2.float()
+
         self.optimizers["c1_optimizer"].zero_grad()
         loss_q1.backward(retain_graph=True)
         nn.utils.clip_grad_norm_(self.critic1.parameters(),  self.clip)
