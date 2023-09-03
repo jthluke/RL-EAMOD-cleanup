@@ -295,8 +295,8 @@ class SAC(nn.Module):
                 else:
                     backup = reward_batch + self.gamma * q_pi_targ
 
-        loss_q1 = F.mse_loss(q1, backup)
-        loss_q2 = F.mse_loss(q2, backup)
+        loss_q1 = F.mse_loss(q1.float(), backup.float())
+        loss_q2 = F.mse_loss(q2.float(), backup.float())
 
         if conservative:
             batch_size = action_batch.shape[0]
@@ -348,7 +348,7 @@ class SAC(nn.Module):
             loss_q1 = loss_q1 + min_qf1_loss
             loss_q2 = loss_q2 + min_qf2_loss
 
-        return loss_q1, loss_q2
+        return loss_q1.float(), loss_q2.float()
 
     def compute_loss_pi(self, data):
         state_batch, edge_index = data.x_s, data.edge_index_s

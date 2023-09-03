@@ -330,6 +330,7 @@ if not args.test:
                 best_reward = episode_reward
 
         batch = Dataset.sample_batch(args.batch_size)
+        model = model.float()
         model.update(data=batch, conservative=True)
 
 else:
