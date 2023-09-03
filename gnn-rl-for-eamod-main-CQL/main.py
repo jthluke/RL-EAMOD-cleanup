@@ -320,8 +320,7 @@ if not args.test:
             episode_reward, episode_served_demand, episode_rebalancing_cost = model.test_agent(
                 2, env, model.obs_parser, gurobi_env)
 
-            epochs.set_description(
-                f"Episode {step/20} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
+            epochs.set_description(f"Episode {step} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
 
         # Checkpoint best performing model
             if episode_reward >= best_reward and step > 1000:
@@ -332,6 +331,7 @@ if not args.test:
         batch = Dataset.sample_batch(args.batch_size)
         model = model.float()
         model.update(data=batch, conservative=True)
+        
 
 else:
     # test pre-trained model
