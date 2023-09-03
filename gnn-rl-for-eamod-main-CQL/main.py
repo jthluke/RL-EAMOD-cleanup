@@ -71,8 +71,8 @@ class ReplayData:
             for idx in range(len(rewards)):
                 rewards[idx] = (rewards[idx]-minimum_reward)/(maximum_reward - minimum_reward)
 
-        print(rewards.min())
-        print(rewards.max())
+        print(np.min(rewards))
+        print(np.max(rewards))
 
         state_batch = []
         action_batch = []
