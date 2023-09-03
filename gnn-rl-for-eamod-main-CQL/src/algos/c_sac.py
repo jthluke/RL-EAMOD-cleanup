@@ -187,7 +187,7 @@ class SAC(nn.Module):
         self.gamma = gamma
         self.use_automatic_entropy_tuning = use_automatic_entropy_tuning
         self.min_q_version = min_q_version
-        self.act_dim = self.env.nregion
+        self.act_dim = self.env.number_nodes
         self.n = n
 
         # conservative Q learning parameters
