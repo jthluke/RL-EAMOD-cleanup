@@ -33,9 +33,9 @@ class PairData(Data):
 
     def __inc__(self, key, value, *args, **kwargs):
         if key == 'edge_index_s':
-            return self.x_s.size(0)
+            return len(self.x_s)
         if key == 'edge_index_t':
-            return self.x_t.size(0)
+            return len(self.x_t)
         else:
             return super().__inc__(key, value, *args, **kwargs)
 
@@ -84,8 +84,6 @@ class ReplayData:
             action_batch.append(object[i][1])
             reward_batch.append(rewards[i - 1] * self.rew_scale)
             next_state_batch.append(object[i][3])
-
-        print(state_batch[0])
 
         for i in range(len(state_batch)):
             self.data_list.append(PairData(
