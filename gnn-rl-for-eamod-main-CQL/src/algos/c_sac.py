@@ -451,12 +451,6 @@ class SAC(nn.Module):
 
                 o = parser.parse_obs(obs)
 
-                print("Number of nodes: ", env.number_nodes)
-                print(o.x.shape)
-                print(o.edge_index.shape)
-                print(o.x)
-                print(o.edge_index)
-
                 action_rl = self.select_action(o.x, o.edge_index, deterministic=True)
                 actions.append(action_rl)
 
