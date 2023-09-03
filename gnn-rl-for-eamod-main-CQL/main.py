@@ -323,7 +323,7 @@ if not args.test:
             epochs.set_description(f"Episode {step} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
 
             # Checkpoint best performing model
-            if episode_reward >= best_reward and step > 1000:
+            if episode_reward >= best_reward:
                 model.save_checkpoint(
                     path=f"ckpt/{args.checkpoint_path}.pth")
                 best_reward = episode_reward
