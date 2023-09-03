@@ -135,7 +135,7 @@ parser.add_argument('--T', type=int, default=10, metavar='N',
 parser.add_argument('--cuda', type=bool, default=True,
                     help='enables CUDA training')
 
-parser.add_argument("--batch_size", type=int, default=15,
+parser.add_argument("--batch_size", type=int, default=10,
                     help='defines the batch size')
 parser.add_argument("--alpha", type=float, default=0.3,
                     help='value of the entropy coefficient')
