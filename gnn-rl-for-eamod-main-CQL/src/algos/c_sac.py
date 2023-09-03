@@ -270,7 +270,7 @@ class SAC(nn.Module):
          next_state_batch,
          edge_index2,
          reward_batch,
-         action_batch) = torch.from_numpy(np.array(data.x_s.cpu())), data.edge_index_s, torch.from_numpy(np.array(data.x_t.cpu())), data.edge_index_t, data.reward, torch.from_numpy(np.array(data.action.cpu()).reshape(-1, self.env.number_nodes))
+         action_batch) = torch.from_numpy(np.array(data.x_s)), data.edge_index_s, torch.from_numpy(np.array(data.x_t)), data.edge_index_t, data.reward, torch.from_numpy(np.array(data.action).reshape(-1, self.env.number_nodes))
         
         # print(state_batch.shape)
         # print(type(state_batch))
@@ -459,9 +459,6 @@ class SAC(nn.Module):
                 eps_reward += paxreward
 
                 o = parser.parse_obs(obs)
-
-                o.x = o.x.to('cuda:0')
-                o.edge_index = o.edge_index.to('cuda:0')
 
                 action_rl = self.select_action(o.x, o.edge_index, deterministic=True)
                 actions.append(action_rl)
