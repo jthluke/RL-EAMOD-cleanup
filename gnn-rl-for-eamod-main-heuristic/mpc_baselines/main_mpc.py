@@ -208,6 +208,7 @@ while(not done):
     for t in timesteps:
         obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)
 
+        SARS[t] = [0, 0, 0, 0]
         if t == 0:
             SARS[t][0] = GNNParser(env).parse_obs(obs_1)
         else:
@@ -233,6 +234,8 @@ while(not done):
         spatial_rebal_cost += info['spatial_rebalancing_cost']
         opcost += info['operating_cost']
         revenue += info['revenue'] 
+    
+    SARS.pop(mpc_horizon - 1, None)
 
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue},Served demand {served}, Rebalancing Cost {rebcost}, Charge Rebalancing Cost {charge_rebal_cost}, Spatial Rebalancing Cost {spatial_rebal_cost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
