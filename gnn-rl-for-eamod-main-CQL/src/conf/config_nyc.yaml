@@ -1,0 +1,7 @@
+memory_path: MPC_SARS_NY_CD1
+min_q_weight: 1
+lagrange_thresh: 10
+alpha: 0.1
+rew_scale: 0.001
+samples_buffer: 20
+max_episodes: 8000
