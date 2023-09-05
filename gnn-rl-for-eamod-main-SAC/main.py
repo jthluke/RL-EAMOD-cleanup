@@ -55,6 +55,8 @@ class GNNParser():
             destination_node_idx = self.env.nodes.index(e[1])
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
+        print(len(self.env.gcn_edge_idx))
+        print(len(edge_idx))
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
 
         data = Data(x, edge_index)
@@ -210,13 +212,13 @@ if not args.test:
         for key in data.keys():
             o_1 = data[key][0]
             a = data[key][1]
-            r = data[key][2] * args.rew_scale
+            r = data[key][2]
             o_2 = data[key][3]
             print(o_1)
             print(a)
             print(r)
             print(o_2)
-            model.replay_buffer.store(o_1, a, r, o_2)
+            model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
 
 
     train_episodes = args.max_episodes  # set max number of training episodes

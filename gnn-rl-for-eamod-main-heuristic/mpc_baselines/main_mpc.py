@@ -175,7 +175,8 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-
+        print(len(self.env.gcn_edge_idx))
+        print(len(edge_idx))
         data = Data(x, edge_index)
         return data
 
