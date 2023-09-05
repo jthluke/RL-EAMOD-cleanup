@@ -55,8 +55,6 @@ class GNNParser():
             destination_node_idx = self.env.nodes.index(e[1])
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
-        print(len(self.env.gcn_edge_idx))
-        print(len(edge_idx))
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
 
         data = Data(x, edge_index)
@@ -153,6 +151,9 @@ gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
 env = AMoD(scenario)
+print("Number of edges: " + str(len(env.scenario.edges)))
+print("Number of spatial nodes: " + str(len(env.scenario.G_spatial.nodes)))
+print("Number of nodes: " + str(len(env.scenario.G.nodes)))
 
 # Initialize A2C-GNN
 # NY
