@@ -260,13 +260,9 @@ if not args.test:
             if step > 0:
                 rl_reward = (paxreward + rebreward)
                 print(obs1)
-                print(obs1.shape)
                 print(action_rl)
-                print(action_rl.shape)
                 print(rl_reward)
-                print(rl_reward.shape)
                 print(o)
-                print(o.shape)
                 model.replay_buffer.store(
                     obs1, action_rl, args.rew_scale * rl_reward, o)
 
