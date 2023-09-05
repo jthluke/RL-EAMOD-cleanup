@@ -516,6 +516,7 @@ class Scenario:
             self.tripAttr = self.get_random_demand() # randomly generated demand
 
     def add_charge_edges(self):
+        counter = 0
         for l in range(self.spatial_nodes):
             if not self.charging_stations[l]:
                 continue
