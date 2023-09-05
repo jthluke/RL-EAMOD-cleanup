@@ -2,6 +2,8 @@ import sys
 import argparse
 sys.path.append('./src')
 from src.envs.amod_env import Scenario, AMoD #, Star2Complete
+from torch_geometric.data import Data
+from src.algos.a2c_gnn import A2C
 from src.misc.utils import mat2str, dictsum
 from MPC import MPC
 import time
@@ -13,6 +15,8 @@ import gurobipy as gp
 import json
 import wandb
 import pickle
+import torch
+import copy
 
 def create_scenario(json_file_path, energy_file_path, seed=10):
     f = open(json_file_path)
@@ -112,6 +116,46 @@ gurobi_env.start()
 # gurobi_env.setParam("OutputFlag",0)
 # gurobi_env.start()
 
+class GNNParser():
+    """
+    Parser converting raw environment observations to agent input.
+    """
+
+    def __init__(self, env, T=10, scale_factor=0.01, scale_price=0.1, input_size=20):
+        super().__init__()
+        self.env = env
+        self.T = T
+        self.scale_factor = scale_factor
+        self.price_scale_factor = scale_price
+        self.input_size = input_size
+
+    def parse_obs(self, obs):
+        # nodes
+        x = torch.cat((
+            torch.tensor([float(n[1])/self.env.scenario.number_charge_levels for n in self.env.nodes]).view(1, 1, self.env.number_nodes).float(),
+            torch.tensor([obs[0][n][self.env.time+1] * self.scale_factor for n in self.env.nodes]).view(1, 1, self.env.number_nodes).float(),
+            torch.tensor([[(obs[0][n][self.env.time+1] + self.env.dacc[n][t])*self.scale_factor for n in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float(),
+            torch.tensor([[sum([self.env.price[o[0], j][t]*self.scale_factor*self.price_scale_factor*(self.env.demand[o[0], j][t])*((o[1]-self.env.scenario.energy_distance[o[0], j]) >= int(not self.env.scenario.charging_stations[j]))
+                          for j in self.env.region]) for o in self.env.nodes] for t in range(self.env.time+1, self.env.time+self.T+1)]).view(1, self.T, self.env.number_nodes).float()),
+                      dim=1).squeeze(0).view(2+self.T + self.T, self.env.number_nodes).T
+        # edges
+        edges = []
+        for o in self.env.nodes:
+            for d in self.env.nodes:
+                if (o[0] == d[0] and o[1] == d[1]):
+                    edges.append([o, d])
+        edge_idx = torch.tensor([[], []], dtype=torch.long)
+        for e in edges:
+            origin_node_idx = self.env.nodes.index(e[0])
+            destination_node_idx = self.env.nodes.index(e[1])
+            new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
+            edge_idx = torch.cat((edge_idx, new_edge), 1)
+        edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
+        print(self.env.gcn_edge_idx.shape)
+        print(edge_idx.shape)
+        data = Data(x, edge_index)
+        return data
+
 # set up wandb
 wandb.init(
       # Set the project where this run will be logged
@@ -139,6 +183,10 @@ opcost = 0
 revenue = 0
 t_0 = time.time()
 time_list = []
+SARS = {}
+print(len(env.nodes))
+print(len(env.nodes[0]))
+print(env.number_nodes)
 while(not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact()
@@ -149,10 +197,30 @@ while(not done):
         timesteps = range(mpc_horizon)
     else:
         timesteps = [0]
+    t_reward = 0
     for t in timesteps:
-        obs, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)    
-        obs, reward2, done, info = env.reb_step(rebAction[t])
+        if t > 0:
+            obs1 = copy.deepcopy(o)
+
+        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)
+        o = GNNParser(env).parse_obs(obs_1)
+
+        t_reward += reward1
+        if t > 0: 
+            rew = (reward1 + reward2)
+            
+            action = [0 for i in range(env.number_nodes)]
+            acc, _, dacc, demand = obs_2
+            total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
+            for i in range(env.number_nodes):
+                action[i] = acc[env.nodes[i]][1]/total_vehicles
+
+            SARS[t] = [obs1, action, rew, o]
+        
+        obs_2, reward2, done, info = env.reb_step(rebAction[t])
+        
         opt_rew.append(reward1+reward2) 
+
         served += info['served_demand']
         rebcost += info['rebalancing_cost']
         opcost += info['operating_cost']
@@ -161,6 +229,9 @@ print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue},Served demand {served}, Re
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
+
+with open("MPC_SARS.pkl", "wb") as f:
+    pickle.dump(SARS, f)
 with open(f"./saved_files/ckpt/{problem_folder}/acc.p", "wb") as file:
     pickle.dump(env.acc, file)
 wandb.save(f"./saved_files/ckpt/{problem_folder}/acc.p")
