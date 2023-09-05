@@ -212,6 +212,14 @@ if not args.test:
             a = data[key][1]
             r = data[key][2] * args.rew_scale
             o_2 = data[key][3]
+            print(o_1.dtype)
+            print(o_1.shape)
+            print(a.dtype)
+            print(a.shape)
+            print(r.dtype)
+            print(r.shape)
+            print(o_2.dtype)
+            print(o_2.shape)
             model.replay_buffer.store(o_1, a, r, o_2)
 
 
@@ -255,6 +263,14 @@ if not args.test:
             episode_reward += paxreward
             if step > 0:
                 rl_reward = (paxreward + rebreward)
+                print(obs1.dtype)
+                print(obs1.shape)
+                print(action_rl.dtype)
+                print(action_rl.shape)
+                print(rl_reward.dtype)
+                print(rl_reward.shape)
+                print(o.dtype)
+                print(o.shape)
                 model.replay_buffer.store(
                     obs1, action_rl, args.rew_scale * rl_reward, o)
 
