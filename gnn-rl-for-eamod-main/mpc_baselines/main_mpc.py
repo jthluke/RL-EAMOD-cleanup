@@ -76,6 +76,9 @@ else:
     energy_dist_path = os.path.join('..', 'data', problem_folder, 'energy_distance.npy')
     test_scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(test_scenario)
+    print("Number of edges: " + str(len(env.scenario.edges)))
+    print("Number of spatial nodes: " + str(len(env.scenario.G_spatial.nodes)))
+    print("Number of nodes: " + str(len(env.scenario.G.nodes)))
     tf = env.tf
 print('mpc_horizon', mpc_horizon, 'episodeLength', tf)
 experiment += "_RL_approach_constraint"
