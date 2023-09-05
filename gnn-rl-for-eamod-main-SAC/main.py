@@ -212,8 +212,7 @@ if not args.test:
         
         for key in data.keys():
             o_1 = data[key][0]
-            a = data[key][1]
-            print(a[0].dtype)
+            a = [np.float32(x) for x in data[key][1]]
             r = data[key][2]
             o_2 = data[key][3]
             model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
