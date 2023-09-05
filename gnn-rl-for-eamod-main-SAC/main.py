@@ -258,7 +258,7 @@ if not args.test:
             episode_reward += paxreward
             if step > 0:
                 rl_reward = (paxreward + rebreward)
-                print(action_rl.dtype)
+                print(action_rl[0].dtype)
                 model.replay_buffer.store(
                     obs1, action_rl, args.rew_scale * rl_reward, o)
 
