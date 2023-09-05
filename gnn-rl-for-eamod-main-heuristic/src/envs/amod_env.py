@@ -460,9 +460,29 @@ class AMoD:
                 self.new_charging_vehicles[i[0]][t+1] += rebAction[k]
                 # added 1e-5 as tolerance because optimisation result is not exact
                 assert self.scenario.cars_charging_per_station[i[0]] <= self.scenario.cars_per_station_capacity[i[0]] + 1e-5
+                # we have to add plus one because charging starts in the next timestep
+                for future_time in range(t+1, t+charge_time+1):
+                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
+                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
+                    self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
+            # road and charging edge
+            elif i[1] - self.scenario.energy_distance[i[0], j[0]] < j[1] and i[0] != j[0] and self.rebAction[k] > 0:
+                self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
+                charge_difference = j[1] - i[1] + self.scenario.energy_distance[i[0], j[0]]
+                charge_time = math.ceil(charge_difference/self.scenario.charge_levels_per_charge_step)
+                avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time])
+                self.info['spatial_rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
+                self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k] + avg_energy_price * self.rebAction[k]*charge_difference
+                # we have to add plus one because charging starts in the next timestep
+                for future_time in range(t+1, t+charge_time+1):
+                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
+                    assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
+                    self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
+                self.reward -= avg_energy_price * self.rebAction[k]*charge_difference + (self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer - charge_time)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
             # road edge
             elif self.rebAction[k] > 0:
-                assert i[0] != j[0] or i == j
+                # assert i[0] != j[0] or i == j
                 self.n_rebal_vehicles_spatial[i[0]][t+1] += self.rebAction[k]
                 self.new_rebalancing_vehicles[i[0]][t+1] += self.rebAction[k]
                 self.info['rebalancing_cost'] += (self.G.edges[i,j]['time'][self.time] + self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.rebAction[k]
@@ -476,11 +496,12 @@ class AMoD:
                 self.acc[d][t+1] += self.rebFlow[o, d][t]
                 self.acc_spatial[d[0]][t+1] += self.rebFlow[o, d][t]
                 # check if charging capacity has freed up
-                if d[1] > o[1]:
+                if d[1] > o[1] and o[0] == d[0]:
                     # charging should only happen at one location
-                    assert o[0] == d[0]
-                    self.scenario.cars_charging_per_station[o[0]] -= self.rebFlow[o, d][t]
-                    self.n_charging_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
+                    continue 
+                    # assert o[0] == d[0]
+                    # self.scenario.cars_charging_per_station[o[0]][t+1] -= self.rebFlow[o, d][t]
+                    # self.n_charging_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
                 else:
                     self.n_rebal_vehicles_spatial[o[0]][t+1] -= self.rebFlow[o, d][t]
 
@@ -542,7 +563,7 @@ class AMoD:
         self.paxFlow = defaultdict(dict)
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
-        self.scenario.cars_charging_per_station = np.zeros_like(self.scenario.cars_per_station_capacity)
+        self.reset_cars_charging()
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
@@ -570,6 +591,16 @@ class AMoD:
         self.obs = (self.acc, self.time, self.dacc, self.demand)
         self.reward = 0
         return self.obs
+    
+    def reset_cars_charging(self):
+        self.scenario.cars_charging_per_station = defaultdict(dict)
+        self.n_charging_vehicles_spatial = defaultdict(dict)
+        for region in range(self.scenario.spatial_nodes):
+            self.scenario.cars_charging_per_station[region] = defaultdict(float)
+            self.n_charging_vehicles_spatial[region] = defaultdict(float)
+            for t in range(self.scenario.tf):
+                self.scenario.cars_charging_per_station[region][t] = 0.
+                self.n_charging_vehicles_spatial[region][t] = 0.
 
 
 class Scenario:
@@ -597,8 +628,7 @@ class Scenario:
             self.spatial_nodes = spatial_nodes
             self.charging_stations = charging_stations
             self.cars_per_station_capacity = cars_per_station_capacity
-            self.cars_charging_per_station = np.zeros_like(
-                self.cars_per_station_capacity)
+            self.cars_charging_per_station = defaultdict(dict)
             self.number_charge_levels = number_charge_levels
             self.charge_levels_per_charge_step = charge_levels_per_charge_step
             self.energy_distance = energy_distance
