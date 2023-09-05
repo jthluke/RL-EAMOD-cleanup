@@ -370,7 +370,7 @@ class SAC(nn.Module):
          next_state_batch,
          edge_index2,
          reward_batch,
-         action_batch) = (data.x_s, data.edge_index_s, data.x_t, data.edge_index_t, data.reward, data.action.reshape(-1, self.nodes))
+         action_batch) = torch.from_numpy(np.array(data.x_s)), data.edge_index_s, torch.from_numpy(np.array(data.x_t)), data.edge_index_t, data.reward, torch.from_numpy(np.array(data.action).reshape(-1, self.env.number_nodes))
 
         q1 = self.critic1(state_batch, edge_index, action_batch)
         q2 = self.critic2(state_batch, edge_index, action_batch)
@@ -412,7 +412,6 @@ class SAC(nn.Module):
         return loss_pi
 
     def update(self, data):
-        print(data.dtype)
         loss_q1, loss_q2 = self.compute_loss_q(data)
 
         loss_q1 = loss_q1.float()
