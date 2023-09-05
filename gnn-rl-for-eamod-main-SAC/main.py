@@ -118,7 +118,7 @@ parser.add_argument("--alpha", type=float, default=0.3,
                     help='defines entropy coefficient')
 parser.add_argument("--hidden_size", type=int, default=256,
                     help='defines hidden units in the MLP layers')
-parser.add_argument("--rew_scale", type=float, default=0.1,
+parser.add_argument("--rew_scale", type=float, default=0.01,
                     help='defines reward scale')
 parser.add_argument("--critic_version", type=int, default=4,
                     help='defines the critic version (default: 4)')

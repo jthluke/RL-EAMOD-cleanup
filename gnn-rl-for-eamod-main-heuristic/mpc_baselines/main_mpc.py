@@ -16,6 +16,7 @@ import json
 import wandb
 import pickle
 import torch
+import copy
 
 def create_scenario(json_file_path, energy_file_path, seed=10):
     f = open(json_file_path)
@@ -204,29 +205,30 @@ while(not done):
         timesteps = range(mpc_horizon)
     else:
         timesteps = [0]
-    
-    for t in timesteps:
-        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)
 
-        SARS[t] = [0, 0, 0, 0]
-        if t == 0:
-            SARS[t][0] = GNNParser(env).parse_obs(obs_1)
-        else:
-            SARS[t - 1][3] = GNNParser(env).parse_obs(obs_1)
-            SARS[t][0] = SARS[t - 1][3]
+    t_reward = 0
+    for t in timesteps:
+        if t > 0:
+            obs1 = copy.deepcopy(o)
+
+        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)
+        o = GNNParser(env).parse_obs(obs_1)
+
+        t_reward += reward1
+        if t > 0: 
+            rew = (reward1 + reward2)
+            
+            action = [0 for i in range(env.number_nodes)]
+            acc, _, dacc, demand = obs_2
+            total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
+            for i in range(env.number_nodes):
+                action[i] = acc[env.nodes[i]][1]/total_vehicles
+
+            SARS[t] = [obs1, action, rew, o]
         
         obs_2, reward2, done, info = env.reb_step(rebAction[t])
         
-        action = [0 for i in range(env.number_nodes)]
-        acc, _, dacc, demand = obs_2
-        total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
-        for i in range(env.number_nodes):
-            action[i] = acc[env.nodes[i]][1]/total_vehicles
-        SARS[t][1] = action
-        
         opt_rew.append(reward1+reward2) 
-
-        SARS[t][2]= reward1 + reward2
 
         served += info['served_demand']
         rebcost += info['rebalancing_cost']
@@ -234,8 +236,6 @@ while(not done):
         spatial_rebal_cost += info['spatial_rebalancing_cost']
         opcost += info['operating_cost']
         revenue += info['revenue'] 
-    
-    SARS.pop(mpc_horizon - 1, None)
 
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue},Served demand {served}, Rebalancing Cost {rebcost}, Charge Rebalancing Cost {charge_rebal_cost}, Spatial Rebalancing Cost {spatial_rebal_cost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
