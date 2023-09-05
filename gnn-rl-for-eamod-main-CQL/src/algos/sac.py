@@ -226,8 +226,6 @@ class GNNCritic4(nn.Module):
         x = out + state
         x = x.reshape(-1, self.act_dim, self.in_channels)  # (B,N,21)
         concat = torch.cat([x, action.unsqueeze(-1)], dim=-1)  # (B,N,22)
-        print(concat.dtype)
-        print(self.lin1.weight.dtype)
         x = F.relu(self.lin1(concat))
         x = F.relu(self.lin2(x))  # (B, N, H)
         x = torch.sum(x, dim=1)  # (B, H)
@@ -414,7 +412,7 @@ class SAC(nn.Module):
         return loss_pi
 
     def update(self, data):
-        data = data.float()
+        print(data.dtype)
         loss_q1, loss_q2 = self.compute_loss_q(data)
 
         loss_q1 = loss_q1.float()
