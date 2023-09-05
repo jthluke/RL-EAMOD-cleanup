@@ -358,6 +358,8 @@ class SAC(nn.Module):
         return state
 
     def select_action(self, data, deterministic=False):
+        print(data.x)
+        print(data.edge_index)
         with torch.no_grad():
             a, _ = self.actor(data.x, data.edge_index, deterministic)
         a = a.squeeze(-1)
