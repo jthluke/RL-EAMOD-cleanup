@@ -213,13 +213,13 @@ if not args.test:
             r = data[key][2] * args.rew_scale
             o_2 = data[key][3]
             print(o_1)
-            print(o_1.shape)
+            print(o_1.size)
             print(a)
-            print(a.shape)
+            print(a.size)
             print(r)
-            print(r.shape)
+            print(r.size)
             print(o_2)
-            print(o_2.shape)
+            print(o_2.size)
             model.replay_buffer.store(o_1, a, r, o_2)
 
 
