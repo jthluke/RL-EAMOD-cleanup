@@ -213,15 +213,15 @@ if not args.test:
     ).to(device)
 
     # get .pkl file from data folder
-    with open(os.path.join('data', problem_folder, 'ClusterDataset1', f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
-        data = pickle.load(f)
+    # with open(os.path.join('data', problem_folder, 'ClusterDataset1', f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
+    #     data = pickle.load(f)
         
-        for key in data.keys():
-            o_1 = data[key][0]
-            a = [np.float32(x) for x in data[key][1]]
-            r = data[key][2]
-            o_2 = data[key][3]
-            model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
+    #     for key in data.keys():
+    #         o_1 = data[key][0]
+    #         a = [np.float32(x) for x in data[key][1]]
+    #         r = data[key][2]
+    #         o_2 = data[key][3]
+    #         model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
 
 
     train_episodes = args.max_episodes  # set max number of training episodes
