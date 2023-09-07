@@ -235,7 +235,7 @@ if not args.test:
             for t in range(env.tf):
                 total_demand_per_spatial_node[region] += env.demand[region,destination][t]
     
-    for iteration in range(20):
+    for iteration in range(100):
         batch = model.replay_buffer.sample_batch(13)  # sample from replay buffer
         model = model.float()
         model.update(data=batch)  # update model
