@@ -245,7 +245,7 @@ class AMoD:
         self.obs_spatial = (self.acc_spatial, self.time, self.dacc_spatial, self.demand)
         done = False # if passenger matching is executed first
 
-        return self.obs, max(0,self.reward), done, self.info
+        return self.obs, max(0,self.reward), done, self.info, total_demand
 
     # reb step
     def reb_step(self, rebAction):

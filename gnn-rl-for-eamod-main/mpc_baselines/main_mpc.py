@@ -181,7 +181,7 @@ wandb.init(
 opt_rew = []
 random_dem = not args.test
 obs = env.reset(bool_sample_demand=random_dem) # TODO: determine if we should do this
-total_demand = env.scenario.total_demand
+total_demand = 0
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
 served = 0
@@ -209,7 +209,8 @@ while(not done):
         if t > 0:
             obs1 = copy.deepcopy(o)
 
-        obs_1, reward1, done, info = env.pax_step(paxAction[t], gurobi_env)
+        obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
+        total_demand += sum(td.values())
         o = GNNParser(env).parse_obs(obs_1)
 
         t_reward += reward1
