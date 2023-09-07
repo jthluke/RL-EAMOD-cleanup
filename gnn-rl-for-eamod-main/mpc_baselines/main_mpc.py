@@ -181,6 +181,7 @@ wandb.init(
 opt_rew = []
 random_dem = not args.test
 obs = env.reset(bool_sample_demand=random_dem) # TODO: determine if we should do this
+total_demand = env.scenario.total_demand
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
 served = 0
@@ -232,7 +233,7 @@ while(not done):
         opcost += info['operating_cost']
         revenue += info['revenue'] 
 
-print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue},Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Total demand {total_demand}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})

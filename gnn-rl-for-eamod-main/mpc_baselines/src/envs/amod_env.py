@@ -351,7 +351,6 @@ class AMoD:
         self.paxFlow = defaultdict(dict)
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
-        self.td = 0
         self.reset_cars_charging()
 
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
@@ -359,7 +358,6 @@ class AMoD:
         for i, j, t, d, p in tripAttr:
             self.demand[i, j][t] = d
             self.price[i, j][t] = p
-            self.td += d
 
         self.time = 0
         for i, j in self.G.edges:
@@ -431,6 +429,7 @@ class Scenario:
             self.G = self.G.to_directed()
             self.G_spatial = nx.empty_graph()
             self.G_spatial = self.G_spatial.to_directed()
+            self.total_demand = 0
 
             self.demand_input, self.p, self.rebTime = defaultdict(dict), defaultdict(dict), defaultdict(dict)
             for item in tripAttr:
@@ -518,6 +517,9 @@ class Scenario:
                         
                 break  # only need the first time step, if I want variable acc, I need to change this
             self.tripAttr = self.get_random_demand() # randomly generated demand
+            for i, j, t, d, p in self.tripAttr:
+                self.total_demand += d
+
 
     def add_charge_edges(self):
         counter = 0
