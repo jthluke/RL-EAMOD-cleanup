@@ -188,6 +188,8 @@ t_0 = time.time()
 time_list = []
 SARS = {}
 
+env.reset(bool_sample_demand=False)
+
 # print(len(env.nodes))
 # print(len(env.nodes[0]))
 # print(env.number_nodes)
