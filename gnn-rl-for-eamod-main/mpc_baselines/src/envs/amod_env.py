@@ -604,7 +604,7 @@ class Scenario:
             total_distance = spatial_time + energy_time
             self.G.edges[o_node,d_node]['time'][t] = math.ceil(total_distance) - self.time_normalizer
         
-    def get_random_demand(self, bool_random = True):
+    def get_random_demand(self, bool_random=False):
         # generate demand and price
         # reset = True means that the function is called in the reset() method of AMoD enviroment,
         #   assuming static demand is already generated

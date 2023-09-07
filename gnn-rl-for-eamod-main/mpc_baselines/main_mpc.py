@@ -179,9 +179,7 @@ wandb.init(
       })
 
 opt_rew = []
-random_dem = not args.test
-obs = env.reset(bool_sample_demand=random_dem) # TODO: determine if we should do this
-total_demand = 0
+# obs = env.reset(bool_sample_demand=random_dem) # TODO: determine if we should do this
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
 served = 0
@@ -205,36 +203,71 @@ while(not done):
     else:
         timesteps = [0]
     t_reward = 0
-    for t in timesteps:
-        if t > 0:
-            obs1 = copy.deepcopy(o)
+    
+    if args.test:
+        for episode in range(50):
+            env.reset()
+            for t in timesteps:
+                if t > 0:
+                    obs1 = copy.deepcopy(o)
 
-        obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
-        total_demand += sum(td[region] for region in env.nodes_spatial)
-        o = GNNParser(env).parse_obs(obs_1)
+                obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
+                o = GNNParser(env).parse_obs(obs_1)
 
-        t_reward += reward1
-        if t > 0: 
-            rew = (reward1 + reward2)
+                t_reward += reward1
+                if t > 0: 
+                    rew = (reward1 + reward2)
+                    
+                    action = [0 for i in range(env.number_nodes)]
+                    acc, _, dacc, demand = obs_2
+                    total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
+                    for i in range(env.number_nodes):
+                        action[i] = acc[env.nodes[i]][1]/total_vehicles
+
+                    SARS[t] = [obs1, action, rew, o]
+                
+                obs_2, reward2, done, info = env.reb_step(rebAction[t])
+                
+                opt_rew.append(reward1+reward2) 
+
+                served += info['served_demand']
+                rebcost += info['rebalancing_cost']
+                opcost += info['operating_cost']
+                revenue += info['revenue']
+        served = served/50
+        rebcost = rebcost/50
+        opcost = opcost/50
+        revenue = revenue/50
+    else:
+        for t in timesteps:
+            if t > 0:
+                obs1 = copy.deepcopy(o)
+
+            obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
+            o = GNNParser(env).parse_obs(obs_1)
+
+            t_reward += reward1
+            if t > 0: 
+                rew = (reward1 + reward2)
+                
+                action = [0 for i in range(env.number_nodes)]
+                acc, _, dacc, demand = obs_2
+                total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
+                for i in range(env.number_nodes):
+                    action[i] = acc[env.nodes[i]][1]/total_vehicles
+
+                SARS[t] = [obs1, action, rew, o]
             
-            action = [0 for i in range(env.number_nodes)]
-            acc, _, dacc, demand = obs_2
-            total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
-            for i in range(env.number_nodes):
-                action[i] = acc[env.nodes[i]][1]/total_vehicles
+            obs_2, reward2, done, info = env.reb_step(rebAction[t])
+            
+            opt_rew.append(reward1+reward2) 
 
-            SARS[t] = [obs1, action, rew, o]
-        
-        obs_2, reward2, done, info = env.reb_step(rebAction[t])
-        
-        opt_rew.append(reward1+reward2) 
+            served += info['served_demand']
+            rebcost += info['rebalancing_cost']
+            opcost += info['operating_cost']
+            revenue += info['revenue'] 
 
-        served += info['served_demand']
-        rebcost += info['rebalancing_cost']
-        opcost += info['operating_cost']
-        revenue += info['revenue'] 
-
-print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Total demand {total_demand}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
