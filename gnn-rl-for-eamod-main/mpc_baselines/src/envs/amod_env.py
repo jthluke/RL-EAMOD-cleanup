@@ -513,7 +513,7 @@ class Scenario:
                     #     else:
                     #         self.G.nodes[(region,c)]['accInit'] = 0
                 break  # only need the first time step, if I want variable acc, I need to change this
-            self.tripAttr = self.get_random_demand(bool_random=False) # non-randomly generated demand at initialization
+            self.tripAttr = self.get_random_demand(bool_random=True) # non-randomly generated demand at initialization
 
 
     def add_charge_edges(self):
