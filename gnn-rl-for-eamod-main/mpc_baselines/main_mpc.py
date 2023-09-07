@@ -188,7 +188,7 @@ t_0 = time.time()
 time_list = []
 SARS = {}
 
-env.reset(bool_sample_demand=True)
+env.reset(bool_sample_demand=False)
 
 # print(len(env.nodes))
 # print(len(env.nodes[0]))
@@ -231,9 +231,53 @@ while(not done):
         served += info['served_demand']
         rebcost += info['rebalancing_cost']
         opcost += info['operating_cost']
-        revenue += info['revenue'] 
+        revenue += info['revenue']
+
+test_served = 0
+test_rebcost = 0
+test_opcost = 0
+test_revenue = 0
+
+test_episode = 50
+for episode in range(test_episode):
+    env.reset(bool_sample_demand=True)
+    
+    done = False
+    
+    served = 0
+    rebcost = 0
+    opcost = 0
+    revenue = 0
+
+    while(not done):
+        if (env.tf <= env.time + mpc_horizon):
+            timesteps = range(mpc_horizon)
+        else:
+            timesteps = [0]
+
+        for t in timesteps:
+            obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
+            o = GNNParser(env).parse_obs(obs_1)
+            obs_2, reward2, done, info = env.reb_step(rebAction[t])
+            opt_rew.append(reward1+reward2) 
+
+            served += info['served_demand']
+            rebcost += info['rebalancing_cost']
+            opcost += info['operating_cost']
+            revenue += info['revenue']
+    
+    test_served += served
+    test_rebcost += rebcost
+    test_opcost += opcost
+    test_revenue += revenue
+
+test_served /= test_episode
+test_rebcost /= test_episode
+test_opcost /= test_episode
+test_revenue /= test_episode
 
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+print(f"Test: Revenue {test_revenue}, Served demand {test_served}, Rebalancing Cost {test_rebcost}, Operational Cost {test_opcost}")
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
