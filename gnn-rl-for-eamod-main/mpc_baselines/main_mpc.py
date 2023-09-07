@@ -235,11 +235,11 @@ while(not done):
 
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 
-test_reward = 0
-test_served = 0
-test_rebcost = 0
-test_opcost = 0
-test_revenue = 0
+test_reward = []
+test_served = []
+test_rebcost = []
+test_opcost = []
+test_revenue = []
 
 test_episode = 50
 for episode in range(test_episode):
@@ -270,17 +270,17 @@ for episode in range(test_episode):
             eps_opcost += info['operating_cost']
             eps_revenue += info['revenue']
     
-    test_reward += eps_reward
-    test_served += eps_served
-    test_rebcost += eps_rebcost
-    test_opcost += eps_opcost
-    test_revenue += eps_revenue
-
-test_reward /= test_episode
-test_served /= test_episode
-test_rebcost /= test_episode
-test_opcost /= test_episode
-test_revenue /= test_episode
+    test_reward.append(eps_reward)
+    test_served.append(eps_served)
+    test_rebcost.append(eps_rebcost)
+    test_opcost.append(eps_opcost)
+    test_revenue.append(eps_revenue)
+print(test_reward)
+test_reward = np.mean(test_reward)
+test_served = np.mean(test_served)
+test_rebcost = np.mean(test_rebcost)
+test_opcost = np.mean(test_opcost)
+test_revenue = np.mean(test_revenue)
 
 print(f"Test: Reward {test_reward}, Revenue {test_revenue}, Served demand {test_served}, Rebalancing Cost {test_rebcost}, Operational Cost {test_opcost}")
 
