@@ -177,7 +177,7 @@ wandb.init(
       })
 
 opt_rew = []
-obs = env.reset()
+# obs = env.reset()
 
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
