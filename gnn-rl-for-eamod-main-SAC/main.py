@@ -201,11 +201,11 @@ wandb.init(
 checkpoint_path = "NY_5"
 
 if not args.test:
-    parser = GNNParser(env)
+    parser = GNNParser(env, T=T, scale_factor=scale_factor, scale_price=scale_price)
 
     model = SAC(
         env=env,
-        input_size=22,
+        input_size=34,
         hidden_size=args.hidden_size,
         alpha=args.alpha,
         use_automatic_entropy_tuning=False,
