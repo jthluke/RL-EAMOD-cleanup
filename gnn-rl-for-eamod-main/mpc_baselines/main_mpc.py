@@ -41,8 +41,6 @@ def create_scenario(json_file_path, energy_file_path, seed=10):
 
 parser = argparse.ArgumentParser(description='A2C-GNN')
 
-parser.add_argument('--test', type=bool, default=False,
-                    help='activates test mode for agent evaluation')
 parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
 parser.add_argument('--initial_state', type=bool, default=False,
@@ -156,8 +154,8 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        # print(self.env.gcn_edge_idx.shape)
-        # print(edge_idx.shape)
+        print(self.env.gcn_edge_idx.shape)
+        print(edge_idx.shape)
         data = Data(x, edge_index)
         return data
 
@@ -179,7 +177,8 @@ wandb.init(
       })
 
 opt_rew = []
-# obs = env.reset(bool_sample_demand=random_dem) # TODO: determine if we should do this
+obs = env.reset()
+
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
 served = 0
@@ -189,13 +188,9 @@ revenue = 0
 t_0 = time.time()
 time_list = []
 SARS = {}
-# print(len(env.nodes))
-# print(len(env.nodes[0]))
-# print(env.number_nodes)
-
-if args.test:
-    test_episodes = 50
-
+print(len(env.nodes))
+print(len(env.nodes[0]))
+print(env.number_nodes)
 while(not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact()
@@ -207,81 +202,42 @@ while(not done):
     else:
         timesteps = [0]
     t_reward = 0
-    
-    if args.test:
-        for episode in range(test_episodes):
-            env.reset(bool_sample_demand=True)
-            for t in timesteps:
-                if t > 0:
-                    obs1 = copy.deepcopy(o)
+    for t in timesteps:
+        if t > 0:
+            obs1 = copy.deepcopy(o)
 
-                obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
-                o = GNNParser(env).parse_obs(obs_1)
+        obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
+        total_demand += sum(td[region] for region in env.nodes_spatial)
+        o = GNNParser(env).parse_obs(obs_1)
 
-                t_reward += reward1
-                if t > 0: 
-                    rew = (reward1 + reward2)
-                    
-                    action = [0 for i in range(env.number_nodes)]
-                    acc, _, dacc, demand = obs_2
-                    total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
-                    for i in range(env.number_nodes):
-                        action[i] = acc[env.nodes[i]][1]/total_vehicles
-
-                    SARS[t] = [obs1, action, rew, o]
-                
-                obs_2, reward2, done, info = env.reb_step(rebAction[t])
-                
-                opt_rew.append(reward1+reward2) 
-
-                served += info['served_demand']
-                rebcost += info['rebalancing_cost']
-                opcost += info['operating_cost']
-                revenue += info['revenue']
-        served = served/50
-        rebcost = rebcost/50
-        opcost = opcost/50
-        revenue = revenue/50
-    else:
-        for t in timesteps:
-            if t > 0:
-                obs1 = copy.deepcopy(o)
-
-            obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
-            o = GNNParser(env).parse_obs(obs_1)
-
-            t_reward += reward1
-            if t > 0: 
-                rew = (reward1 + reward2)
-                
-                action = [0 for i in range(env.number_nodes)]
-                acc, _, dacc, demand = obs_2
-                total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
-                for i in range(env.number_nodes):
-                    action[i] = acc[env.nodes[i]][1]/total_vehicles
-
-                SARS[t] = [obs1, action, rew, o]
+        t_reward += reward1
+        if t > 0: 
+            rew = (reward1 + reward2)
             
-            obs_2, reward2, done, info = env.reb_step(rebAction[t])
-            
-            opt_rew.append(reward1+reward2) 
+            action = [0 for i in range(env.number_nodes)]
+            acc, _, dacc, demand = obs_2
+            total_vehicles = sum(acc[env.nodes[i]][0] for i in range(env.number_nodes))
+            for i in range(env.number_nodes):
+                action[i] = acc[env.nodes[i]][1]/total_vehicles
 
-            served += info['served_demand']
-            rebcost += info['rebalancing_cost']
-            opcost += info['operating_cost']
-            revenue += info['revenue'] 
+            SARS[t] = [obs1, action, rew, o]
+        
+        obs_2, reward2, done, info = env.reb_step(rebAction[t])
+        
+        opt_rew.append(reward1+reward2) 
 
-if not args.test:
-    print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
-else:
-    print(f'MPC: Avg Reward {sum(opt_rew)/test_episodes}, Avg Revenue {revenue}, Avg Served demand {served}, Avg Rebalancing Cost {rebcost}, Avg Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+        served += info['served_demand']
+        rebcost += info['rebalancing_cost']
+        opcost += info['operating_cost']
+        revenue += info['revenue'] 
 
+print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Total demand {total_demand}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
-# with open("MPC_SARS.pkl", "wb") as f:
-#     pickle.dump(SARS, f)
+with open("MPC_SARS.pkl", "wb") as f:
+    pickle.dump(SARS, f)
 with open(f"./saved_files/ckpt/{problem_folder}/acc.p", "wb") as file:
     pickle.dump(env.acc, file)
 wandb.save(f"./saved_files/ckpt/{problem_folder}/acc.p")
