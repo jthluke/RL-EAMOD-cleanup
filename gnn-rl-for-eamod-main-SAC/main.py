@@ -143,7 +143,8 @@ file_path = os.path.join('data', problem_folder,  'NY_5.json')
 # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
 
 experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
-energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
+# energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
+energy_dist_path = os.path.join('data', problem_folder, 'energy_distance.npy')
 
 # set Gurobi environment mine
 gurobi_env = gp.Env(empty=True)
