@@ -274,7 +274,7 @@ while(not done):
 if not args.test:
     print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 else:
-    print(f'MPC: Reward {sum(opt_rew)/test_episodes}, Avg Revenue {revenue}, Avg Served demand {served}, Avg Rebalancing Cost {rebcost}, Avg Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+    print(f'MPC: Avg Reward {sum(opt_rew)/test_episodes}, Avg Revenue {revenue}, Avg Served demand {served}, Avg Rebalancing Cost {rebcost}, Avg Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
