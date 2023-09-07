@@ -213,7 +213,7 @@ if not args.test:
     ).to(device)
 
     # get .pkl file from data folder
-    with open(os.path.join('data', problem_folder, 'ClusterDataset1', f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
+    with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
         data = pickle.load(f)
         
         for key in data.keys():
