@@ -153,7 +153,7 @@ t_0 = time.time()
 time_list = []
 
 env.reset(bool_sample_demand=False)
-print(env_test.demand)
+# print(env_test.demand)
 
 while (not done):
     time_i_start = time.time()
@@ -190,7 +190,7 @@ opcost = 0
 revenue = 0
 
 env_test.reset(bool_sample_demand=True)
-print(env_test.demand)
+# print(env_test.demand)
 
 while (not done):
     if (env.tf <= env.time + mpc_horizon):
