@@ -351,6 +351,7 @@ class AMoD:
         self.paxFlow = defaultdict(dict)
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
+        self.td = 0
         self.reset_cars_charging()
 
         tripAttr = self.scenario.get_random_demand(bool_sample_demand)
@@ -358,6 +359,7 @@ class AMoD:
         for i, j, t, d, p in tripAttr:
             self.demand[i, j][t] = d
             self.price[i, j][t] = p
+            self.td += d
 
         self.time = 0
         for i, j in self.G.edges:
