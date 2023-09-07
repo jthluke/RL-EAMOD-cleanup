@@ -213,15 +213,15 @@ if not args.test:
     ).to(device)
 
     # get .pkl file from data folder
-    with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
-        data = pickle.load(f)
+    # with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
+    #     data = pickle.load(f)
         
-        for key in data.keys():
-            o_1 = data[key][0]
-            a = [np.float32(x) for x in data[key][1]]
-            r = data[key][2]
-            o_2 = data[key][3]
-            model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
+    #     for key in data.keys():
+    #         o_1 = data[key][0]
+    #         a = [np.float32(x) for x in data[key][1]]
+    #         r = data[key][2]
+    #         o_2 = data[key][3]
+    #         model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
 
     train_episodes = args.max_episodes  # set max number of training episodes
     epochs = trange(train_episodes)  # epoch iterator
@@ -235,10 +235,10 @@ if not args.test:
             for t in range(env.tf):
                 total_demand_per_spatial_node[region] += env.demand[region,destination][t]
     
-    for iteration in range(100):
-        batch = model.replay_buffer.sample_batch(13)  # sample from replay buffer
-        model = model.float()
-        model.update(data=batch)  # update model
+    # for iteration in range(100):
+    #     batch = model.replay_buffer.sample_batch(13)  # sample from replay buffer
+    #     model = model.float()
+    #     model.update(data=batch)  # update model
     
     for i_episode in epochs:
         desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
