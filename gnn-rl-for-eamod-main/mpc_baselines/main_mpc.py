@@ -179,7 +179,8 @@ wandb.init(
       })
 
 opt_rew = []
-obs = env.reset() # TODO: determine if we should do this
+random_dem = not args.test
+obs = env.reset(bool_sample_demand=random_dem) # TODO: determine if we should do this
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
 served = 0
