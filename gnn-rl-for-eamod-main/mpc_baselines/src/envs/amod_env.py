@@ -435,8 +435,8 @@ class Scenario:
                 t,o,d,v,p = item['time_stamp'], item['origin'], item['destination'], item['demand'], item['price']
                 if (o,d) not in self.demand_input:
                     self.demand_input[o,d], self.p[o,d] = defaultdict(float), defaultdict(float)
-                self.demand_input[o,d][t] += v*demand_ratio
-                self.p[o,d][t] += p*demand_ratio
+                self.demand_input[o,d][t] += v * demand_ratio
+                self.p[o,d][t] += p * demand_ratio
             
             for item in reb_time:
                 hr,o,d,rt = item["time_stamp"], item["origin"], item["destination"], item["reb_time"]
@@ -512,8 +512,6 @@ class Scenario:
                     #         self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
                     #     else:
                     #         self.G.nodes[(region,c)]['accInit'] = 0
-
-                        
                 break  # only need the first time step, if I want variable acc, I need to change this
             self.tripAttr = self.get_random_demand(bool_random=False) # non-randomly generated demand at initialization
 

@@ -154,8 +154,8 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        print(self.env.gcn_edge_idx.shape)
-        print(edge_idx.shape)
+        # print(self.env.gcn_edge_idx.shape)
+        # print(edge_idx.shape)
         data = Data(x, edge_index)
         return data
 
@@ -177,7 +177,6 @@ wandb.init(
       })
 
 opt_rew = []
-# obs = env.reset()
 
 mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
 done = False
@@ -188,9 +187,11 @@ revenue = 0
 t_0 = time.time()
 time_list = []
 SARS = {}
-print(len(env.nodes))
-print(len(env.nodes[0]))
-print(env.number_nodes)
+
+# print(len(env.nodes))
+# print(len(env.nodes[0]))
+# print(env.number_nodes)
+
 while(not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact()
