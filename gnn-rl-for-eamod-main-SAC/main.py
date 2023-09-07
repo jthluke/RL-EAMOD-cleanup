@@ -101,7 +101,7 @@ parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
 parser.add_argument('--max_episodes', type=int, default=16000, metavar='N',
                     help='number of episodes to train agent (default: 16k)')
-parser.add_argument('--T', type=int, default=10, metavar='N',
+parser.add_argument('--T', type=int, default=16, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
                     help='Learning rate for the actor')
@@ -135,8 +135,13 @@ seed = args.seed
 test = args.test
 T = args.T
 
-problem_folder = 'NY'
-file_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'd1.json')
+# problem_folder = 'NY/ClusterDataset1'
+# file_path = os.path.join('data', problem_folder,  'd1.json')
+problem_folder = 'NY_5'
+file_path = os.path.join('data', problem_folder,  'NY_5.json')
+# problem_folder = 'SF_5_clustered'
+# file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
+
 experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
 energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 
