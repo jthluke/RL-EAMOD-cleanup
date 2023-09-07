@@ -233,6 +233,9 @@ while(not done):
         opcost += info['operating_cost']
         revenue += info['revenue']
 
+print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+
+test_reward = 0
 test_served = 0
 test_rebcost = 0
 test_opcost = 0
@@ -244,10 +247,10 @@ for episode in range(test_episode):
     
     done = False
     
-    served = 0
-    rebcost = 0
-    opcost = 0
-    revenue = 0
+    eps_served = 0
+    eps_rebcost = 0
+    eps_opcost = 0
+    eps_revenue = 0
 
     while(not done):
         if (env.tf <= env.time + mpc_horizon):
@@ -255,29 +258,32 @@ for episode in range(test_episode):
         else:
             timesteps = [0]
 
+        eps_reward = 0
         for t in timesteps:
             obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
             o = GNNParser(env).parse_obs(obs_1)
             obs_2, reward2, done, info = env.reb_step(rebAction[t])
-            opt_rew.append(reward1+reward2) 
-
-            served += info['served_demand']
-            rebcost += info['rebalancing_cost']
-            opcost += info['operating_cost']
-            revenue += info['revenue']
+            
+            eps_reward += reward1 + reward2
+            eps_served += info['served_demand']
+            eps_rebcost += info['rebalancing_cost']
+            eps_opcost += info['operating_cost']
+            eps_revenue += info['revenue']
     
-    test_served += served
-    test_rebcost += rebcost
-    test_opcost += opcost
-    test_revenue += revenue
+    test_reward += eps_reward
+    test_served += eps_served
+    test_rebcost += eps_rebcost
+    test_opcost += eps_opcost
+    test_revenue += eps_revenue
 
+test_reward /= test_episode
 test_served /= test_episode
 test_rebcost /= test_episode
 test_opcost /= test_episode
 test_revenue /= test_episode
 
-print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
-print(f"Test: Revenue {test_revenue}, Served demand {test_served}, Rebalancing Cost {test_rebcost}, Operational Cost {test_opcost}")
+print(f"Test: Reward {test_reward}, Revenue {test_revenue}, Served demand {test_served}, Rebalancing Cost {test_rebcost}, Operational Cost {test_opcost}")
+
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
