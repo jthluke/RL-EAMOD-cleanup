@@ -207,7 +207,6 @@ while(not done):
             obs1 = copy.deepcopy(o)
 
         obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
-        total_demand += sum(td[region] for region in env.nodes_spatial)
         o = GNNParser(env).parse_obs(obs_1)
 
         t_reward += reward1
@@ -231,7 +230,7 @@ while(not done):
         opcost += info['operating_cost']
         revenue += info['revenue'] 
 
-print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Total demand {total_demand}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
