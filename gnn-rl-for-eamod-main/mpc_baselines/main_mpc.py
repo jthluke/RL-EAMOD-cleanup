@@ -210,7 +210,7 @@ while(not done):
     
     if args.test:
         for episode in range(test_episodes):
-            env.reset()
+            env.reset(bool_sample_demand=True)
             for t in timesteps:
                 if t > 0:
                     obs1 = copy.deepcopy(o)

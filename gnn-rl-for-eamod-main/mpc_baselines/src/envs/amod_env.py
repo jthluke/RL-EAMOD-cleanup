@@ -515,7 +515,7 @@ class Scenario:
 
                         
                 break  # only need the first time step, if I want variable acc, I need to change this
-            self.tripAttr = self.get_random_demand() # randomly generated demand
+            self.tripAttr = self.get_random_demand(bool_random=False) # non-randomly generated demand at initialization
 
 
     def add_charge_edges(self):
