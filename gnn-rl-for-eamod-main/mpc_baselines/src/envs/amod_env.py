@@ -622,6 +622,7 @@ class Scenario:
                 for i, j in self.edges:
                     if (i[0], j[0]) in self.demand_input and t in self.demand_input[i[0], j[0]]:
                         if bool_random:
+                            print("random demand")
                             demand[i[0],j[0]][t] = np.random.poisson(self.demand_input[i[0],j[0]][t])
                         else:
                             demand[i[0], j[0]][t] = self.demand_input[i[0], j[0]][t]
