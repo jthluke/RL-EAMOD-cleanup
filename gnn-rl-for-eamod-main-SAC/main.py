@@ -112,7 +112,7 @@ parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
 parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
                     help='Gradient norm clipping for the critic')
 
-parser.add_argument("--batch_size", type=int, default=10,
+parser.add_argument("--batch_size", type=int, default=100,
                     help='defines batch size')
 parser.add_argument("--alpha", type=float, default=0.3,
                     help='defines entropy coefficient')
@@ -234,7 +234,12 @@ if not args.test:
         for destination in env.nodes_spatial:
             for t in range(env.tf):
                 total_demand_per_spatial_node[region] += env.demand[region,destination][t]
-
+    
+    for iteration in range(20):
+        batch = model.replay_buffer.sample_batch(13)  # sample from replay buffer
+        model = model.float()
+        model.update(data=batch)  # update model
+    
     for i_episode in epochs:
         desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
         bool_random_random_demand = not test # only use random demand during training
@@ -303,14 +308,9 @@ if not args.test:
             
             # stop episode if terminating conditions are met
             step += 1
-            if i_episode <= 5:
+            if i_episode > 10:
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
-                model = model.float()
-                model.update(data=batch)  # update model
-            else:
-                batch = model.replay_buffer.sample_batch(
-                    args.batch_size * 10)  # sample from replay buffer
                 model = model.float()
                 model.update(data=batch)  # update model
 
