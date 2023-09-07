@@ -156,8 +156,8 @@ class GNNParser():
             new_edge = torch.tensor([[origin_node_idx], [destination_node_idx]], dtype=torch.long)
             edge_idx = torch.cat((edge_idx, new_edge), 1)
         edge_index = torch.cat((edge_idx, self.env.gcn_edge_idx), 1)
-        print(self.env.gcn_edge_idx.shape)
-        print(edge_idx.shape)
+        # print(self.env.gcn_edge_idx.shape)
+        # print(edge_idx.shape)
         data = Data(x, edge_index)
         return data
 
@@ -189,9 +189,13 @@ revenue = 0
 t_0 = time.time()
 time_list = []
 SARS = {}
-print(len(env.nodes))
-print(len(env.nodes[0]))
-print(env.number_nodes)
+# print(len(env.nodes))
+# print(len(env.nodes[0]))
+# print(env.number_nodes)
+
+if args.test:
+    test_episodes = 50
+
 while(not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact()
@@ -205,7 +209,7 @@ while(not done):
     t_reward = 0
     
     if args.test:
-        for episode in range(50):
+        for episode in range(test_episodes):
             env.reset()
             for t in timesteps:
                 if t > 0:
@@ -267,13 +271,17 @@ while(not done):
             opcost += info['operating_cost']
             revenue += info['revenue'] 
 
-print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+if not args.test:
+    print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+else:
+    print(f'MPC: Reward {sum(opt_rew)/test_episodes}, Avg Revenue {revenue}, Avg Served demand {served}, Avg Rebalancing Cost {rebcost}, Avg Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost})
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
-with open("MPC_SARS.pkl", "wb") as f:
-    pickle.dump(SARS, f)
+# with open("MPC_SARS.pkl", "wb") as f:
+#     pickle.dump(SARS, f)
 with open(f"./saved_files/ckpt/{problem_folder}/acc.p", "wb") as file:
     pickle.dump(env.acc, file)
 wandb.save(f"./saved_files/ckpt/{problem_folder}/acc.p")
