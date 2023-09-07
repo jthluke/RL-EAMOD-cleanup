@@ -210,7 +210,7 @@ while(not done):
             obs1 = copy.deepcopy(o)
 
         obs_1, reward1, done, info, td = env.pax_step(paxAction[t], gurobi_env)
-        total_demand += sum(td.values())
+        total_demand += sum(td[region] for region in env.nodes_spatial)
         o = GNNParser(env).parse_obs(obs_1)
 
         t_reward += reward1
