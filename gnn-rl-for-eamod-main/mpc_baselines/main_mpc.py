@@ -53,9 +53,12 @@ parser.add_argument('--seed', type=int, default=10, metavar='S',
                     help='random seed (default: 10)')
 parser.add_argument('--demand_ratio', type=float, default=0.5, metavar='S',
                     help='demand_ratio (default: 0.5)')
+parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
+                    help='number of spatial nodes (default: 5)')
 args = parser.parse_args()
 
 mpc_horizon = args.mpc_horizon
+num_sn = args.spatial_nodes
 
 if args.toy:
     problem_folder = 'Toy'
@@ -67,7 +70,7 @@ if args.toy:
     tf = env.tf
 else:
     problem_folder = 'NY'
-    file_path = os.path.join('..', 'data', problem_folder, 'NYC_5.json')
+    file_path = os.path.join('..', 'data', problem_folder, num_sn, f'NYC_{num_sn}.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY/ClusterDataset1'
@@ -78,7 +81,7 @@ else:
     # file_path = os.path.join('..', 'data', problem_folder,  'SF_10.json')
     
     experiment = problem_folder +  '_mpc_horizon_' + str(mpc_horizon) + 'entire_problem' + file_path + "_heuristic_graph"
-    energy_dist_path = os.path.join('..', 'data', problem_folder, 'energy_distance.npy')
+    energy_dist_path = os.path.join('..', 'data', problem_folder, num_sn, 'energy_distance.npy')
     test_scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(test_scenario)
     tf = env.tf
