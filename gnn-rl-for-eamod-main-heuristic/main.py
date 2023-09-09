@@ -243,6 +243,9 @@ for i_episode in epochs:
     # bool_random_random_demand = not test # only use random demand during training
     obs = env.reset(bool_sample_demand=True, seed=i_episode) # initialize environment
     
+    # print demand from obs
+    print("Demand from obs:" + str(obs[3]))
+    
     episode_reward = 0
     episode_served_demand = 0
     episode_rebalancing_cost = 0
