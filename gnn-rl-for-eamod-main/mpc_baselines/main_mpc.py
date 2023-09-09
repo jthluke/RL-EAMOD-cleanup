@@ -45,7 +45,7 @@ parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
 parser.add_argument('--initial_state', type=bool, default=False,
                     help='forces MPC to return system to initial charge')
-parser.add_argument('--mpc_horizon', type=int, default=16, metavar='N',
+parser.add_argument('--mpc_horizon', type=int, default=72, metavar='N',
                     help='MPC horizon (default: 60)')
 parser.add_argument('--subproblem', type=int, default=0, metavar='N',
                     help='which subproblem to run (default: 0)')
@@ -70,7 +70,7 @@ if args.toy:
     tf = env.tf
 else:
     problem_folder = 'NY'
-    file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'NY_{num_sn}_test.json')
+    file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY/ClusterDataset1'
