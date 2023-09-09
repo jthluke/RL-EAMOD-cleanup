@@ -52,8 +52,6 @@ parser.add_argument('--demand_ratio', type=float, default=0.5, metavar='S',
                     help='demand_ratio (default: 0.5)')
 
 # Model parameters
-parser.add_argument('--test', type=bool, default=False,
-                    help='activates test mode for agent evaluation')
 parser.add_argument('--equal_distr_baseline', type=bool, default=False,
                     help='activates the equal distribution baseline.')
 parser.add_argument('--prop_distr_baseline', type=bool, default=False,
@@ -64,31 +62,34 @@ parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
 parser.add_argument('--max_episodes', type=int, default=16000, metavar='N',
                     help='number of episodes to train agent (default: 16k)')
-parser.add_argument('--T', type=int, default=16, metavar='N',
+parser.add_argument('--T', type=int, default=72, metavar='N',
                     help='Time horizon for the A2C')
-parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
-                    help='Learning rate for the actor')
-parser.add_argument('--lr_c', type=float, default=1e-3, metavar='N',
-                    help='Learning rate for the critic')
-parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
-                    help='Gradient norm clipping for the actor')
-parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
-                    help='Gradient norm clipping for the critic')
+parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
+                    help='number of spatial nodes (default: 5)')
+# parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
+#                     help='Learning rate for the actor')
+# parser.add_argument('--lr_c', type=float, default=1e-3, metavar='N',
+#                     help='Learning rate for the critic')
+# parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
+#                     help='Gradient norm clipping for the actor')
+# parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
+#                     help='Gradient norm clipping for the critic')
 parser.add_argument('--charging_heuristic', type=str, default='empty_to_full',
                     help='Which charging heuristic to use')
 
 args = parser.parse_args()
 args.cuda = torch.cuda.is_available()
 device = torch.device("cuda" if args.cuda else "cpu")
-lr_a = args.lr_a
-lr_c = args.lr_c
-grad_norm_clip_a = args.grad_norm_clip_a
-grad_norm_clip_c = args.grad_norm_clip_c
+# lr_a = args.lr_a
+# lr_c = args.lr_c
+# grad_norm_clip_a = args.grad_norm_clip_a
+# grad_norm_clip_c = args.grad_norm_clip_c
 charging_heuristic = args.charging_heuristic
 use_equal_distr_baseline = args.equal_distr_baseline
 use_prop_distr_baseline = args.prop_distr_baseline
 seed = args.seed
 test = args.test
+num_sn = args.spatial_nodes
 T = args.T
 
 # toy 1x1
@@ -112,11 +113,14 @@ else:
     # file_path = os.path.join('data', problem_folder,  'NY_5.json')
     # problem_folder = 'SF_5_clustered'
     # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
-    problem_folder = 'NY'
-    file_path = os.path.join('data', problem_folder,  'NYC_5.json')
+    # problem_folder = 'NY'
+    # file_path = os.path.join('data', problem_folder,  'NYC_5.json')
 
-    experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
-    energy_dist_path = os.path.join('data', problem_folder, 'energy_distance.npy')
+    problem_folder = 'NY'
+    file_path = os.path.join('data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+
+    experiment = 'NO_training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
+    energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
     scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(scenario)
     # Initialize A2C-GNN
@@ -127,7 +131,7 @@ else:
     # scale_factor = 0.0001 # potentially needs to be reschaled for NY5
     # scale_price = 0.1
     # NY 5 
-    scale_factor = 0.0001
+    scale_factor = 0.01
     scale_price = 0.1
     model = A2C(env=env, T=T, lr_a=lr_a, lr_c=lr_c, grad_norm_clip_a=grad_norm_clip_a, grad_norm_clip_c=grad_norm_clip_c, seed=seed, scale_factor=scale_factor, scale_price=scale_price).to(device)
     if test:
