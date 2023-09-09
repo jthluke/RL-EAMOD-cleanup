@@ -10,6 +10,12 @@ class RebalFlowSolver:
         t = env.time
         # start_time = os.times()
         self.m = gp.Model(env=gurobi_env)
+
+        self.m.Params.Method = 2
+        self.m.Params.Crossover = 0
+        self.m.Params.BarConvTol = 1e-6
+        self.m.Params.Threads = 30
+
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0.0, ub=gp.GRB.INFINITY,
                                    vtype=gp.GRB.CONTINUOUS, name="flow")  # both could be INTEGER
         
