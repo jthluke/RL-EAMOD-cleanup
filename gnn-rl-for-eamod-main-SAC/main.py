@@ -89,6 +89,8 @@ parser.add_argument('--seed', type=int, default=10, metavar='S',
                     help='random seed (default: 10)')
 parser.add_argument('--demand_ratio', type=float, default=0.5, metavar='S',
                     help='demand_ratio (default: 0.5)')
+parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
+                    help='number of spatial nodes (default: 5)')
 
 # Model parameters
 parser.add_argument('--test', type=bool, default=False,
@@ -101,7 +103,7 @@ parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
 parser.add_argument('--max_episodes', type=int, default=16000, metavar='N',
                     help='number of episodes to train agent (default: 16k)')
-parser.add_argument('--T', type=int, default=16, metavar='N',
+parser.add_argument('--T', type=int, default=72, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
                     help='Learning rate for the actor')
@@ -134,6 +136,7 @@ use_equal_distr_baseline = args.equal_distr_baseline
 seed = args.seed
 test = args.test
 T = args.T
+num_sn = args.spatial_nodes
 
 # problem_folder = 'NY/ClusterDataset1'
 # file_path = os.path.join('data', problem_folder,  'd1.json')
@@ -141,12 +144,12 @@ T = args.T
 # file_path = os.path.join('data', problem_folder,  'NY_5.json')
 # problem_folder = 'SF_5_clustered'
 # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
-problem_folder = 'NY'
-file_path = os.path.join('data', problem_folder,  'NYC_5.json')
 
+problem_folder = 'NY'
+file_path = os.path.join('data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
 experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
 # energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
-energy_dist_path = os.path.join('data', problem_folder, 'energy_distance.npy')
+energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
 
 # set Gurobi environment mine
 gurobi_env = gp.Env(empty=True)
@@ -159,6 +162,7 @@ gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
 env = AMoD(scenario)
+
 print("Number of edges: " + str(len(env.scenario.edges)))
 print("Number of spatial nodes: " + str(len(env.scenario.G_spatial.nodes)))
 print("Number of nodes: " + str(len(env.scenario.G.nodes)))
@@ -202,244 +206,249 @@ wandb.init(
 
 checkpoint_path = "NYC_5"
 
-if not args.test:
-    parser = GNNParser(env, T=T, scale_factor=scale_factor, scale_price=scale_price)
+parser = GNNParser(env, T=T, scale_factor=scale_factor, scale_price=scale_price)
 
-    model = SAC(
-        env=env,
-        input_size=34,
-        hidden_size=args.hidden_size,
-        alpha=args.alpha,
-        use_automatic_entropy_tuning=False,
-        critic_version=args.critic_version,
-    ).to(device)
+model = SAC(
+    env=env,
+    input_size=(2*T + 2),
+    hidden_size=args.hidden_size,
+    alpha=args.alpha,
+    use_automatic_entropy_tuning=False,
+    critic_version=args.critic_version,
+).to(device)
 
-    # get .pkl file from data folder
-    # with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
-    #     data = pickle.load(f)
-        
-    #     for key in data.keys():
-    #         o_1 = data[key][0]
-    #         a = [np.float32(x) for x in data[key][1]]
-    #         r = data[key][2]
-    #         o_2 = data[key][3]
-    #         model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
-
-    train_episodes = args.max_episodes  # set max number of training episodes
-    epochs = trange(train_episodes)  # epoch iterator
-    best_reward = -np.inf  # set best reward
-    best_reward_test = -np.inf  # set best reward
-    model.train()  # set model in train mode
-
-    total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
-    for region in env.nodes_spatial:
-        for destination in env.nodes_spatial:
-            for t in range(env.tf):
-                total_demand_per_spatial_node[region] += env.demand[region,destination][t]
+# get .pkl file from data folder
+# with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
+#     data = pickle.load(f)
     
-    # for iteration in range(100):
-    #     batch = model.replay_buffer.sample_batch(13)  # sample from replay buffer
-    #     model = model.float()
-    #     model.update(data=batch)  # update model
+#     for key in data.keys():
+#         o_1 = data[key][0]
+#         a = [np.float32(x) for x in data[key][1]]
+#         r = data[key][2]
+#         o_2 = data[key][3]
+#         model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
+
+train_episodes = args.max_episodes  # set max number of training episodes
+epochs = trange(train_episodes)  # epoch iterator
+best_reward = -np.inf  # set best reward
+best_reward_test = -np.inf  # set best reward
+model.train()  # set model in train mode
+
+total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
+for region in env.nodes_spatial:
+    for destination in env.nodes_spatial:
+        for t in range(env.tf):
+            total_demand_per_spatial_node[region] += env.demand[region,destination][t]
+
+# for iteration in range(100):
+#     batch = model.replay_buffer.sample_batch(13)  # sample from replay buffer
+#     model = model.float()
+#     model.update(data=batch)  # update model
+
+for i_episode in epochs:
+    desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
+    obs = env.reset(bool_sample_demand=True, seed=i_episode) #initialize environment
     
-    for i_episode in epochs:
-        desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
-        bool_random_random_demand = not test # only use random demand during training
-        obs = env.reset(bool_random_random_demand) #initialize environment
-        
-        episode_reward = 0
-        episode_served_demand = 0
-        episode_rebalancing_cost = 0
-        actions = []
-
-        current_eps = []
-        done = False
-        step = 0
-        while (not done):
-            if step > 0:
-                obs1 = copy.deepcopy(o)
-            # take matching step (Step 1 in paper)
-            if step == 0 and i_episode == 0:
-                # initialize optimization problem in the first step
-                pax_flows_solver = PaxFlowsSolver(env=env, gurobi_env=gurobi_env)
-            else:
-                pax_flows_solver.update_constraints()
-                pax_flows_solver.update_objective()
-            obs, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
-            o = parser.parse_obs(obs)
-            episode_reward += paxreward
-            if step > 0:
-                rl_reward = (paxreward + rebreward)
-                model.replay_buffer.store(
-                    obs1, action_rl, args.rew_scale * rl_reward, o)
-
-            # sample from Dirichlet (Step 2 in paper)
-            action_rl = model.select_action(o)
-            
-            # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
-            total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
-            desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
-            total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
-            missing_cars = total_idle_acc - total_desiredAcc
-            most_likely_node = np.argmax(action_rl)
-            if missing_cars != 0:
-                desired_acc[env.nodes[most_likely_node]] += missing_cars   
-                total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
-            assert abs(total_desiredAcc - total_idle_acc) < 1e-5
-            for n in env.nodes:
-                assert desired_acc[n] >= 0
-            for n in env.nodes:
-                desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
-            
-            # solve minimum rebalancing distance problem (Step 3 in paper)
-            if step == 0 and i_episode == 0:
-            # initialize optimization problem in the first step
-                rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
-            else:
-                rebal_flow_solver.update_constraints(desired_acc, env)
-                rebal_flow_solver.update_objective(env)
-            rebAction = rebal_flow_solver.optimize()
-
-            # Take action in environment
-            new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
-            episode_reward += rebreward
-            
-            # track performance over episode
-            episode_served_demand += info_pax['served_demand']
-            episode_rebalancing_cost += info_reb['rebalancing_cost']
-            
-            # stop episode if terminating conditions are met
-            step += 1
-            if i_episode > 10:
-                batch = model.replay_buffer.sample_batch(
-                    args.batch_size)  # sample from replay buffer
-                model = model.float()
-                model.update(data=batch)  # update model
-
-        epochs.set_description(
-            f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
-        
-        # Send current statistics to wandb
-        for spatial_node in range(env.scenario.spatial_nodes):
-            wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
-            wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
-            if total_demand_per_spatial_node[spatial_node] > 0:
-                wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
-
-        # Checkpoint best performing model
-        if episode_reward >= best_reward:
-            path = os.path.join('ckpt', f'{checkpoint_path}.pth')
-            model.save_checkpoint(
-                path=path)
-            best_reward = episode_reward
-            best_rebal_cost = episode_rebalancing_cost
-            best_served_demand  = episode_served_demand
-            best_model = model
-
-        wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
-        "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward})
-
-        if i_episode % 10 == 0:  # test model every 10th episode
-            test_reward, test_served_demand, test_rebalancing_cost = model.test_agent(
-                1, env, pax_flows_solver, rebal_flow_solver, parser=parser)
-            if test_reward >= best_reward_test:
-                best_reward_test = test_reward
-                path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
-                model.save_checkpoint(path=path)
-                print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
-else:
-    parser = GNNParser(env)
-
-    model = SAC(
-        env=env,
-        input_size=22,
-        hidden_size=args.hidden_size,
-        alpha=args.alpha,
-        use_automatic_entropy_tuning=False,
-        critic_version=args.critic_version,
-    ).to(device)
-
-    path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
-    model.load_checkpoint(path=path)
-
-    test_episodes = args.max_episodes  # set max number of training episodes
-    epochs = trange(test_episodes)  # epoch iterator
-    # Initialize lists for logging
-    log = {'test_reward': [],
-           'test_served_demand': [],
-           'test_reb_cost': []}
-
-    rewards = []
-    demands = []
-    costs = []
+    episode_reward = 0
+    episode_served_demand = 0
+    episode_rebalancing_cost = 0
     actions = []
 
-    for episode in range(10):
-        desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
-        bool_random_random_demand = not test # only use random demand during training
-        obs = env.reset(bool_random_random_demand) #initialize environment
-        episode_reward = 0
-        episode_served_demand = 0
-        episode_rebalancing_cost = 0
-        time_start = time.time()
-        done = False
-        step = 0
+    current_eps = []
+    done = False
+    step = 0
+
+    while (not done):
+        if step > 0:
+            obs1 = copy.deepcopy(o)
+        # take matching step (Step 1 in paper)
+        if step == 0 and i_episode == 0:
+            # initialize optimization problem in the first step
+            pax_flows_solver = PaxFlowsSolver(env=env, gurobi_env=gurobi_env)
+        else:
+            pax_flows_solver.update_constraints()
+            pax_flows_solver.update_objective()
+        obs, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
+        o = parser.parse_obs(obs)
+        episode_reward += paxreward
+        if step > 0:
+            rl_reward = (paxreward + rebreward)
+            model.replay_buffer.store(obs1, action_rl, args.rew_scale * rl_reward, o)
+
+        # sample from Dirichlet (Step 2 in paper)
+        action_rl = model.select_action(o)
         
-        while (not done):
-            # take matching step (Step 1 in paper)
-            if step == 0 and episode == 0:
-                # initialize optimization problem in the first step
-                pax_flows_solver = PaxFlowsSolver(env=env,gurobi_env=gurobi_env)
-            else:
-                pax_flows_solver.update_constraints()
-                pax_flows_solver.update_objective()
-            obs, paxreward, _, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=episode)
-            episode_reward += paxreward
-            
-            # use GNN-RL policy (Step 2 in paper)
-            o = parser.parse_obs(obs)
-            action_rl = model.select_action(o, deterministic=True)
-            
-            # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
-            total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
-            desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
+        # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
+        total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
+        desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
+        total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+        missing_cars = total_idle_acc - total_desiredAcc
+        most_likely_node = np.argmax(action_rl)
+        if missing_cars != 0:
+            desired_acc[env.nodes[most_likely_node]] += missing_cars   
             total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
-            missing_cars = total_idle_acc - total_desiredAcc
-            most_likely_node = np.argmax(action_rl)
-            if missing_cars != 0:
-                desired_acc[env.nodes[most_likely_node]] += missing_cars   
-                total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
-            assert abs(total_desiredAcc - total_idle_acc) < 1e-5
-            for n in env.nodes:
-                assert desired_acc[n] >= 0
-            for n in env.nodes:
-                desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
-            
-            # solve minimum rebalancing distance problem (Step 3 in paper)
-            if step == 0 and episode == 0:
-                # initialize optimization problem in the first step
-                rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
-            else:
-                rebal_flow_solver.update_constraints(desired_acc, env)
-                rebal_flow_solver.update_objective(env)
-            rebAction = rebal_flow_solver.optimize()
+        assert abs(total_desiredAcc - total_idle_acc) < 1e-5
+        for n in env.nodes:
+            assert desired_acc[n] >= 0
+        for n in env.nodes:
+            desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
+        
+        # solve minimum rebalancing distance problem (Step 3 in paper)
+        if step == 0 and i_episode == 0:
+        # initialize optimization problem in the first step
+            rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
+        else:
+            rebal_flow_solver.update_constraints(desired_acc, env)
+            rebal_flow_solver.update_objective(env)
+        rebAction = rebal_flow_solver.optimize()
 
-            # Take action in environment
-            new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
-            episode_reward += rebreward
-            
-            # track performance over episode
-            episode_served_demand += info_pax['served_demand']
-            episode_rebalancing_cost += info_reb['rebalancing_cost']
+        # Take action in environment
+        new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
+        episode_reward += rebreward
+        
+        # track performance over episode
+        episode_served_demand += info_pax['served_demand']
+        episode_rebalancing_cost += info_reb['rebalancing_cost']
+        
+        # stop episode if terminating conditions are met
+        step += 1
+        if i_episode > 10:
+            batch = model.replay_buffer.sample_batch(
+                args.batch_size)  # sample from replay buffer
+            model = model.float()
+            model.update(data=batch)  # update model
 
-            step += 1
-
-        # Send current statistics to screen
-        epochs.set_description(
-            f"Episode {episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost}")
-        # Log KPIs
+    epochs.set_description(
+        f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
     
+    # Send current statistics to wandb
+    for spatial_node in range(env.scenario.spatial_nodes):
+        wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
+        wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
+        if total_demand_per_spatial_node[spatial_node] > 0:
+            wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
+
+    # Checkpoint best performing model
+    if episode_reward >= best_reward:
+        path = os.path.join('ckpt', f'{checkpoint_path}.pth')
+        model.save_checkpoint(
+            path=path)
+        best_reward = episode_reward
+        best_rebal_cost = episode_rebalancing_cost
+        best_served_demand  = episode_served_demand
+        best_model = model
+
+    wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
+    "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward})
+
+    if i_episode % 10 == 0:  # test model every 10th episode
+        test_reward, test_served_demand, test_rebalancing_cost = model.test_agent(
+            1, env, pax_flows_solver, rebal_flow_solver, parser=parser)
+        if test_reward >= best_reward_test:
+            best_reward_test = test_reward
+            path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
+            model.save_checkpoint(path=path)
+            print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
+
+
+## now test trained model
+test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
+    50, env, pax_flows_solver, rebal_flow_solver, parser=parser)
+
+wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Epoch Time": test_time})
 wandb.finish()
+
+# parser = GNNParser(env)
+
+# model = SAC(
+#     env=env,
+#     input_size=22,
+#     hidden_size=args.hidden_size,
+#     alpha=args.alpha,
+#     use_automatic_entropy_tuning=False,
+#     critic_version=args.critic_version,
+# ).to(device)
+
+# path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
+# model.load_checkpoint(path=path)
+
+# test_episodes = args.max_episodes  # set max number of training episodes
+# epochs = trange(test_episodes)  # epoch iterator
+# # Initialize lists for logging
+# log = {'test_reward': [],
+#         'test_served_demand': [],
+#         'test_reb_cost': []}
+
+# rewards = []
+# demands = []
+# costs = []
+# actions = []
+
+# for episode in range(10):
+#     desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
+#     bool_random_random_demand = not test # only use random demand during training
+#     obs = env.reset(bool_random_random_demand) #initialize environment
+#     episode_reward = 0
+#     episode_served_demand = 0
+#     episode_rebalancing_cost = 0
+#     time_start = time.time()
+#     done = False
+#     step = 0
+    
+#     while (not done):
+#         # take matching step (Step 1 in paper)
+#         if step == 0 and episode == 0:
+#             # initialize optimization problem in the first step
+#             pax_flows_solver = PaxFlowsSolver(env=env,gurobi_env=gurobi_env)
+#         else:
+#             pax_flows_solver.update_constraints()
+#             pax_flows_solver.update_objective()
+#         obs, paxreward, _, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=episode)
+#         episode_reward += paxreward
+        
+#         # use GNN-RL policy (Step 2 in paper)
+#         o = parser.parse_obs(obs)
+#         action_rl = model.select_action(o, deterministic=True)
+        
+#         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
+#         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
+#         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
+#         total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+#         missing_cars = total_idle_acc - total_desiredAcc
+#         most_likely_node = np.argmax(action_rl)
+#         if missing_cars != 0:
+#             desired_acc[env.nodes[most_likely_node]] += missing_cars   
+#             total_desiredAcc = sum(desired_acc[n] for n in env.nodes)
+#         assert abs(total_desiredAcc - total_idle_acc) < 1e-5
+#         for n in env.nodes:
+#             assert desired_acc[n] >= 0
+#         for n in env.nodes:
+#             desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
+        
+#         # solve minimum rebalancing distance problem (Step 3 in paper)
+#         if step == 0 and episode == 0:
+#             # initialize optimization problem in the first step
+#             rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
+#         else:
+#             rebal_flow_solver.update_constraints(desired_acc, env)
+#             rebal_flow_solver.update_objective(env)
+#         rebAction = rebal_flow_solver.optimize()
+
+#         # Take action in environment
+#         new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
+#         episode_reward += rebreward
+        
+#         # track performance over episode
+#         episode_served_demand += info_pax['served_demand']
+#         episode_rebalancing_cost += info_reb['rebalancing_cost']
+
+#         step += 1
+
+#     # Send current statistics to screen
+#     epochs.set_description(
+#         f"Episode {episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost}")
+#     # Log KPIs
+
 
 
 

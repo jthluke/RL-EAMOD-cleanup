@@ -23,6 +23,7 @@ from src.algos.pax_flows_solver import PaxFlowsSolver
 from src.algos.reb_flows_solver import RebalFlowSolver
 from src.misc.utils import dictsum
 import random
+import time
 
 
 class PairData(Data):
@@ -487,18 +488,19 @@ class SAC(nn.Module):
         episode_reward = []
         episode_served_demand = []
         episode_rebalancing_cost = []
+        episode_rl_inference_time = []
         for i_episode in epochs:
             desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
             eps_reward = 0
             eps_served_demand = 0
             eps_rebalancing_cost = 0
 
-            bool_random_random_demand = False
-            obs = env.reset(bool_random_random_demand)
+            obs = env.reset(bool_sample_demand=True, seed=i_episode)
 
             actions = []
             done = False
 
+            time_start = time.time()
             while (not done):                
                 pax_flows_solver.update_constraints()
                 pax_flows_solver.update_objective()
@@ -536,11 +538,13 @@ class SAC(nn.Module):
             episode_reward.append(eps_reward)
             episode_served_demand.append(eps_served_demand)
             episode_rebalancing_cost.append(eps_rebalancing_cost)
+            episode_rl_inference_time.append(time.time() - time_start)
 
         return (
             np.mean(episode_reward),
             np.mean(episode_served_demand),
             np.mean(episode_rebalancing_cost),
+            np.mean(episode_rl_inference_time),
         )
 
     def save_checkpoint(self, path="ckpt.pth"):

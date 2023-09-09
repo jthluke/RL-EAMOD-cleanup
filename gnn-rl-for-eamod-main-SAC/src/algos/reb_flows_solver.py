@@ -11,6 +11,12 @@ class RebalFlowSolver:
         self.cons_spatial_graph_charging_cars = {}
         t = env.time
         self.m = gp.Model(env=gurobi_env)
+
+        self.m.Params.Method = 2
+        self.m.Params.Crossover = 0
+        self.m.Params.BarConvTol = 1e-6
+        self.m.Params.Threads = 30
+
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
         self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-10000000, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
         self.slack_variables_abs = self.m.addMVar(shape=(len(env.nodes)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack_abs")
