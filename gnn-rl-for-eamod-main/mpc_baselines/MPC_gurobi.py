@@ -14,6 +14,12 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False):
     if mpc_horizon+time >= env.tf:
         discount_factor = 1
     m = gp.Model(env=gurobi_env)
+
+    m.Params.Method = 2
+    m.Params.Crossover = 0
+    m.Params.BarConvTol = 1e-6
+    m.Params.Threads = 30
+
     dacc = defaultdict(dict) # should be all zeros at the start
     acc = defaultdict(dict)
     for n in env.nodes:
