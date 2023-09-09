@@ -70,7 +70,7 @@ if args.toy:
     tf = env.tf
 else:
     problem_folder = 'NY'
-    file_path = os.path.join('..', 'data', problem_folder, num_sn, f'NY_{num_sn}_test.json')
+    file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'NY_{num_sn}_test.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY/ClusterDataset1'
@@ -81,7 +81,7 @@ else:
     # file_path = os.path.join('..', 'data', problem_folder,  'SF_10.json')
     
     experiment = problem_folder +  '_mpc_horizon_' + str(mpc_horizon) + 'entire_problem' + file_path + "_heuristic_graph"
-    energy_dist_path = os.path.join('..', 'data', problem_folder, num_sn, 'energy_distance.npy')
+    energy_dist_path = os.path.join('..', 'data', problem_folder, str(num_sn), 'energy_distance.npy')
     test_scenario = create_scenario(file_path, energy_dist_path)
     env = AMoD(test_scenario)
     tf = env.tf
