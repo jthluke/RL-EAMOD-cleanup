@@ -195,7 +195,7 @@ opcost = 0
 revenue = 0
 
 for i in range(50):
-    env_test.reset(bool_sample_demand=True)
+    env_test.reset(bool_sample_demand=True, seed=i)
     # print(env_test.demand)
 
     eps_rew = []

@@ -241,7 +241,7 @@ for region in env.nodes_spatial:
 for i_episode in epochs:
     desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
     # bool_random_random_demand = not test # only use random demand during training
-    obs = env.reset(bool_sample_demand=True) # initialize environment
+    obs = env.reset(bool_sample_demand=True, seed=i_episode) # initialize environment
     
     episode_reward = 0
     episode_served_demand = 0

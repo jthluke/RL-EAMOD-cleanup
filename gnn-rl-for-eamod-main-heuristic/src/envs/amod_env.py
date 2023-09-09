@@ -548,7 +548,7 @@ class AMoD:
         done = (self.tf == t+1)  # if the episode is completed
         return self.obs, self.reward, rebreward_internal, done, self.info
 
-    def reset(self, bool_sample_demand=True):
+    def reset(self, bool_sample_demand=True, seed=None):
         # reset the episode
         self.acc = defaultdict(dict)
         self.acc_spatial = defaultdict(dict)
@@ -564,7 +564,7 @@ class AMoD:
         self.demand = defaultdict(dict)  # demand
         self.price = defaultdict(dict)  # price
         self.scenario.cars_charging_per_station = np.zeros_like(self.scenario.cars_per_station_capacity)
-        tripAttr = self.scenario.get_random_demand(bool_sample_demand)
+        tripAttr = self.scenario.get_random_demand(bool_sample_demand, seed=seed)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
             self.demand[i, j][t] = d
@@ -777,7 +777,7 @@ class Scenario:
                         for t in range(0, self.tf+1):
                             self.G.edges[(o, c), (d, target_charge)]['time'][t] = math.ceil(self.rebTime[o, d][t]) - self.time_normalizer
 
-    def get_random_demand(self, bool_random = True):
+    def get_random_demand(self, bool_random = True, seed=None):
         # generate demand and price
         # reset = True means that the function is called in the reset() method of AMoD enviroment,
         #   assuming static demand is already generated
@@ -786,6 +786,9 @@ class Scenario:
         demand = defaultdict(dict)
         price = defaultdict(dict)
         tripAttr = []
+
+        if seed != None and bool_random:
+            np.random.seed(seed)
 
         # converting demand_input to static_demand
         # skip this when resetting the demand

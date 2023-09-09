@@ -369,7 +369,7 @@ class AMoD:
 
         return self.obs, self.reward, rebreward_internal, done, self.info
     
-    def reset(self, bool_sample_demand=True):
+    def reset(self, bool_sample_demand=True, seed=None):
         # reset the episode
         self.acc = defaultdict(dict)
         self.acc_spatial = defaultdict(dict)
@@ -383,7 +383,7 @@ class AMoD:
         self.price = defaultdict(dict)  # price
         self.reset_cars_charging()
 
-        tripAttr = self.scenario.get_random_demand(bool_sample_demand)
+        tripAttr = self.scenario.get_random_demand(bool_sample_demand, seed)
         # trip attribute (origin, destination, time of request, demand, price)
         for i, j, t, d, p in tripAttr:
             self.demand[i, j][t] = d
@@ -637,7 +637,7 @@ class Scenario:
             total_distance = spatial_time + energy_time
             self.G.edges[o_node,d_node]['time'][t] = math.ceil(total_distance) - self.time_normalizer
         
-    def get_random_demand(self, bool_random = True):
+    def get_random_demand(self, bool_random = True, seed = None):
         # generate demand and price
         # reset = True means that the function is called in the reset() method of AMoD enviroment,
         #   assuming static demand is already generated
@@ -650,6 +650,9 @@ class Scenario:
         # converting demand_input to static_demand
         # skip this when resetting the demand
         # if not reset:
+        if seed != None and bool_random:
+            np.random.seed(seed)
+        
         if self.EV:
             for t in range(0, self.tf*2):
                 for i, j in self.edges:
