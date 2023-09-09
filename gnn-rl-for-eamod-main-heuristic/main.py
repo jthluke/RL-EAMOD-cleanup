@@ -66,14 +66,14 @@ parser.add_argument('--T', type=int, default=72, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
                     help='number of spatial nodes (default: 5)')
-# parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
-#                     help='Learning rate for the actor')
-# parser.add_argument('--lr_c', type=float, default=1e-3, metavar='N',
-#                     help='Learning rate for the critic')
-# parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
-#                     help='Gradient norm clipping for the actor')
-# parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
-#                     help='Gradient norm clipping for the critic')
+parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
+                    help='Learning rate for the actor')
+parser.add_argument('--lr_c', type=float, default=1e-3, metavar='N',
+                    help='Learning rate for the critic')
+parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
+                    help='Gradient norm clipping for the actor')
+parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
+                    help='Gradient norm clipping for the critic')
 parser.add_argument('--charging_heuristic', type=str, default='empty_to_full',
                     help='Which charging heuristic to use')
 
