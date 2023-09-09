@@ -342,7 +342,7 @@ for i_episode in epochs:
     "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward})
 
     if i_episode % 10 == 0:  # test model every 10th episode
-        test_reward, test_served_demand, test_rebalancing_cost = model.test_agent(
+        test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
             1, env, pax_flows_solver, rebal_flow_solver, parser=parser)
         if test_reward >= best_reward_test:
             best_reward_test = test_reward
