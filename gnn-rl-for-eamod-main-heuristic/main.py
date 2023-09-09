@@ -88,7 +88,7 @@ charging_heuristic = args.charging_heuristic
 use_equal_distr_baseline = args.equal_distr_baseline
 use_prop_distr_baseline = args.prop_distr_baseline
 seed = args.seed
-test = args.test
+# test = args.test
 num_sn = args.spatial_nodes
 T = args.T
 
