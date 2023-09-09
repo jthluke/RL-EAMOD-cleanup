@@ -70,7 +70,7 @@ if args.toy:
     tf = env.tf
 else:
     problem_folder = 'NY'
-    file_path = os.path.join('..', 'data', problem_folder, num_sn, f'NYC_{num_sn}.json')
+    file_path = os.path.join('..', 'data', problem_folder, num_sn, f'NY_{num_sn}_test.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY/ClusterDataset1'
