@@ -198,7 +198,7 @@ for i in range(50):
     env_test.reset(bool_sample_demand=True, seed=i)
     # print(env_test.demand)
 
-    eps_rew = []
+    eps_rew = 0
     eps_served = []
     eps_reb = []
     eps_op = []
@@ -213,21 +213,19 @@ for i in range(50):
         for t in timesteps:
             obs_1, reward1, done, info, td = env_test.pax_step(paxAction[t], gurobi_env)
             obs_2, reward2, done, info = env_test.reb_step(rebAction[t])
-            tr = reward1+reward2
-            eps_rew.append(tr)
+            eps_rew += reward1+reward2
             eps_served.append(info['served_demand'])
             eps_reb.append(info['rebalancing_cost'])
             eps_op.append(info['operating_cost'])
             eps_rev.append(info['revenue'])
     
-    tr = sum(eps_rew)
-    opt_rew.append(tr) 
+    opt_rew.append(eps_rew) 
+    print(opt_rew)
     served += sum(eps_served)
     rebcost += sum(eps_reb)
     opcost += sum(eps_op)
     revenue += sum(eps_rev)
 
-print(opt_rew)
 opt_rew = np.mean(np.array(opt_rew))
 served = np.mean(np.array(served))
 rebcost = np.mean(np.array(rebcost))
