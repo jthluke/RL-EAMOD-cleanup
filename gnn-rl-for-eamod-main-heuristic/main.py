@@ -244,7 +244,7 @@ for i_episode in epochs:
     obs = env.reset(bool_sample_demand=True, seed=i_episode) # initialize environment
     
     # print demand from obs
-    print("Demand from obs:" + str(obs[3]))
+    # print("Demand from obs:" + str(obs[3]))
     
     episode_reward = 0
     episode_served_demand = 0

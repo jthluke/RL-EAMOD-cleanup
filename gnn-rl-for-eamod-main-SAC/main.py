@@ -204,7 +204,7 @@ wandb.init(
         "licence": gurobi,
       })
 
-checkpoint_path = "NYC_5"
+checkpoint_path = f"NYC_{num_sn}_{args.max_episodes}_{args.T}"
 
 parser = GNNParser(env, T=T, scale_factor=scale_factor, scale_price=scale_price)
 
