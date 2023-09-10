@@ -1,22 +1,14 @@
 #!/usr/bin/bash
-#SBATCH --job-name=pure_rl
-#SBATCH --output=pure_rl.%j.out
-#SBATCH --error=pure_rl.%j.err
+#SBATCH --job-name=rl
+#SBATCH --output=rl.%j.out
+#SBATCH --error=rl.%j.err
 #SBATCH --time=2-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=normal
-#SBATCH -c 7
+#SBATCH -c 10
 
 conda activate
-python main.py --max_episodes 20000
-python main.py --test True --max_episodes 10
-
-# tags = charge_rl, spatial_rl, b_batch, (2nd) test, space_charge_graph
-# job submitted
-
-# iteration one complete = separation of rebreward internal added, also added charge penalty + wasted customer penalty
-# https://wandb.ai/aaryan04/e-amod/runs/9ph8y8px/overview?workspace=user-aaryan04
-# these iterations outperform a.sbatch
-
-# iteration two = added overconcentration penalty (negative)
-# https://wandb.ai/aaryan04/e-amod/runs/ywfrt93u/overview?workspace=user-aaryan04 
+python main_sf.py --spatial_nodes 5 --T 24
+python main_sf.py --spatial_nodes 10 --T 24
+python main_sf.py --spatial_nodes 15 --T 24
+python main_sf.py --spatial_nodes 20 --T 24
