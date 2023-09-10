@@ -76,6 +76,8 @@ parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
                     help='Gradient norm clipping for the critic')
 parser.add_argument('--charging_heuristic', type=str, default='empty_to_full',
                     help='Which charging heuristic to use')
+parser.add_argument('--city', type=str, default='NY', metavar='N',
+                    help='city (default: NY)')
 
 args = parser.parse_args()
 args.cuda = torch.cuda.is_available()
@@ -91,6 +93,7 @@ seed = args.seed
 # test = args.test
 num_sn = args.spatial_nodes
 T = args.T
+city = args.city
 
 # toy 1x1
 if args.toy:
@@ -115,9 +118,13 @@ else:
     # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
     # problem_folder = 'NY'
     # file_path = os.path.join('data', problem_folder,  'NYC_5.json')
-
-    problem_folder = 'NY'
-    file_path = os.path.join('data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+    if city == 'SF':
+        problem_folder = 'SF'
+        file_path = os.path.join('data', problem_folder, str(num_sn), f'SF_{num_sn}.json')
+    else:
+        problem_folder = 'NY'
+        file_path = os.path.join('data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+    
 
     # experiment = 'NO_training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
     energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
@@ -350,24 +357,29 @@ for i_episode in epochs:
     
     
     if i_episode == 5:
-        with open(f"./{args.directory}/ckpt/{problem_folder}/acc.p", "wb") as file:
+        with open(f"./{args.directory}/ckpt/{problem_folder}/acc_{experiment}.p", "wb") as file:
             pickle.dump(env.acc, file)
-        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc.p")
-        with open(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial.p", "wb") as file:
+        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc_{experiment}.p")
+        
+        with open(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial_{experiment}.p", "wb") as file:
             pickle.dump(env.acc_spatial, file)
-        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial.p")
-        with open(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles.p", "wb") as file:
+        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial_{experiment}.p")
+        
+        with open(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles_{experiment}.p", "wb") as file:
             pickle.dump(env.new_charging_vehicles, file)
-        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles.p")
-        with open(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles.p", "wb") as file:
+        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles_{experiment}.p")
+        
+        with open(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles_{experiment}.p", "wb") as file:
             pickle.dump(env.new_rebalancing_vehicles, file)
-        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles.p")
-        with open(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial.p", "wb") as file:
+        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles_{experiment}.p")
+        
+        with open(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial_{experiment}.p", "wb") as file:
             pickle.dump(env.n_customer_vehicles_spatial, file)
-        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial.p")
-        with open(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p", "wb") as file:
+        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial_{experiment}.p")
+        
+        with open(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand_{experiment}.p", "wb") as file:
             pickle.dump(env.satisfied_demand, file)
-        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p")
+        wandb.save(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand_{experiment}.p")
 
 
     # Checkpoint best performing model

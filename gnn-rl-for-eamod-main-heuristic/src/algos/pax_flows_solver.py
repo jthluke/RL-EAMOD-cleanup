@@ -57,8 +57,20 @@ class PaxFlowsSolver:
         self.m.setObjective(obj, gp.GRB.MAXIMIZE)
         self.m.update()
 
+    # def optimize(self):
+    #     self.m.optimize()
+    #     paxAction = self.flow.X
+    #     return paxAction
+    
     def optimize(self):
         self.m.optimize()
+        if self.m.status == 3:
+            print("Optimization is infeasible.")
+            # Return a default flow
+            return np.zeros(len(self.flow))
+        elif self.m.status != 2:
+            print("Optimization did not complete successfully.")
+            return np.zeros(len(self.flow))  # or handle other statuses as needed
         paxAction = self.flow.X
         return paxAction
         

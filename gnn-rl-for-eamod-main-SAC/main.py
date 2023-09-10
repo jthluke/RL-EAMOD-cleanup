@@ -91,6 +91,8 @@ parser.add_argument('--demand_ratio', type=float, default=0.5, metavar='S',
                     help='demand_ratio (default: 0.5)')
 parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
                     help='number of spatial nodes (default: 5)')
+parser.add_argument('--city', type=str, default='NY', metavar='N',
+                    help='city (default: NY)')
 
 # Model parameters
 parser.add_argument('--test', type=bool, default=False,
@@ -101,8 +103,8 @@ parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
 parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
-parser.add_argument('--max_episodes', type=int, default=16000, metavar='N',
-                    help='number of episodes to train agent (default: 16k)')
+parser.add_argument('--max_episodes', type=int, default=8000, metavar='N',
+                    help='number of episodes to train agent (default: 10k)')
 parser.add_argument('--T', type=int, default=84, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
@@ -137,6 +139,7 @@ seed = args.seed
 test = args.test
 T = args.T
 num_sn = args.spatial_nodes
+city = args.city
 
 # problem_folder = 'NY/ClusterDataset1'
 # file_path = os.path.join('data', problem_folder,  'd1.json')
@@ -145,8 +148,13 @@ num_sn = args.spatial_nodes
 # problem_folder = 'SF_5_clustered'
 # file_path = os.path.join('data', problem_folder,  'SF_5_short.json')
 
-problem_folder = 'NY'
-file_path = os.path.join('data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+if city == 'NY':
+    problem_folder = 'NY'
+    file_path = os.path.join('data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+else:
+    problem_folder = 'SF'
+    file_path = os.path.join('data', problem_folder, str(num_sn), f'SF_{num_sn}.json')
+
 experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
 # energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
@@ -169,11 +177,13 @@ print("Number of nodes: " + str(len(env.scenario.G.nodes)))
 
 # Initialize A2C-GNN
 # NY
-scale_factor = 0.01
-scale_price = 0.1
+if city == 'NY':
+    scale_factor = 0.01
+    scale_price = 0.1
 # SF
-# scale_factor = 0.00001
-# scale_price = 0.1
+else:
+    scale_factor = 0.00001
+    scale_price = 0.1
 # NY 5 
 
 # set up wandb
@@ -204,7 +214,10 @@ wandb.init(
         "licence": gurobi,
       })
 
-checkpoint_path = f"NYC_{num_sn}_{args.max_episodes}_{args.T}"
+if city == 'NY':
+    checkpoint_path = f"NYC_{num_sn}_{args.max_episodes}_{args.T}"
+else:
+    checkpoint_path = f"SF_{num_sn}_{args.max_episodes}_{args.T}"
 
 parser = GNNParser(env, T=T, scale_factor=scale_factor, scale_price=scale_price)
 
@@ -346,12 +359,15 @@ for i_episode in epochs:
             1, env, pax_flows_solver, rebal_flow_solver, parser=parser)
         if test_reward >= best_reward_test:
             best_reward_test = test_reward
-            path = os.path.join('ckpt', f'{checkpoint_path}_test.pth')
+            path = os.path.join('.', 'ckpt', f'{checkpoint_path}_test.pth')
             model.save_checkpoint(path=path)
             print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
 
 
 ## now test trained model
+# load best test.pth model
+path = os.path.join('.', 'ckpt', f'{checkpoint_path}_test.pth')
+model.load_checkpoint(path=path)
 test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
     50, env, pax_flows_solver, rebal_flow_solver, parser=parser)
 

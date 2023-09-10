@@ -64,11 +64,23 @@ class RebalFlowSolver:
         self.m.setObjective(self.obj1+self.obj2, gp.GRB.MINIMIZE)
         self.m.update()
 
+    # def optimize(self):
+    #     self.m.optimize()
+    #     if self.m.status == 3:
+    #         print("Optimization is infeasible.")
+    #     assert self.m.status == 2
+    #     action = self.flow.X
+    #     return action
+    
     def optimize(self):
         self.m.optimize()
         if self.m.status == 3:
             print("Optimization is infeasible.")
-        assert self.m.status == 2
+            # Return a default flow
+            return np.zeros(len(self.flow))
+        elif self.m.status != 2:
+            print("Optimization did not complete successfully.")
+            return np.zeros(len(self.flow))  # or handle other statuses as needed
         action = self.flow.X
         return action
         

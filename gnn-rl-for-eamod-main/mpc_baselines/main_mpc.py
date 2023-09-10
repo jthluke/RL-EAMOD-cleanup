@@ -55,10 +55,13 @@ parser.add_argument('--demand_ratio', type=float, default=0.5, metavar='S',
                     help='demand_ratio (default: 0.5)')
 parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
                     help='number of spatial nodes (default: 5)')
+parser.add_argument('--city', type=str, default='NY', metavar='N',
+                    help='city (default: NY)')
 args = parser.parse_args()
 
 mpc_horizon = args.mpc_horizon
 num_sn = args.spatial_nodes
+city = args.city
 
 if args.toy:
     problem_folder = 'Toy'
@@ -69,8 +72,12 @@ if args.toy:
     env = AMoD(scenario)
     tf = env.tf
 else:
-    problem_folder = 'NY'
-    file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+    if city == 'NY':
+        problem_folder = 'NY'
+        file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+    else:
+        problem_folder = 'SF'
+        file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'SF_{num_sn}.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY/ClusterDataset1'
@@ -80,7 +87,7 @@ else:
     # problem_folder = 'SF_10_clustered'
     # file_path = os.path.join('..', 'data', problem_folder,  'SF_10.json')
     
-    experiment = problem_folder +  '_mpc_horizon_' + str(mpc_horizon) + 'entire_problem' + file_path + "_heuristic_graph"
+    experiment = problem_folder +  '_mpc_horizon_' + str(mpc_horizon) + '_entire_problem_' + file_path + "_heuristic_graph"
     energy_dist_path = os.path.join('..', 'data', problem_folder, str(num_sn), 'energy_distance.npy')
     
     test_scenario = create_scenario(file_path, energy_dist_path)
@@ -237,9 +244,8 @@ wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost,
 # # Send current statistics to wandb
 # wandb.log({"Test Reward": opt_rew, "Test ServedDemand": served, "Test Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
-with open(f"./saved_files/ckpt/{problem_folder}/acc.p", "wb") as file:
+with open(f"./saved_files/ckpt/{problem_folder}/acc_{experiment}.p", "wb") as file:
     pickle.dump(env.acc, file)
+wandb.save(f"./saved_files/ckpt/{problem_folder}/acc_{experiment}.p")
 
-wandb.save(f"./saved_files/ckpt/{problem_folder}/acc.p")
-wandb.save(f"./saved_files/ckpt/{problem_folder}/satisfied_demand.p")
 wandb.finish()
