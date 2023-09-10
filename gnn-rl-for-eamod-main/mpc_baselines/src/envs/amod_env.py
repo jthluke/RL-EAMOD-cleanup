@@ -298,16 +298,20 @@ class AMoD:
             i, j = self.edges[k]
             if (i, j) not in self.G.edges:
                 assert False
+
+            # Ensure rebAction[k] is within the valid range
+            self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
+
             # update the number of vehicles
             if not rebAction[k] < self.acc[i][t+1] + 1e-3:
                 print("Nodes", i,j)
                 print("Values", rebAction[k], self.acc[i][t+1])
                 print("k", k)
             assert rebAction[k] < self.acc[i][t+1] + 1e-3
+            
             if rebAction[k] < 1e-3:
                 continue
-            self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
-            
+
             self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.rebAction[k]
             self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
             self.dacc_spatial[j[0]][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.rebFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
