@@ -128,11 +128,11 @@ else:
     # scale_factor = 0.01
     # scale_price = 0.1
     # SF
-    # scale_factor = 0.0001 # potentially needs to be reschaled for NY5
-    # scale_price = 0.1
-    # NY 5 
-    scale_factor = 0.01
+    scale_factor = 0.0001 # potentially needs to be reschaled for NY5
     scale_price = 0.1
+    # NY 5 
+    # scale_factor = 0.01
+    # scale_price = 0.1
     model = A2C(env=env, T=T, lr_a=lr_a, lr_c=lr_c, grad_norm_clip_a=grad_norm_clip_a, grad_norm_clip_c=grad_norm_clip_c, seed=seed, scale_factor=scale_factor, scale_price=scale_price).to(device)
     tf = env.tf
 

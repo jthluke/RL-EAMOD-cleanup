@@ -169,11 +169,11 @@ print("Number of nodes: " + str(len(env.scenario.G.nodes)))
 
 # Initialize A2C-GNN
 # NY
-scale_factor = 0.01
-scale_price = 0.1
-# SF
-# scale_factor = 0.00001
+# scale_factor = 0.01
 # scale_price = 0.1
+# SF
+scale_factor = 0.00001
+scale_price = 0.1
 # NY 5 
 
 # set up wandb
