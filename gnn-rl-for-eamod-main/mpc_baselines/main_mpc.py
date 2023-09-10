@@ -226,6 +226,7 @@ for i in range(50):
     opcost += sum(eps_op)
     revenue += sum(eps_rev)
 
+print(opt_rew)
 opt_rew = np.mean(np.array(opt_rew))
 served = np.mean(np.array(served))
 rebcost = np.mean(np.array(rebcost))
