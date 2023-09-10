@@ -62,7 +62,7 @@ parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
 parser.add_argument('--max_episodes', type=int, default=50, metavar='N',
                     help='number of episodes to test heuristics (default: 50)')
-parser.add_argument('--T', type=int, default=72, metavar='N',
+parser.add_argument('--T', type=int, default=84, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
                     help='number of spatial nodes (default: 5)')

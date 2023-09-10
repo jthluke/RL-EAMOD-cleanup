@@ -46,7 +46,7 @@ parser.add_argument('--toy', type=bool, default=False,
 parser.add_argument('--initial_state', type=bool, default=False,
                     help='forces MPC to return system to initial charge')
 parser.add_argument('--mpc_horizon', type=int, default=84, metavar='N',
-                    help='MPC horizon (default: 60)')
+                    help='MPC horizon (default: 84)')
 parser.add_argument('--subproblem', type=int, default=0, metavar='N',
                     help='which subproblem to run (default: 0)')
 parser.add_argument('--seed', type=int, default=10, metavar='S',
