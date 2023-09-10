@@ -187,54 +187,54 @@ print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, R
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
-opt_rew = []
-served = 0
-rebcost = 0
-opcost = 0
-revenue = 0
+# opt_rew = []
+# served = 0
+# rebcost = 0
+# opcost = 0
+# revenue = 0
 
-for i in range(50):
-    env_test.reset(bool_sample_demand=True, seed=i)
-    # print(env_test.demand)
+# for i in range(50):
+#     env_test.reset(bool_sample_demand=True, seed=i)
+#     # print(env_test.demand)
 
-    eps_rew = []
-    eps_served = []
-    eps_reb = []
-    eps_op = []
-    eps_rev = []
-    done = False
+#     eps_rew = []
+#     eps_served = []
+#     eps_reb = []
+#     eps_op = []
+#     eps_rev = []
+#     done = False
 
-    while (not done):
-        if (env.tf <= env.time + mpc_horizon):
-            timesteps = range(mpc_horizon)
-        else:
-            timesteps = [0]
+#     while (not done):
+#         if (env.tf <= env.time + mpc_horizon):
+#             timesteps = range(mpc_horizon)
+#         else:
+#             timesteps = [0]
         
-        for t in timesteps:
-            obs_1, reward1, done, info, td = env_test.pax_step(paxAction[t], gurobi_env)
-            obs_2, reward2, done, info = env_test.reb_step(rebAction[t])
-            eps_rew.append(reward1+reward2)
-            eps_served.append(info['served_demand'])
-            eps_reb.append(info['rebalancing_cost'])
-            eps_op.append(info['operating_cost'])
-            eps_rev.append(info['revenue'])
+#         for t in timesteps:
+#             obs_1, reward1, done, info, td = env_test.pax_step(paxAction[t], gurobi_env)
+#             obs_2, reward2, done, info = env_test.reb_step(rebAction[t])
+#             eps_rew.append(reward1+reward2)
+#             eps_served.append(info['served_demand'])
+#             eps_reb.append(info['rebalancing_cost'])
+#             eps_op.append(info['operating_cost'])
+#             eps_rev.append(info['revenue'])
     
-    opt_rew.append(eps_rew)
-    served += sum(eps_served)
-    rebcost += sum(eps_reb)
-    opcost += sum(eps_op)
-    revenue += sum(eps_rev)
+#     opt_rew.append(eps_rew)
+#     served += sum(eps_served)
+#     rebcost += sum(eps_reb)
+#     opcost += sum(eps_op)
+#     revenue += sum(eps_rev)
 
-opt_rew = np.mean(np.array(opt_rew))
-served = np.mean(np.array(served))
-rebcost = np.mean(np.array(rebcost))
-opcost = np.mean(np.array(opcost))
-revenue = np.mean(np.array(revenue))
+# opt_rew = np.mean(np.array(opt_rew))
+# served = np.mean(np.array(served))
+# rebcost = np.mean(np.array(rebcost))
+# opcost = np.mean(np.array(opcost))
+# revenue = np.mean(np.array(revenue))
 
-print(f'Test: Reward {opt_rew}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
+# print(f'Test: Reward {opt_rew}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 
-# Send current statistics to wandb
-wandb.log({"Test Reward": opt_rew, "Test ServedDemand": served, "Test Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
+# # Send current statistics to wandb
+# wandb.log({"Test Reward": opt_rew, "Test ServedDemand": served, "Test Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
 with open(f"./saved_files/ckpt/{problem_folder}/acc.p", "wb") as file:
     pickle.dump(env.acc, file)
