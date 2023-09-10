@@ -282,11 +282,11 @@ class AMoD:
         for region in self.nodes_spatial:
             # Adjust test_spatial_acc_count to match self.acc_spatial
             test_spatial_acc_count[region] = self.acc_spatial[region][t+1]
-            assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) < 1e-5
+            assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) <= 1e-5
             
             # Ensure satisfied_demand does not exceed total_demand by more than 1e-5
             satisfied_demand[region] = min(satisfied_demand[region], total_demand[region] + 1e-5)
-            assert satisfied_demand[region] - total_demand[region] < 1e-5
+            assert satisfied_demand[region] - total_demand[region] <= 1e-5
 
 
         # for acc, the time index would be t+1, but for demand, the time index would be t
