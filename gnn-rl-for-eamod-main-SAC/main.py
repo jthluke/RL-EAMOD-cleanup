@@ -103,7 +103,7 @@ parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
 parser.add_argument('--max_episodes', type=int, default=16000, metavar='N',
                     help='number of episodes to train agent (default: 16k)')
-parser.add_argument('--T', type=int, default=72, metavar='N',
+parser.add_argument('--T', type=int, default=84, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
                     help='Learning rate for the actor')
