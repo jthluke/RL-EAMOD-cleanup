@@ -343,7 +343,7 @@ for i_episode in epochs:
 
     # Checkpoint best performing model
     if episode_reward >= best_reward:
-        path = os.path.join('ckpt', f'{checkpoint_path}.pth')
+        path = os.path.join('.', 'ckpt', f'{checkpoint_path}.pth')
         model.save_checkpoint(
             path=path)
         best_reward = episode_reward
