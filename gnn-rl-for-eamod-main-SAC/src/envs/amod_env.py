@@ -266,7 +266,20 @@ class AMoD:
                 self.reward -= avg_energy_price * self.rebAction[k]*charge_difference
                 # we have to add plus one because charging starts in the next timestep
                 for future_time in range(t+1, t+charge_time+1):
-                    self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
+                    # Calculate potential number of cars charging after adding rebAction[k]
+                    potential_cars_charging = self.scenario.cars_charging_per_station[i[0]][future_time] + self.rebAction[k]
+                    # Check if this potential number exceeds the station's capacity
+                    if potential_cars_charging - self.scenario.cars_per_station_capacity[i[0]] < 1e-7:
+                        # If not, proceed with charging
+                        self.scenario.cars_charging_per_station[i[0]][future_time] = potential_cars_charging
+                        self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
+                    else:
+                        # If it does, charge only the number of cars that the station can accommodate
+                        available_space = self.scenario.cars_per_station_capacity[i[0]] - self.scenario.cars_charging_per_station[i[0]][future_time]
+                        self.scenario.cars_charging_per_station[i[0]][future_time] += available_space
+                        self.n_charging_vehicles_spatial[i[0]][future_time] += available_space
+                    # self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
+                    
                     assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
                     self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
             
