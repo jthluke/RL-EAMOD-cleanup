@@ -213,7 +213,9 @@ for i in range(50):
         for t in timesteps:
             obs_1, reward1, done, info, td = env_test.pax_step(paxAction[t], gurobi_env)
             obs_2, reward2, done, info = env_test.reb_step(rebAction[t])
-            eps_rew += reward1+reward2
+            print(reward1, reward2)
+            eps_rew += reward1 + reward2
+            print(eps_rew)
             eps_served.append(info['served_demand'])
             eps_reb.append(info['rebalancing_cost'])
             eps_op.append(info['operating_cost'])
