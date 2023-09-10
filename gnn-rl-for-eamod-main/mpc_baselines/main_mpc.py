@@ -235,7 +235,7 @@ revenue = np.mean(np.array(revenue))
 print(f'Test: Reward {opt_rew}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 
 # Send current statistics to wandb
-wandb.log({"Test Reward": sum(opt_rew), "Test ServedDemand": served, "Test Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
+wandb.log({"Test Reward": opt_rew, "Test ServedDemand": served, "Test Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
 with open(f"./saved_files/ckpt/{problem_folder}/acc.p", "wb") as file:
     pickle.dump(env.acc, file)
