@@ -11,3 +11,4 @@ conda activate
 
 python main_mpc.py --spatial_nodes 5 --mpc_horizon 24
 python main_mpc.py --spatial_nodes 10 --mpc_horizon 24
+python main_mpc.py --spatial_nodes 15 --mpc_horizon 24
