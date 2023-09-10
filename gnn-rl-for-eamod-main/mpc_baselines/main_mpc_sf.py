@@ -69,8 +69,8 @@ if args.toy:
     env = AMoD(scenario)
     tf = env.tf
 else:
-    problem_folder = 'NY'
-    file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'NYC_{num_sn}.json')
+    problem_folder = 'SF'
+    file_path = os.path.join('..', 'data', problem_folder, str(num_sn), f'SF_{num_sn}.json')
     # problem_folder = 'NY_5'
     # file_path = os.path.join('..', 'data', problem_folder, 'NY_5.json')
     # problem_folder = 'NY/ClusterDataset1'
