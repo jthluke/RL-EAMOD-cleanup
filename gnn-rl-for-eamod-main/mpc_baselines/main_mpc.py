@@ -244,8 +244,8 @@ wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost,
 # # Send current statistics to wandb
 # wandb.log({"Test Reward": opt_rew, "Test ServedDemand": served, "Test Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
-with open(f"./saved_files/ckpt/{problem_folder}/acc_{experiment}.p", "wb") as file:
+with open(f"./saved_files/ckpt/{problem_folder}/{num_sn}/acc.p", "wb") as file:
     pickle.dump(env.acc, file)
-wandb.save(f"./saved_files/ckpt/{problem_folder}/acc_{experiment}.p")
+wandb.save(f"./saved_files/ckpt/{problem_folder}/{num_sn}/acc.p")
 
 wandb.finish()
