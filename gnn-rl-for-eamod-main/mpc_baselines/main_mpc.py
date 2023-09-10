@@ -188,7 +188,6 @@ print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, R
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
 
 opt_rew = []
-done = False
 served = 0
 rebcost = 0
 opcost = 0
@@ -198,11 +197,12 @@ for i in range(50):
     env_test.reset(bool_sample_demand=True, seed=i)
     # print(env_test.demand)
 
-    eps_rew = 0
+    eps_rew = []
     eps_served = []
     eps_reb = []
     eps_op = []
     eps_rev = []
+    done = False
 
     while (not done):
         if (env.tf <= env.time + mpc_horizon):
@@ -213,16 +213,13 @@ for i in range(50):
         for t in timesteps:
             obs_1, reward1, done, info, td = env_test.pax_step(paxAction[t], gurobi_env)
             obs_2, reward2, done, info = env_test.reb_step(rebAction[t])
-            print(reward1, reward2)
-            eps_rew += reward1 + reward2
-            print(eps_rew)
+            eps_rew.append(reward1+reward2)
             eps_served.append(info['served_demand'])
             eps_reb.append(info['rebalancing_cost'])
             eps_op.append(info['operating_cost'])
             eps_rev.append(info['revenue'])
     
-    opt_rew.append(eps_rew) 
-    print(opt_rew)
+    opt_rew.append(eps_rew)
     served += sum(eps_served)
     rebcost += sum(eps_reb)
     opcost += sum(eps_op)
