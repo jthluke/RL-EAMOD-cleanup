@@ -354,33 +354,6 @@ for i_episode in epochs:
         wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
         if total_demand_per_spatial_node[spatial_node] > 0:
             wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
-    
-    
-    # if i_episode == 5:
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/acc_{experiment}.p", "wb") as file:
-    #         pickle.dump(env.acc, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc_{experiment}.p")
-        
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial_{experiment}.p", "wb") as file:
-    #         pickle.dump(env.acc_spatial, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial_{experiment}.p")
-        
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles_{experiment}.p", "wb") as file:
-    #         pickle.dump(env.new_charging_vehicles, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles_{experiment}.p")
-        
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles_{experiment}.p", "wb") as file:
-    #         pickle.dump(env.new_rebalancing_vehicles, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles_{experiment}.p")
-        
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial_{experiment}.p", "wb") as file:
-    #         pickle.dump(env.n_customer_vehicles_spatial, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial_{experiment}.p")
-        
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand_{experiment}.p", "wb") as file:
-    #         pickle.dump(env.satisfied_demand, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand_{experiment}.p")
-
 
     # Checkpoint best performing model
     # if episode_reward > best_reward:
