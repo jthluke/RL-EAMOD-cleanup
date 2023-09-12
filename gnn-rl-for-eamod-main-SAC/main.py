@@ -266,7 +266,7 @@ for region in env.nodes_spatial:
 #     model = model.float()
 #     model.update(data=batch)  # update model
 
-if city == 'NY' and (num_sn == 5 or num_sn == 10 or num_sn == 15 or num_sn == 20):
+if city == 'SF' and (num_sn == 5):
     model.load_checkpoint(path=os.path.join('.', 'ckpt', 'NYC_5_8000_24.pth'))
 
 for i_episode in epochs:
