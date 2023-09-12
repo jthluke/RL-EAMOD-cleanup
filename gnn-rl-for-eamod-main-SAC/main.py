@@ -267,7 +267,7 @@ for region in env.nodes_spatial:
 #     model.update(data=batch)  # update model
 
 if city == 'SF' and (num_sn == 5):
-    model.load_checkpoint(path=os.path.join('.', 'ckpt', 'NYC_5_8000_24.pth'))
+    model.load_checkpoint(path=os.path.join('.', 'ckpt', 'NYC_5_8000_24_test.pth'))
 
 for i_episode in epochs:
     desired_accumulations_spatial_nodes = np.zeros(env.scenario.spatial_nodes)
