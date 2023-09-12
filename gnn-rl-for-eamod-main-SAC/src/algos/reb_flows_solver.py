@@ -1,6 +1,7 @@
 # Class def for optimization
 import gurobipy as gp
 from gurobipy import quicksum
+import numpy as np
 
 
 class RebalFlowSolver:  
