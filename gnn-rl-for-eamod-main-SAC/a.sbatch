@@ -9,10 +9,10 @@
 
 conda activate
 
-python main.py --spatial_nodes 5 --T 24 --city NY
-python main.py --spatial_nodes 10 --T 24 --city NY
-python main.py --spatial_nodes 15 --T 24 --city NY
-python main.py --spatial_nodes 20 --T 24 --city NY
+# python main.py --spatial_nodes 5 --T 24 --city NY
+# python main.py --spatial_nodes 10 --T 24 --city NY
+# python main.py --spatial_nodes 15 --T 24 --city NY
+# python main.py --spatial_nodes 20 --T 24 --city NY
 
 python main.py --spatial_nodes 5 --T 24 --city SF
 python main.py --spatial_nodes 10 --T 24 --city SF
