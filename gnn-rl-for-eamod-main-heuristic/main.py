@@ -258,9 +258,10 @@ for i_episode in epochs:
     episode_rebalancing_cost = 0
     episode_charge_rebalancing_cost = 0
     episode_spatial_rebalancing_cost = 0
-    time_start = time.time()
+    episode_time = []
     
     for step in range(T):
+        time_start = time.time()
         # take matching step (Step 1 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
@@ -336,6 +337,7 @@ for i_episode in epochs:
         # track performance over episode
         episode_served_demand += info_pax['served_demand']
         episode_rebalancing_cost += info_reb['rebalancing_cost']
+        episode_time.append(time.time()-time_start)
         
         # stop episode if terminating conditions are met
         if done:
@@ -346,7 +348,7 @@ for i_episode in epochs:
     #     a_loss, v_loss, mean_value, mean_concentration, mean_std, mean_log_prob, std_log_prob = model.training_step()
 
     # Send current statistics to screen was episode_reward, episode_served_demand, episode_rebalancing_cost
-    epochs.set_description(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
+    epochs.set_description(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Time: {np.array(episode_time).mean():.2f} +- {np.array(episode_time).std():.2f}sec")
     
     # Send current statistics to wandb
     for spatial_node in range(env.scenario.spatial_nodes):
@@ -355,41 +357,12 @@ for i_episode in epochs:
         if total_demand_per_spatial_node[spatial_node] > 0:
             wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
 
-    # Checkpoint best performing model
-    # if episode_reward > best_reward:
-    #     print("Saving best model.")
-    #     model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn.pth")
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/acc.p", "wb") as file:
-    #         pickle.dump(env.acc, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc.p")
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial.p", "wb") as file:
-    #         pickle.dump(env.acc_spatial, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/acc_spatial.p")
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles.p", "wb") as file:
-    #         pickle.dump(env.new_charging_vehicles, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_charging_vehicles.p")
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles.p", "wb") as file:
-    #         pickle.dump(env.new_rebalancing_vehicles, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/new_rebalancing_vehicles.p")
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial.p", "wb") as file:
-    #         pickle.dump(env.n_customer_vehicles_spatial, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/n_customer_vehicles_spatial.p")
-    #     with open(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p", "wb") as file:
-    #         pickle.dump(env.satisfied_demand, file)
-    #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p")
-    #     best_reward = episode_reward
-    #     best_rebal_cost = episode_rebalancing_cost
-    #     best_served_demand  = episode_served_demand
-    #     best_spatial_rebal_cost = episode_spatial_rebalancing_cost
-    #     best_charge_rebal_cost = episode_charge_rebalancing_cost
-    
-    # if test:
     rewards_np[i_episode] = episode_reward
     served_demands_np[i_episode] = episode_served_demand
     charging_costs_np[i_episode] = episode_charge_rebalancing_cost
     rebal_costs_np[i_episode] = episode_rebalancing_cost
-    epoch_times[i_episode] = time.time()-time_start
+    epoch_times[i_episode] = np.array(episode_time).mean()
+    
     # else:
     #     wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
     #     "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Charge Reb. Cost": episode_charge_rebalancing_cost, "Best Charge Reb. Cost": best_charge_rebal_cost, "Spatial Reb. Cost": -rebreward, "Best Spatial Reb. Cost": best_spatial_rebal_cost,
@@ -413,7 +386,7 @@ for i_episode in epochs:
     #         with open(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p", "wb") as file:
     #             pickle.dump(env.satisfied_demand, file)
     #         wandb.save(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p")
-wandb.log({"AVG Reward ": rewards_np.mean(), "Std Reward ": rewards_np.std(), "AVG Satisfied Demand ": served_demands_np.mean(), "AVG Charging Cost ": episode_charge_rebalancing_cost.mean(), "AVG Spatial Rebalancing Cost": episode_rebalancing_cost.mean(), "AVG Epoch Time": epoch_times.mean()})
+wandb.log({"AVG Reward ": rewards_np.mean(), "Std Reward ": rewards_np.std(), "AVG Satisfied Demand ": served_demands_np.mean(), "AVG Charging Cost ": episode_charge_rebalancing_cost.mean(), "AVG Spatial Rebalancing Cost": episode_rebalancing_cost.mean(), "AVG Timestep Time": epoch_times.mean()})
 # if not use_equal_distr_baseline and not use_prop_distr_baseline and not test:
 #     model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_{charging_heuristic}_final.pth")
 #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_{charging_heuristic}_final.pth")

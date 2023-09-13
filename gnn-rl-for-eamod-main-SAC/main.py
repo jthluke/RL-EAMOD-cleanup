@@ -265,6 +265,7 @@ for i_episode in epochs:
     episode_reward = 0
     episode_served_demand = 0
     episode_rebalancing_cost = 0
+    episode_times = []
     actions = []
 
     current_eps = []
@@ -272,6 +273,7 @@ for i_episode in epochs:
     step = 0
 
     while (not done):
+        time_i_start = time.time()
         if step > 0:
             obs1 = copy.deepcopy(o)
         # take matching step (Step 1 in paper)
@@ -322,7 +324,8 @@ for i_episode in epochs:
         # track performance over episode
         episode_served_demand += info_pax['served_demand']
         episode_rebalancing_cost += info_reb['rebalancing_cost']
-        
+        episode_times.append(time.time() - time_i_start)
+
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
@@ -332,7 +335,7 @@ for i_episode in epochs:
             model.update(data=batch)  # update model
 
     epochs.set_description(
-        f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f}")
+        f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     
     # Send current statistics to wandb
     for spatial_node in range(env.scenario.spatial_nodes):
@@ -352,7 +355,7 @@ for i_episode in epochs:
         best_model = model
 
     wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
-    "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward})
+    "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
 
     if i_episode % 10 == 0:  # test model every 10th episode
         test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
@@ -371,7 +374,7 @@ model.load_checkpoint(path=path)
 test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
     50, env, pax_flows_solver, rebal_flow_solver, parser=parser)
 
-wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Epoch Time": test_time})
+wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
 wandb.finish()
 
 # parser = GNNParser(env)

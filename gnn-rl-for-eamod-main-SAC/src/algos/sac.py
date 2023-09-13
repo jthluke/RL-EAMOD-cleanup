@@ -494,14 +494,15 @@ class SAC(nn.Module):
             eps_reward = 0
             eps_served_demand = 0
             eps_rebalancing_cost = 0
+            eps_time = []
 
             obs = env.reset(bool_sample_demand=True, seed=i_episode)
 
             actions = []
             done = False
 
-            time_start = time.time()
-            while (not done):                
+            while (not done):         
+                time_start = time.time()       
                 pax_flows_solver.update_constraints()
                 pax_flows_solver.update_objective()
                 obs, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
@@ -535,10 +536,11 @@ class SAC(nn.Module):
                 eps_reward += rebreward
                 eps_served_demand += info_pax["served_demand"]
                 eps_rebalancing_cost += info_reb["rebalancing_cost"]
+                eps_time.append(time.time() - time_start)
             episode_reward.append(eps_reward)
             episode_served_demand.append(eps_served_demand)
             episode_rebalancing_cost.append(eps_rebalancing_cost)
-            episode_rl_inference_time.append(time.time() - time_start)
+            episode_rl_inference_time.append(np.mean(eps_time))
 
         return (
             np.mean(episode_reward),
