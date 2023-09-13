@@ -5,11 +5,8 @@
 #SBATCH --time=2-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=normal
-#SBATCH -c 10
+#SBATCH -c 11
 
 conda activate
 
-python main.py --spatial_nodes 5 --T 24 --city SF
-python main.py --spatial_nodes 10 --T 24 --city SF
-python main.py --spatial_nodes 15 --T 24 --city SF
-python main.py --spatial_nodes 20 --T 24 --city SF
+python main.py --spatial_nodes 5 --T 48 --city SF
