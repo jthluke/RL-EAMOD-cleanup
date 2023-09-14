@@ -246,7 +246,7 @@ epochs = trange(train_episodes)  # epoch iterator
 best_reward = -np.inf  # set best reward
 best_reward_test = -np.inf  # set best reward
 
-if city == 'NY' and num_sn == 10 or num_sn == 15 or num_sn == 20:
+if city == 'SF' and num_sn == 5:
     model.load_checkpoint(path=f'ckpt/NYC_5_5500_48.pth')
 else:
     model.train()  # set model in train mode
