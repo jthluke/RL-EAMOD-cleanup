@@ -245,7 +245,11 @@ train_episodes = args.max_episodes  # set max number of training episodes
 epochs = trange(train_episodes)  # epoch iterator
 best_reward = -np.inf  # set best reward
 best_reward_test = -np.inf  # set best reward
-model.train()  # set model in train mode
+
+if city == 'NY' and num_sn == 10 or num_sn == 15 or num_sn == 20:
+    model.load_checkpoint(path=f'ckpt/NYC_5_5500_48.pth')
+else:
+    model.train()  # set model in train mode
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
