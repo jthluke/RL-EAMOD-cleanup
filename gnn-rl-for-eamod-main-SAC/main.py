@@ -93,6 +93,10 @@ parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
                     help='number of spatial nodes (default: 5)')
 parser.add_argument('--city', type=str, default='NY', metavar='N',
                     help='city (default: NY)')
+parser.add_argument('--zeroShotCity', type=bool, default=False,
+                    help='whether to try different city')
+parser.add_argument('--zeroShotNodes', type=bool, default=False,
+                    help='whether to try different number of nodes')
 
 # Model parameters
 parser.add_argument('--test', type=bool, default=False,
@@ -140,6 +144,9 @@ test = args.test
 T = args.T
 num_sn = args.spatial_nodes
 city = args.city
+
+zeroShotCity = args.zeroShotCity
+zeroShotNodes = args.zeroShotNodes
 
 # problem_folder = 'NY/ClusterDataset1'
 # file_path = os.path.join('data', problem_folder,  'd1.json')
@@ -246,8 +253,15 @@ epochs = trange(train_episodes)  # epoch iterator
 best_reward = -np.inf  # set best reward
 best_reward_test = -np.inf  # set best reward
 
-if city == 'SF' and num_sn == 5:
-    model.load_checkpoint(path=f'ckpt/NYC_5_5500_48.pth')
+if zeroShotCity or zeroShotNodes:
+    if zeroShotCity:
+        if city == 'NY':
+            model.load_checkpoint(path=f'ckpt/SF_{num_sn}_5500_48.pth')
+        else:
+            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_5500_48.pth')
+    else:
+        model.load_checkpoint(path='ckpt/' + city + '_5_5500_48.pth')
+    epochs = trange(1)
 else:
     model.train()  # set model in train mode
 
