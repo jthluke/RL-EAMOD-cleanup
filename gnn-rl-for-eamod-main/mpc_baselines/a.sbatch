@@ -2,13 +2,19 @@
 #SBATCH --job-name=mpc
 #SBATCH --output=mpc.%j.out
 #SBATCH --error=mpc.%j.err
-#SBATCH --time=1-00:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=normal
-#SBATCH -c 11
+#SBATCH -c 16
 
 conda activate
 
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city NY
+python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city NY
+python main_mpc.py --spatial_nodes 15 --mpc_horizon 48 --city NY
+python main_mpc.py --spatial_nodes 20 --mpc_horizon 48 --city NY
+
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city SF
 python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city SF
 python main_mpc.py --spatial_nodes 15 --mpc_horizon 48 --city SF
 python main_mpc.py --spatial_nodes 20 --mpc_horizon 48 --city SF
