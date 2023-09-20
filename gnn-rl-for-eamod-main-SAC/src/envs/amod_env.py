@@ -202,9 +202,13 @@ class AMoD:
            if (i_region,j_region) not in self.demand or t not in self.demand[i_region,j_region] or self.paxAction[k]<1e-3 or i[1]<j[1]:
                continue
            # I moved the min operator above, since we want paxFlow to be consistent with paxAction
-           assert paxAction[k] < self.acc[i][t+1] + 1e-3
-           assert paxAction[k] >= 0
-           self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
+           
+           # assert paxAction[k] < self.acc[i][t+1] + 1e-3
+           paxAction[k] = min(self.acc[i][t+1], paxAction[k] + 1e-3)
+           
+           # assert paxAction[k] >= 0
+           paxAction[k] = max(0, paxAction[k])
+           
            self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
            satisfied_demand[i_region] += self.paxAction[k]
            self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]

@@ -1,5 +1,6 @@
 # Class def for optimization
 import gurobipy as gp
+import numpy as np
 from gurobipy import quicksum
 
 
@@ -77,10 +78,10 @@ class RebalFlowSolver:
         if self.m.status == 3:
             print("Optimization is infeasible.")
             # Return a default flow
-            return np.zeros(len(self.flow))
+            return np.zeros(self.flow.shape)
         elif self.m.status != 2:
             print("Optimization did not complete successfully.")
-            return np.zeros(len(self.flow))  # or handle other statuses as needed
+            return np.zeros(self.flow.shape)  # or handle other statuses as needed
         action = self.flow.X
         return action
         
