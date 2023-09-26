@@ -190,6 +190,7 @@ while (not done):
         opcost += info['operating_cost']
         revenue += info['revenue']
 
+
 print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, Rebalancing Cost {rebcost}, Operational Cost {opcost}, Avg.Time: {np.array(time_list).mean():.2f} +- {np.array(time_list).std():.2f}sec')
 
 # Send current statistics to wandb
