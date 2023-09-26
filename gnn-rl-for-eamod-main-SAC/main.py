@@ -107,8 +107,8 @@ parser.add_argument('--toy', type=bool, default=False,
                     help='activates toy mode for agent evaluation')
 parser.add_argument('--directory', type=str, default='saved_files',
                     help='defines directory where to save files')
-parser.add_argument('--max_episodes', type=int, default=5500, metavar='N',
-                    help='number of episodes to train agent (default: 5.5k)')
+parser.add_argument('--max_episodes', type=int, default=9000, metavar='N',
+                    help='number of episodes to train agent (default: 9k)')
 parser.add_argument('--T', type=int, default=84, metavar='N',
                     help='Time horizon for the A2C')
 parser.add_argument('--lr_a', type=float, default=1e-3, metavar='N',
