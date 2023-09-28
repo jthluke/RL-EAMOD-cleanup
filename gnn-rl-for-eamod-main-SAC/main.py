@@ -260,7 +260,7 @@ if zeroShotCity or zeroShotNodes:
             # scale_factor = 0.00001
             # scale_price = 0.1
         else:
-            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_5500-a_48.pth')
+            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_5500_48.pth')
             scale_factor = 0.01
             scale_price = 0.1
     else:
