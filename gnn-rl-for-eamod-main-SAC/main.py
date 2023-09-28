@@ -146,7 +146,7 @@ num_sn = args.spatial_nodes
 city = args.city
 
 zeroShotCity = args.zeroShotCity
-zeroShotNodes = args.zeroShotNodes
+zeroShotNodes = args.zeroShotNodesƒ
 
 # problem_folder = 'NY/ClusterDataset1'
 # file_path = os.path.join('data', problem_folder,  'd1.json')
@@ -261,8 +261,8 @@ if zeroShotCity or zeroShotNodes:
             # scale_price = 0.1
         else:
             model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48.pth')
-            # scale_factor = 0.01
-            # scale_price = 0.1
+            scale_factor = 0.01
+            scale_price = 0.1
     else:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_5_9000_48.pth')
