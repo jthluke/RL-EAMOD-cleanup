@@ -256,11 +256,11 @@ best_reward_test = -np.inf  # set best reward
 if zeroShotCity or zeroShotNodes:
     if zeroShotCity:
         if city == 'NY':
-            model.load_checkpoint(path=f'ckpt/SF_{num_sn}_9000_48.pth')
+            model.load_checkpoint(path=f'ckpt/SF_{num_sn}_9000_48_test.pth')
             # scale_factor = 0.00001
             # scale_price = 0.1
         else:
-            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48.pth')
+            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48_test.pth')
             scale_factor = 0.01
             scale_price = 0.1
     else:
