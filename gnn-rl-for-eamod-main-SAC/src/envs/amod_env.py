@@ -200,7 +200,7 @@ class AMoD:
            i_region = i[0]
            j_region = j[0]
            if (i_region,j_region) not in self.demand or t not in self.demand[i_region,j_region] or self.paxAction[k] < 1e-3 or i[1]<j[1]:
-               continue
+                continue
            # I moved the min operator above, since we want paxFlow to be consistent with paxAction
            
            # assert paxAction[k] < self.acc[i][t+1] + 1e-3
@@ -208,16 +208,12 @@ class AMoD:
            
            # assert paxAction[k] >= 0
            self.paxAction[k] = max(0, self.paxAction[k])
-
-           # make sure paxAction is less than or equal to totalDemand
-           print(self.paxAction[k])
-           print(total_demand[i_region])
-           self.paxAction[k] = min(self.paxAction[k], total_demand[i_region])
-           print(self.paxAction[k])
-           print(total_demand[i_region])
            
-           self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
+           if satisfied_demand[i_region] + self.paxAction[k] > total_demand[i_region]:
+               self.paxAction[k] = total_demand[i_region] - satisfied_demand[i_region]
            satisfied_demand[i_region] += self.paxAction[k]
+
+           self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
            self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
            self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
            self.acc[i][t+1] -= self.paxAction[k]
