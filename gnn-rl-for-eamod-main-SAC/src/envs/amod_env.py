@@ -199,12 +199,12 @@ class AMoD:
            i,j = self.edges[k]
            i_region = i[0]
            j_region = j[0]
-           if (i_region,j_region) not in self.demand or t not in self.demand[i_region,j_region] or self.paxAction[k]<1e-3 or i[1]<j[1]:
+           if (i_region,j_region) not in self.demand or t not in self.demand[i_region,j_region] or self.paxAction[k] < 1e-5 or i[1]<j[1]:
                continue
            # I moved the min operator above, since we want paxFlow to be consistent with paxAction
            
            # assert paxAction[k] < self.acc[i][t+1] + 1e-3
-           paxAction[k] = min(self.acc[i][t+1], paxAction[k] + 1e-3)
+           paxAction[k] = min(self.acc[i][t+1], paxAction[k] + 1e-5)
            
            # assert paxAction[k] >= 0
            paxAction[k] = max(0, paxAction[k])
@@ -227,8 +227,6 @@ class AMoD:
             test_spatial_acc_count[n[0]] += self.acc[n][t+1]
        for region in self.nodes_spatial:
             assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) < 1e-5
-            print(satisfied_demand[region])
-            print(total_demand[region])
             assert satisfied_demand[region] - total_demand[region] < 1e-5
 
        self.obs = (self.acc, self.time, self.dacc, self.demand) # for acc, the time index would be t+1, but for demand, the time index would be t
@@ -249,8 +247,8 @@ class AMoD:
             if (i,j) not in self.G.edges:
                 assert False
             # update the number of vehicles
-            assert rebAction[k] < self.acc[i][t+1] + 1e-3
-            if rebAction[k] < 1e-3:
+            assert rebAction[k] < self.acc[i][t+1] + 1e-5
+            if rebAction[k] < 1e-5:
                 continue
             self.rebAction[k] = min(self.acc[i][t+1], rebAction[k])
             
