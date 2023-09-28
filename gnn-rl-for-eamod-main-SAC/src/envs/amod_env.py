@@ -227,6 +227,8 @@ class AMoD:
             test_spatial_acc_count[n[0]] += self.acc[n][t+1]
        for region in self.nodes_spatial:
             assert abs(test_spatial_acc_count[region] - self.acc_spatial[region][t+1]) < 1e-5
+            print(satisfied_demand[region])
+            print(total_demand[region])
             assert satisfied_demand[region] - total_demand[region] < 1e-5
 
        self.obs = (self.acc, self.time, self.dacc, self.demand) # for acc, the time index would be t+1, but for demand, the time index would be t
