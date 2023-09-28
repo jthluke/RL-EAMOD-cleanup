@@ -204,13 +204,13 @@ class AMoD:
            # I moved the min operator above, since we want paxFlow to be consistent with paxAction
            
            # assert paxAction[k] < self.acc[i][t+1] + 1e-3
-           paxAction[k] = min(self.acc[i][t+1], paxAction[k] + 1e-5)
+           self.paxAction[k] = min(self.acc[i][t+1], self.paxAction[k] + 1e-5)
            
            # assert paxAction[k] >= 0
-           paxAction[k] = max(0, paxAction[k])
+           self.paxAction[k] = max(0, self.paxAction[k])
 
            # make sure paxAction is less than or equal to totalDemand
-           paxAction[k] = min(paxAction[k], total_demand[i_region] + 1e-5)
+           self.paxAction[k] = min(self.paxAction[k], total_demand[i_region])
            
            self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
            satisfied_demand[i_region] += self.paxAction[k]
