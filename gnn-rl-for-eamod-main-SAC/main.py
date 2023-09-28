@@ -146,7 +146,7 @@ num_sn = args.spatial_nodes
 city = args.city
 
 zeroShotCity = args.zeroShotCity
-zeroShotNodes = args.zeroShotNodesƒ
+zeroShotNodes = args.zeroShotNodes
 
 # problem_folder = 'NY/ClusterDataset1'
 # file_path = os.path.join('data', problem_folder,  'd1.json')
