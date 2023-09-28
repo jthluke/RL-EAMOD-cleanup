@@ -210,7 +210,11 @@ class AMoD:
            self.paxAction[k] = max(0, self.paxAction[k])
 
            # make sure paxAction is less than or equal to totalDemand
+           print(self.paxAction[k])
+           print(total_demand[i_region])
            self.paxAction[k] = min(self.paxAction[k], total_demand[i_region])
+           print(self.paxAction[k])
+           print(total_demand[i_region])
            
            self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
            satisfied_demand[i_region] += self.paxAction[k]
