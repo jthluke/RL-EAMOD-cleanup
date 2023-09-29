@@ -211,34 +211,64 @@ class AMoD:
         for origin in range(self.number_nodes_spatial):
             for destination in range(self.number_nodes_spatial):
                 total_demand[origin] += self.demand[origin, destination][t]
-
+        
         for k in range(len(self.edges)):
-            i, j = self.edges[k]
-            i_region = i[0]
-            j_region = j[0]
-            
-            if (i_region, j_region) not in self.demand or t not in self.demand[i_region, j_region] or self.paxAction[k] < 1e-3 or i[1] < j[1]:
+           i,j = self.edges[k]
+           i_region = i[0]
+           j_region = j[0]
+           if (i_region,j_region) not in self.demand or t not in self.demand[i_region,j_region] or self.paxAction[k] < 1e-3 or i[1]<j[1]:
                 continue
+           # I moved the min operator above, since we want paxFlow to be consistent with paxAction
+           
+           # assert paxAction[k] < self.acc[i][t+1] + 1e-3
+           self.paxAction[k] = min(self.acc[i][t+1], self.paxAction[k] + 1e-3)
+           
+           # assert paxAction[k] >= 0
+           self.paxAction[k] = max(0, self.paxAction[k])
+           
+           if satisfied_demand[i_region] + self.paxAction[k] > total_demand[i_region]:
+               self.paxAction[k] = total_demand[i_region] - satisfied_demand[i_region]
+           satisfied_demand[i_region] += self.paxAction[k]
 
-            # Ensure paxAction[k] is within the valid range
-            self.paxAction[k] = max(0, min(self.acc[i][t+1], paxAction[k]))
+           self.servedDemand[i_region,j_region][t] += self.paxAction[k] 
+           self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
+           self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
+           self.acc[i][t+1] -= self.paxAction[k]
+           self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
+           self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
+           self.info['served_demand'] += self.paxAction[k]
+           self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
+           self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+           self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
+           self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
 
-            # Sanity check assertions
-            assert paxAction[k] < self.acc[i][t+1] + 1e-3
-            assert paxAction[k] >= 0
+        # for k in range(len(self.edges)):
+        #     i, j = self.edges[k]
+        #     i_region = i[0]
+        #     j_region = j[0]
+            
+        #     if (i_region, j_region) not in self.demand or t not in self.demand[i_region, j_region] or self.paxAction[k] < 1e-3 or i[1] < j[1]:
+        #         continue
 
-            self.servedDemand[i_region,j_region][t] += self.paxAction[k]
-            satisfied_demand[i_region] += self.paxAction[k]
-            self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
-            self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
-            self.acc[i][t+1] -= self.paxAction[k]
-            self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
-            self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
-            self.info['served_demand'] += self.paxAction[k]
-            self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-            self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
-            self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
+        #     # Ensure paxAction[k] is within the valid range
+        #     self.paxAction[k] = max(0, min(self.acc[i][t+1], paxAction[k]))
+
+        #     # Sanity check assertions
+        #     assert paxAction[k] < self.acc[i][t+1] + 1e-3
+        #     assert paxAction[k] >= 0
+
+        #     self.servedDemand[i_region,j_region][t] += self.paxAction[k]
+        #     satisfied_demand[i_region] += self.paxAction[k]
+        #     self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
+        #     self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
+        #     self.acc[i][t+1] -= self.paxAction[k]
+        #     self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
+        #     self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
+        #     self.info['served_demand'] += self.paxAction[k]
+        #     self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
+        #     self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
+        #     self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
+        #     self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
         
         # if paxAction is None:
         #    paxAction = pax_flows_solver.optimize()
