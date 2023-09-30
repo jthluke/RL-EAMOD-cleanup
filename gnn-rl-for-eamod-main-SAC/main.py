@@ -255,21 +255,26 @@ best_reward_test = -np.inf  # set best reward
 if zeroShotCity or zeroShotNodes:
     if zeroShotCity:
         if city == 'NY':
-            model.load_checkpoint(path=f'ckpt/SF_{num_sn}_9000_48.pth')
+            model.load_checkpoint(path=f'ckpt/SF_{num_sn}_9000_48_test.pth')
             # scale_factor = 0.00001
             # scale_price = 0.1
         else:
-            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48.pth')
+            model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48_test.pth')
             scale_factor = 0.01
             scale_price = 0.1
     else:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
         else:
-            model.load_checkpoint(path='ckpt/SF_5_9000_48.pth')
+            model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
+    if num_sn > 10:
+        if city == 'NY':
+            model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
+        else:
+            model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
@@ -356,10 +361,11 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            batch = model.replay_buffer.sample_batch(
-                args.batch_size)  # sample from replay buffer
-            model = model.float()
-            model.update(data=batch)  # update model
+            for step in range(100):
+                batch = model.replay_buffer.sample_batch(
+                    args.batch_size)  # sample from replay buffer
+                model = model.float()
+                model.update(data=batch)  # update model
 
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
