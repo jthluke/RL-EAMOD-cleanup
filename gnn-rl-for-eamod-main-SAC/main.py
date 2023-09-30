@@ -166,6 +166,13 @@ experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes
 # energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
 
+gurobi_env = gp.Env(empty=True)
+gurobi = "Aaryan"
+gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
+gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
+gurobi_env.setParam('LICENSEID', 2403727)
+gurobi_env.setParam("OutputFlag",0)
+gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
 env = AMoD(scenario)
@@ -257,7 +264,7 @@ if zeroShotCity or zeroShotNodes:
             scale_price = 0.1
     else:
         if city == 'NY':
-            model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/NYC_5_9000_48.pth')
         else:
             model.load_checkpoint(path='ckpt/SF_5_9000_48.pth')
     epochs = trange(10)
