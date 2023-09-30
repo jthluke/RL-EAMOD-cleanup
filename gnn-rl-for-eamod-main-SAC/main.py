@@ -315,7 +315,10 @@ for i_episode in epochs:
             model.replay_buffer.store(obs1, action_rl, args.rew_scale * rl_reward, o)
 
         # sample from Dirichlet (Step 2 in paper)
-        action_rl = model.select_action(o)
+        if test:
+            action_rl = model.select_action(o, deterministic=True)
+        else:
+            action_rl = model.select_action(o)
         
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
