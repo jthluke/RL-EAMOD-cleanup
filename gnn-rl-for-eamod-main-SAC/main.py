@@ -264,7 +264,7 @@ if zeroShotCity or zeroShotNodes:
             scale_price = 0.1
     else:
         if city == 'NY':
-            model.load_checkpoint(path='ckpt/NYC_5_9000_48.pth')
+            model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
         else:
             model.load_checkpoint(path='ckpt/SF_5_9000_48.pth')
     epochs = trange(10)
