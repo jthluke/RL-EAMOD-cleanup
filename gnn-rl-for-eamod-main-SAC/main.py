@@ -235,6 +235,7 @@ model = SAC(
     alpha=args.alpha,
     use_automatic_entropy_tuning=False,
     critic_version=args.critic_version,
+    device=device
 ).to(device)
 
 # get .pkl file from data folder
