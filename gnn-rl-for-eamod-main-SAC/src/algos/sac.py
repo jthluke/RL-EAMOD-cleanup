@@ -309,6 +309,7 @@ class SAC(nn.Module):
         self.actor = GNNActor(
             self.input_size, self.hidden_size, act_dim=self.act_dim)
         self.actor.to(self.device)
+        print(self.device)
         print(self.actor)
 
         if critic_version == 1:
@@ -370,8 +371,6 @@ class SAC(nn.Module):
         with torch.no_grad():
             data.x.to(self.device)
             data.edge_index.to(self.device)
-            print(data.x.device)
-            print(data.edge_index.device)
             a, _ = self.actor(data.x, data.edge_index, deterministic)
         a = a.squeeze(-1)
         a = a.detach().cpu().numpy()[0]
