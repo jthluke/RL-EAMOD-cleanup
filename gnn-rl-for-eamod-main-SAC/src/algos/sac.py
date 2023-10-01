@@ -367,10 +367,14 @@ class SAC(nn.Module):
         return state
 
     def select_action(self, data, deterministic=False):
+        print(data.device)
         with torch.no_grad():
             data.x.to(self.device)
             data.edge_index.to(self.device)
+            print(data.x.device)
+            print(data.edge_index.device)
             a, _ = self.actor(data.x, data.edge_index, deterministic)
+            print(a.device)
         a = a.squeeze(-1)
         a = a.detach().cpu().numpy()[0]
         return list(a)

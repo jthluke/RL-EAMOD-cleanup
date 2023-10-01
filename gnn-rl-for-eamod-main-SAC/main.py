@@ -235,7 +235,7 @@ model = SAC(
     alpha=args.alpha,
     use_automatic_entropy_tuning=False,
     critic_version=args.critic_version,
-).to('cuda:0')
+).to(device)
 
 # get .pkl file from data folder
 # with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
