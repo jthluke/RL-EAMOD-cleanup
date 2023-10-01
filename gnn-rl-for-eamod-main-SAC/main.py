@@ -184,7 +184,7 @@ gurobi_env.setParam("OutputFlag",0)
 gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
-env = AMoD(scenario)
+env = AMoD(scenario).to(device)
 
 print("Number of edges: " + str(len(env.scenario.edges)))
 print("Number of spatial nodes: " + str(len(env.scenario.G_spatial.nodes)))
