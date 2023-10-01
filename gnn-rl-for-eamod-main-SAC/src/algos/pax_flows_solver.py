@@ -17,7 +17,7 @@ class PaxFlowsSolver:
         self.m.Params.Method = 2
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
-        self.m.set_params('threads', -1)
+        self.m.setParam('Threads', -1)
 
         self.flow = self.m.addMVar(shape=(len(
             self.env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow")
