@@ -1,0 +1,87 @@
+{
+    "os": "Linux-5.10.0-24-cloud-amd64-x86_64-with-glibc2.31",
+    "python": "3.9.2",
+    "heartbeatAt": "2023-09-12T00:59:50.173102",
+    "startedAt": "2023-09-12T00:59:49.850637",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--spatial_nodes",
+        "5",
+        "--T",
+        "24",
+        "--city",
+        "NY"
+    ],
+    "state": "running",
+    "program": "/home/aaryan0404/RL-EAMOD-Public/gnn-rl-for-eamod-main-SAC/main.py",
+    "codePathLocal": "main.py",
+    "codePath": "gnn-rl-for-eamod-main-SAC/main.py",
+    "git": {
+        "remote": "https://github.com/Aaryan0404/RL-EAMOD-Public.git",
+        "commit": "3f18db43a692f1304943f22cb335b7cd1534ac07"
+    },
+    "email": null,
+    "root": "/home/aaryan0404/RL-EAMOD-Public",
+    "host": "instance-1",
+    "username": "aaryan0404",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 3100.2000000000003,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3100.2,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 48.97825241088867,
+            "used": 12.520488739013672
+        }
+    },
+    "memory": {
+        "total": 31.35865020751953
+    }
+}
