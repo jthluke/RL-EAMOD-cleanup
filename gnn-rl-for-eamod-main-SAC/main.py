@@ -196,8 +196,7 @@ else:
 # set up wandb
 wandb.init(
       # Set the project where this run will be logged
-      project='e-amod', 
-      resume=True,
+      project='e-amod',
       # pass a run name 
       name=experiment, 
       # Track hyperparameters and run metadata
