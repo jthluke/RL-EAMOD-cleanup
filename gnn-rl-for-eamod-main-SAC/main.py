@@ -134,6 +134,7 @@ parser.add_argument("--critic_version", type=int, default=4,
 args = parser.parse_args()
 args.cuda = torch.cuda.is_available()
 device = torch.device("cuda" if args.cuda else "cpu")
+print(device)
 lr_a = args.lr_a
 lr_c = args.lr_c
 grad_norm_clip_a = args.grad_norm_clip_a
