@@ -167,11 +167,19 @@ experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes
 # energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
 
+# gurobi_env = gp.Env(empty=True)
+# gurobi = "Aaryan"
+# gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
+# gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
+# gurobi_env.setParam('LICENSEID', 2403727)
+# gurobi_env.setParam("OutputFlag",0)
+# gurobi_env.start()
+
 gurobi_env = gp.Env(empty=True)
-gurobi = "Aaryan"
-gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
-gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
-gurobi_env.setParam('LICENSEID', 2403727)
+gurobi = "Daniele"
+gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
+gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
+gurobi_env.setParam('LICENSEID', 2403732)
 gurobi_env.setParam("OutputFlag",0)
 gurobi_env.start()
 
@@ -363,11 +371,17 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            for step in range(50):
+            if city == 'NY' and num_sn == 10:
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
                 model = model.float()
                 model.update(data=batch)  # update model
+            else:
+                for step in range(50):
+                    batch = model.replay_buffer.sample_batch(
+                        args.batch_size)  # sample from replay buffer
+                    model = model.float()
+                    model.update(data=batch)  # update model
 
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
