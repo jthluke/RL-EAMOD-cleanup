@@ -246,6 +246,9 @@ model = SAC(
     device=device
 ).to(device)
 
+if test:
+    model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+
 # get .pkl file from data folder
 # with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
 #     data = pickle.load(f)
