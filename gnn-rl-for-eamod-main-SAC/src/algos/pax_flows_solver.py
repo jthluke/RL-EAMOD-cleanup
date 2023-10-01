@@ -14,10 +14,10 @@ class PaxFlowsSolver:
         t = self.env.time
         self.m = gp.Model(env=gurobi_env)
 
-        self.m.Params.Method = 2
+        self.m.Params.Method = 3
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
-        # self.m.setParam('Threads', -1)
+        # self.m.Params.Threads = 120
 
         self.flow = self.m.addMVar(shape=(len(
             self.env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow")
