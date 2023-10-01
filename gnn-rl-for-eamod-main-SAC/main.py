@@ -318,6 +318,8 @@ for i_episode in epochs:
         time_i_start = time.time()
         if step > 0:
             obs1 = copy.deepcopy(o)
+        
+        time_2 = time.time()
         # take matching step (Step 1 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
@@ -325,19 +327,32 @@ for i_episode in epochs:
         else:
             pax_flows_solver.update_constraints()
             pax_flows_solver.update_objective()
+        time_2_end = time.time() - time_2
+        
+        time_3 = time.time()
         obs, paxreward, done, info_pax = env.pax_step(pax_flows_solver=pax_flows_solver, episode=i_episode)
+        time_3_end = time.time() - time_3
+
+        time_4 = time.time()
         o = parser.parse_obs(obs)
+        time_4_end = time.time() - time_4
+
         episode_reward += paxreward
         if step > 0:
             rl_reward = (paxreward + rebreward)
+            time_5 = time.time()
             model.replay_buffer.store(obs1, action_rl, args.rew_scale * rl_reward, o)
+            time_5_end = time.time() - time_5
 
+        time_6 = time.time()
         # sample from Dirichlet (Step 2 in paper)
         if test:
             action_rl = model.select_action(o, deterministic=True)
         else:
             action_rl = model.select_action(o)
-        
+        time_6_end = time.time() - time_6
+
+        time_7 = time.time()
         # transform sample from Dirichlet into actual vehicle counts (i.e. (x1*x2*..*xn)*num_vehicles)
         total_idle_acc = sum(env.acc[n][env.time+1] for n in env.nodes)
         desired_acc = {env.nodes[i]: int(action_rl[i] *total_idle_acc) for i in range(env.number_nodes)} # over nodes
@@ -352,7 +367,9 @@ for i_episode in epochs:
             assert desired_acc[n] >= 0
         for n in env.nodes:
             desired_accumulations_spatial_nodes[n[0]] += desired_acc[n]
-        
+        time_7_end = time.time() - time_7
+
+        time_8 = time.time()
         # solve minimum rebalancing distance problem (Step 3 in paper)
         if step == 0 and i_episode == 0:
         # initialize optimization problem in the first step
@@ -361,10 +378,13 @@ for i_episode in epochs:
             rebal_flow_solver.update_constraints(desired_acc, env)
             rebal_flow_solver.update_objective(env)
         rebAction = rebal_flow_solver.optimize()
+        time_8_end = time.time() - time_8
 
+        time_9 = time.time()
         # Take action in environment
         new_obs, rebreward, rebreward_internal, done, info_reb = env.reb_step(rebAction)
         episode_reward += rebreward
+        time_9_end = time.time() - time_9
         
         # track performance over episode
         episode_served_demand += info_pax['served_demand']
@@ -385,7 +405,9 @@ for i_episode in epochs:
                         args.batch_size)  # sample from replay buffer
                     model = model.float()
                     model.update(data=batch)  # update model
-
+    
+    # see which time is highest
+    print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     
