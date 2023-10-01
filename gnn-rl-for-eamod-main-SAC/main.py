@@ -363,11 +363,17 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            for step in range(50):
+            if city == 'NY' and num_sn == 10:
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
                 model = model.float()
                 model.update(data=batch)  # update model
+            else:
+                for step in range(50):
+                    batch = model.replay_buffer.sample_batch(
+                        args.batch_size)  # sample from replay buffer
+                    model = model.float()
+                    model.update(data=batch)  # update model
 
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
