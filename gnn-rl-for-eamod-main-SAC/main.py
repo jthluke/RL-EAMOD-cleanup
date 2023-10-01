@@ -279,9 +279,6 @@ else:
         else:
             model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
 
-if city == 'NY' and num_sn == 10:
-    model.load_checkpoint(path='ckpt/NYC_10_9000_48.pth')
-
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
     for destination in env.nodes_spatial:
@@ -367,7 +364,7 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            for step in range(100):
+            for step in range(50):
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
                 model = model.float()
