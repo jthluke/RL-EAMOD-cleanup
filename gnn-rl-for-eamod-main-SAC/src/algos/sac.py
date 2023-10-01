@@ -308,6 +308,7 @@ class SAC(nn.Module):
         # nnets
         self.actor = GNNActor(
             self.input_size, self.hidden_size, act_dim=self.act_dim)
+        self.actor.to(self.device)
         print(self.actor)
 
         if critic_version == 1:
@@ -323,16 +324,23 @@ class SAC(nn.Module):
 
         self.critic1 = GNNCritic(
             self.input_size, self.hidden_size, act_dim=self.act_dim)
+        self.critic1.to(self.device)
+        
         self.critic2 = GNNCritic(
             self.input_size, self.hidden_size, act_dim=self.act_dim)
+        self.critic2.to(self.device)
+        
         assert self.critic1.parameters() != self.critic2.parameters()
         print(self.critic1)
 
         self.critic1_target = GNNCritic(
             self.input_size, self.hidden_size, act_dim=self.act_dim)
+        self.critic1_target.to(self.device)
         self.critic1_target.load_state_dict(self.critic1.state_dict())
+
         self.critic2_target = GNNCritic(
             self.input_size, self.hidden_size, act_dim=self.act_dim)
+        self.critic2_target.to(self.device)
         self.critic2_target.load_state_dict(self.critic2.state_dict())
 
         for p in self.critic1_target.parameters():
