@@ -369,9 +369,9 @@ class SAC(nn.Module):
 
     def select_action(self, data, deterministic=False):
         with torch.no_grad():
-            data.x.to(self.device)
-            data.edge_index.to(self.device)
-            a, _ = self.actor(data.x, data.edge_index, deterministic)
+            x = data.x.to(self.device)
+            edge_index = data.edge_index.to(self.device)
+            a, _ = self.actor(x, edge_index, deterministic)
         a = a.squeeze(-1)
         a = a.detach().cpu().numpy()[0]
         return list(a)
@@ -383,6 +383,13 @@ class SAC(nn.Module):
          edge_index2,
          reward_batch,
          action_batch) = (data.x_s, data.edge_index_s, data.x_t, data.edge_index_t, data.reward, data.action.reshape(-1, self.nodes))
+        
+        state_batch = state_batch.to(self.device)
+        edge_index = edge_index.to(self.device)
+        next_state_batch = next_state_batch.to(self.device)
+        edge_index2 = edge_index2.to(self.device)
+        reward_batch = reward_batch.to(self.device)
+        action_batch = action_batch.to(self.device)
 
         q1 = self.critic1(state_batch, edge_index, action_batch)
         q2 = self.critic2(state_batch, edge_index, action_batch)
