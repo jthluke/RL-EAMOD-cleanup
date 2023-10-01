@@ -360,6 +360,8 @@ class SAC(nn.Module):
 
     def select_action(self, data, deterministic=False):
         with torch.no_grad():
+            data.x.to(self.device)
+            data.edge_index.to(self.device)
             a, _ = self.actor(data.x, data.edge_index, deterministic)
         a = a.squeeze(-1)
         a = a.detach().cpu().numpy()[0]
