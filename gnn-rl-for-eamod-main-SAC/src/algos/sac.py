@@ -367,7 +367,6 @@ class SAC(nn.Module):
         return state
 
     def select_action(self, data, deterministic=False):
-        print(data.device)
         with torch.no_grad():
             data.x.to(self.device)
             data.edge_index.to(self.device)
