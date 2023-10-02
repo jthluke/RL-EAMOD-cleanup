@@ -207,8 +207,7 @@ wandb.init(
       # Set the project where this run will be logged
       project='e-amod',
       # pass a run name 
-      name=experiment, 
-    #   resume=True,
+      name=experiment,
       # Track hyperparameters and run metadata
       config={
         "number_chargelevels": env.scenario.number_charge_levels,
