@@ -13,7 +13,7 @@ class RebalFlowSolver:
         t = env.time
         self.m = gp.Model(env=gurobi_env)
 
-        self.m.Params.Method = 3
+        self.m.Params.Method = 2
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
         # self.m.Params.Threads = 120
