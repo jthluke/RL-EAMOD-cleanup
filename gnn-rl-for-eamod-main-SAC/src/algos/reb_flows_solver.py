@@ -4,6 +4,7 @@ from gurobipy import quicksum
 import numpy as np
 import os
 import time
+import numpy as np
 
 
 class RebalFlowSolver:  
@@ -70,8 +71,24 @@ class RebalFlowSolver:
         self.m.update()
         
     def update_objective(self, env):
+        # Avoid repeated calculations
+        time_next = env.time + 1
+        time_normalizer = env.scenario.time_normalizer
+        operational_cost = env.scenario.operational_cost_per_timestep
+
+        # Measure time for obj2 calculation
         time_a = time.time()
-        self.obj2 = sum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep) for e_idx in range(len(env.edges)))
+
+        # Convert lists or arrays to NumPy arrays
+        flow_array = np.array(self.flow)
+        edges_array = np.array(env.edges)
+
+        # Extract the 'time' values for all edges at the next time step using a vectorized operation
+        time_values = np.array([env.G.edges[edge[0], edge[1]]['time'][time_next] for edge in edges_array])
+
+        # Compute the sum using vectorized operations
+        self.obj2 = np.sum(flow_array * (time_values + time_normalizer) * operational_cost)
+
         time_a_end = time.time() - time_a
 
         time_b = time.time()

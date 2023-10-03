@@ -64,9 +64,25 @@ class PaxFlowsSolver:
         self.m.update()
 
     def update_objective(self):
+        # Avoid repeated calculations
+        current_time = self.env.time
+        time_normalizer = self.env.scenario.time_normalizer
+        operational_cost = self.env.scenario.operational_cost_per_timestep
+
+        # Measure time for obj calculation
         time_a = time.time()
-        obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][self.env.time] - (self.env.G.edges[self.env.edges[i]]
-                  ['time'][self.env.time]+self.env.scenario.time_normalizer) * self.env.scenario.operational_cost_per_timestep) for i in range(len(self.env.edges)))
+
+        # Convert lists or arrays to NumPy arrays
+        flow_array = np.array(self.flow)
+        edges_array = np.array(self.env.edges)
+
+        # Extract the 'price' and 'time' values for all edges at the current time step using a vectorized operation
+        price_values = np.array([self.env.price[edge[0][0], edge[1][0]][current_time] for edge in edges_array])
+        time_values = np.array([self.env.G.edges[edge]['time'][current_time] for edge in edges_array])
+
+        # Compute the sum using vectorized operations
+        obj = np.sum(flow_array * (price_values - (time_values + time_normalizer) * operational_cost))
+
         time_a_end = time.time() - time_a
 
         time_b = time.time()
