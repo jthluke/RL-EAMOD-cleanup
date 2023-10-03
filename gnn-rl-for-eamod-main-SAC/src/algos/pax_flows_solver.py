@@ -78,7 +78,7 @@ class PaxFlowsSolver:
 
         # Extract the 'price' and 'time' values for all edges at the current time step using a vectorized operation
         price_values = np.array([self.env.price[edge[0][0], edge[1][0]][current_time] for edge in edges_array])
-        time_values = np.array([self.env.G.edges[tuple(edge)]['time'][current_time] for edge in edges_array])
+        time_values = np.array([self.env.G.edges[(tuple(edge[0]), tuple(edge[1]))]['time'][current_time] for edge in edges_array])
 
         # Compute the sum using vectorized operations
         obj = np.sum(flow_array * (price_values - (time_values + time_normalizer) * operational_cost))
