@@ -3,12 +3,10 @@ import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
 import os
-import pathos.multiprocessing as pmp
-from itertools import repeat
 import time
 
 
-class RebalFlowSolver:
+class RebalFlowSolver:  
     def __init__(self, env, desiredAcc, gurobi_env):
         # Initialize model
         self.cons_charge_graph1 = {}
@@ -23,12 +21,9 @@ class RebalFlowSolver:
         self.m.Params.Threads = 60
         self.m.setParam("LogFile", os.path.join(os.getcwd(), 'reb_flow_gurobi_log.log'))
 
-        self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS,
-                                   name="flow")  # both could be INTEGER
-        self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-10000000, ub=gp.GRB.INFINITY,
-                                              vtype=gp.GRB.CONTINUOUS, name="slack")
-        self.slack_variables_abs = self.m.addMVar(shape=(len(env.nodes)), lb=0, ub=gp.GRB.INFINITY,
-                                                  vtype=gp.GRB.CONTINUOUS, name="slack_abs")
+        self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
+        self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-10000000, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
+        self.slack_variables_abs = self.m.addMVar(shape=(len(env.nodes)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack_abs")
 
         for n_idx in range(len(env.nodes)):
             n = env.nodes[n_idx]
@@ -39,19 +34,15 @@ class RebalFlowSolver:
             self.cons_charge_graph1[n_idx] = self.m.addConstr(sum(self.flow[outgoing_edges]) <= env.acc[n][t + 1])
 
             # Constraint 2: We want to reach the target distribrution
-            self.cons_charge_graph2[n_idx] = self.m.addConstr(
-                sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] ==
-                desiredAcc[n] - env.acc[n][t + 1])
+            self.cons_charge_graph2[n_idx] = self.m.addConstr(sum(self.flow[incoming_edges]) - sum(self.flow[outgoing_edges]) + self.slack_variables[n_idx] == desiredAcc[n] - env.acc[n][t + 1]) 
             self.m.addGenConstrAbs(self.slack_variables_abs[n_idx], self.slack_variables[n_idx], "absconstr")
-
+            
             # Constraint 3: We cannot charge more vehicles then we have charging spots
         for r_idx in range(env.number_nodes_spatial):
             outgoing_charge_edges = env.map_region_to_charge_edges[r_idx]
-            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(
-                sum(self.flow[outgoing_charge_edges]) <= env.scenario.cars_per_station_capacity[r_idx] -
-                env.scenario.cars_charging_per_station[r_idx][t + 1])  # TODO finish
+            self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(sum(self.flow[outgoing_charge_edges]) <= env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][t+1]) # TODO finish
             # self.cons_spatial_graph_charging_cars[r_idx] = self.m.addConstr(env.n_charging_vehicles_spatial[r_idx][t+1] <= env.scenario.cars_per_station_capacity[r_idx])
-
+        
         self.obj1 = 0
         for n_idx in range(len(env.nodes)):
             self.obj1 += self.slack_variables_abs[n_idx] * 1e10
@@ -59,10 +50,9 @@ class RebalFlowSolver:
 
         self.obj2 = 0
         for e_idx in range(len(env.edges)):
-            i, j = env.edges[e_idx]
-            self.obj2 += self.flow[e_idx] * (env.G.edges[i, j]['time'][
-                                                 t + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep
-        self.m.setObjective(self.obj1 + self.obj2, gp.GRB.MINIMIZE)
+            i,j = env.edges[e_idx]
+            self.obj2 += self.flow[e_idx] * (env.G.edges[i,j]['time'][t + 1]+env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep
+        self.m.setObjective(self.obj1+self.obj2, gp.GRB.MINIMIZE)
 
     def update_constraints(self, desired_acc, env):
         desired_acc_checksum = 0
@@ -76,26 +66,21 @@ class RebalFlowSolver:
             self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
         assert abs(desired_acc_checksum - acc_checksum) < 1e-5
         for r_idx in range(env.number_nodes_spatial):
-            self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - \
-                                                               env.scenario.cars_charging_per_station[r_idx][
-                                                                   env.time + 1]
+            self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - env.scenario.cars_charging_per_station[r_idx][env.time+1]
         self.m.update()
-
+        
     def update_objective(self, env):
         time_a = time.time()
-        outputs = self.obj_sum(env)
-        self.obj2 = quicksum(outputs)
+        self.obj2 = sum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep) for e_idx in range(len(env.edges)))
         time_a_end = time.time() - time_a
 
         time_b = time.time()
-        self.m.setObjective(self.obj1 + self.obj2, gp.GRB.MINIMIZE)
+        self.m.setObjective(self.obj1+self.obj2, gp.GRB.MINIMIZE)
         time_b_end = time.time() - time_b
 
         time_c = time.time()
         self.m.update()
         time_c_end = time.time() - time_c
-
-        print(f"Time: {time_a_end}, {time_b_end}, {time_c_end}")
 
     # def optimize(self):
     #     self.m.optimize()
@@ -104,7 +89,7 @@ class RebalFlowSolver:
     #     assert self.m.status == 2
     #     action = self.flow.X
     #     return action
-
+    
     def optimize(self):
         self.m.optimize()
         if self.m.status == 3:
@@ -116,13 +101,4 @@ class RebalFlowSolver:
             return np.zeros(self.flow.shape)  # or handle other statuses as needed
         action = self.flow.X
         return action
-
-    def obj_sum(self, env):
-        with pmp.ThreadingPool() as p:
-            outputs = p.map(obj_sum_worker, range(len(env.edges)), repeat(self.flow), repeat(env))
-        return outputs
-
-
-def obj_sum_worker(e_idx, flow, env):
-    return flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][
-                                                 env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep
+        
