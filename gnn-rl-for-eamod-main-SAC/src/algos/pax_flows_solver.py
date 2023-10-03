@@ -4,6 +4,7 @@ from gurobipy import quicksum
 import numpy as np
 import os
 import time
+import sys
 
 class PaxFlowsSolver:
 

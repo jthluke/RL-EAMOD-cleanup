@@ -5,6 +5,7 @@ from pathos.multiprocessing import ProcessingPool as Pool
 import numpy as np
 import os
 import time
+import sys
 
 def compute_obj2_component(e_idx, flow, edges, G, t, stn, ocpt):
     return flow[e_idx] * (G.edges[edges[e_idx][0], edges[e_idx][1]]['time'][t] + stn) * ocpt
@@ -73,6 +74,7 @@ class RebalFlowSolver:
         self.m.update()
         
     def update_objective(self, env):
+        sys.setrecursionlimit(7500)
         time_a = time.time()
 
         stn = env.scenario.time_normalizer
