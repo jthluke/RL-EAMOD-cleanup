@@ -2,23 +2,14 @@
 import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
-import dill
-import multiprocessing
+from concurrent.futures import ThreadPoolExecutor
 import os
 import time
 import sys
 
-# Set up multiprocessing to use dill
-multiprocessing.set_start_method('spawn')
-dill.dump_session = dill.dump
-dill.load_session = dill.load
-
-def compute_batch_objective(batch_indices, flow, price, edges, G_edges, t, stn, ocpt):
-    return [
-        flow[i] * (price[edges[i][0][0], edges[i][1][0]][t] - 
-                   (G_edges[edges[i]]['time'][t] + stn) * ocpt)
-        for i in batch_indices
-    ]
+def compute_obj_value(i, flow, price, edges, G_edges, t, stn, ocpt):
+    return flow[i] * (price[edges[i][0][0], edges[i][1][0]][t] - 
+                     (G_edges[edges[i]]['time'][t] + stn) * ocpt)
 
 class PaxFlowsSolver:
 
@@ -89,23 +80,15 @@ class PaxFlowsSolver:
         edges = self.env.edges
         flow = self.flow
 
-        # Define batch size
-        batch_size = 100  # Adjust this value based on your needs
-        num_batches = (len(edges) + batch_size - 1) // batch_size
+       # Define the number of threads
+        num_threads = 60 # Adjust based on your needs and the number of edges
 
         # Prepare arguments for parallel computation
-        args = [
-            (range(batch_num * batch_size, min((batch_num + 1) * batch_size, len(edges))),
-            flow, price, edges, G_edges, t, stn, ocpt)
-            for batch_num in range(num_batches)
-        ]
+        args = [(i, self.flow, self.env.price, self.env.edges, self.env.G.edges, self.env.time, stn, ocpt) for i in range(len(self.env.edges))]
 
-        # Use multiprocessing Pool
-        with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-            results = pool.starmap(compute_batch_objective, args)
-
-        # Flatten the results
-        obj_values = [value for sublist in results for value in sublist]
+        # Use ThreadPoolExecutor for parallel computation
+        with ThreadPoolExecutor(max_workers=num_threads) as executor:
+            obj_values = list(executor.map(lambda p: compute_obj_value(*p), args))
 
         obj = quicksum(obj_values)
         
