@@ -407,7 +407,7 @@ for i_episode in epochs:
         rebAction = rebal_flow_solver.optimize()
         time_e_end = time.time() - time_e
         time_8_end = time.time() - time_8
-        print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
+        # print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
 
         time_9 = time.time()
         # Take action in environment
