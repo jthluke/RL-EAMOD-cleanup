@@ -1,11 +1,13 @@
 # Class def for optimization
 import gurobipy as gp
 from gurobipy import quicksum
+from pathos.multiprocessing import ProcessingPool as Pool
 import numpy as np
 import os
 import time
-import numpy as np
 
+def compute_obj2_component(e_idx, flow, edges, G, t, stn, ocpt):
+    return flow[e_idx] * (G.edges[edges[e_idx][0], edges[e_idx][1]]['time'][t] + stn) * ocpt
 
 class RebalFlowSolver:  
     def __init__(self, env, desiredAcc, gurobi_env):
@@ -71,24 +73,26 @@ class RebalFlowSolver:
         self.m.update()
         
     def update_objective(self, env):
-        # Avoid repeated calculations
-        time_next = env.time + 1
-        time_normalizer = env.scenario.time_normalizer
-        operational_cost = env.scenario.operational_cost_per_timestep
-
-        # Measure time for obj2 calculation
         time_a = time.time()
 
-        # Convert lists or arrays to NumPy arrays
-        flow_array = np.array(self.flow)
-        edges_array = np.array(env.edges)
+        stn = env.scenario.time_normalizer
+        ocpt = env.scenario.operational_cost_per_timestep
+        t = env.time + 1
 
-        # Extract the 'time' values for all edges at the next time step using a vectorized operation
-        time_values = np.array([env.G.edges[edge[0], edge[1]]['time'][time_next] for edge in edges_array])
+        # Create a pool of workers with maximum available CPU cores
+        num_cores = os.cpu_count()
+        pool = Pool(nodes=num_cores)
 
-        # Compute the sum using vectorized operations
-        self.obj2 = np.sum(flow_array * (time_values + time_normalizer) * operational_cost)
+        # Use the pool's map function to parallelize the computation
+        results = pool.map(compute_obj2_component, range(len(env.edges)), [self.flow]*len(env.edges), [env.edges]*len(env.edges), [env.G]*len(env.edges), [t]*len(env.edges), [stn]*len(env.edges), [ocpt]*len(env.edges))
 
+        # Sum up the results
+        self.obj2 = sum(results)
+
+        # Close the pool
+        pool.close()
+        pool.join()
+        
         time_a_end = time.time() - time_a
 
         time_b = time.time()

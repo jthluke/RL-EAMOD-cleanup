@@ -1,9 +1,13 @@
 # Class def for optimization
 import gurobipy as gp
 from gurobipy import quicksum
+from pathos.multiprocessing import ProcessingPool as Pool
 import numpy as np
 import os
 import time
+
+def compute_obj_component(i, flow, edges, price, G, current_time, stn, ocpt):
+    return flow[i] * (price[edges[i][0][0], edges[i][1][0]][current_time] - (G.edges[edges[i]]['time'][current_time] + stn) * ocpt)
 
 class PaxFlowsSolver:
 
@@ -64,25 +68,31 @@ class PaxFlowsSolver:
         self.m.update()
 
     def update_objective(self):
-        # Avoid repeated calculations
-        current_time = self.env.time
-        time_normalizer = self.env.scenario.time_normalizer
-        operational_cost = self.env.scenario.operational_cost_per_timestep
-
-        # Measure time for obj calculation
         time_a = time.time()
 
-        # Convert lists or arrays to NumPy arrays
-        flow_array = np.array(self.flow)
-        edges_array = np.array(self.env.edges)
+        stn = self.env.scenario.time_normalizer
+        ocpt = self.env.scenario.operational_cost_per_timestep
+        current_time = self.env.time
 
-        # Extract the 'price' and 'time' values for all edges at the current time step using a vectorized operation
-        price_values = np.array([self.env.price[edge[0][0], edge[1][0]][current_time] for edge in edges_array])
-        time_values = np.array([self.env.G.edges[(tuple(edge[0]), tuple(edge[1]))]['time'][current_time] for edge in edges_array])
+        # Create a pool of workers
+        pool = Pool()
 
-        # Compute the sum using vectorized operations
-        obj = np.sum(flow_array * (price_values - (time_values + time_normalizer) * operational_cost))
+        # Use the pool's map function to parallelize the computation
+        results = pool.map(
+            compute_obj_component, 
+            range(len(self.env.edges)), 
+            [self.flow]*len(self.env.edges), 
+            [self.env.edges]*len(self.env.edges), 
+            [self.env.price]*len(self.env.edges), 
+            [self.env.G]*len(self.env.edges), 
+            [current_time]*len(self.env.edges), 
+            [stn]*len(self.env.edges), 
+            [ocpt]*len(self.env.edges)
+        )
 
+        # Sum up the results
+        obj = sum(results)
+        
         time_a_end = time.time() - time_a
 
         time_b = time.time()
