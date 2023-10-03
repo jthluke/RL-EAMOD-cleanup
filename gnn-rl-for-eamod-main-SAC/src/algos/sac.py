@@ -125,7 +125,7 @@ class GNNActor(nn.Module):
                 log_prob = m.log_prob(action)
             except ValueError:
                 # Handle the error by returning placeholder values
-                action = torch.full((concentration.size(0),), 1.0 / self.act_dim, device=concentration.device)
+                action = torch.full((concentration.size(0), concentration.size(1)), 1.0 / self.act_dim, device=concentration.device)
                 log_prob = torch.zeros_like(concentration)
 
         return action, log_prob
