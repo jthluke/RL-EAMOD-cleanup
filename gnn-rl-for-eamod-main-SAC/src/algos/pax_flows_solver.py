@@ -74,14 +74,9 @@ class PaxFlowsSolver:
 
         stn = self.env.scenario.time_normalizer
         ocpt = self.env.scenario.operational_cost_per_timestep
-        t = self.env.time
-        price = self.env.price
-        G_edges = self.env.G.edges
-        edges = self.env.edges
-        flow = self.flow
 
        # Define the number of threads
-        num_threads = 60 # Adjust based on your needs and the number of edges
+        num_threads = len(self.env.edges) # Adjust based on your needs and the number of edges
 
         # Prepare arguments for parallel computation
         args = [(i, self.flow, self.env.price, self.env.edges, self.env.G.edges, self.env.time, stn, ocpt) for i in range(len(self.env.edges))]
