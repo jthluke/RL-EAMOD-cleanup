@@ -170,9 +170,9 @@ energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_dis
 if num_sn == 20:
     gurobi_env = gp.Env(empty=True)
     gurobi = "Justin"
-    gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-    gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-    gurobi_env.setParam('LICENSEID', 844698)
+    # gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+    # gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+    # gurobi_env.setParam('LICENSEID', 844698)
     gurobi_env.setParam("OutputFlag",0)
     gurobi_env.start()
 else:
