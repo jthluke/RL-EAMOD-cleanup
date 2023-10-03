@@ -2,10 +2,16 @@
 import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
-from multiprocessing import Pool, cpu_count
+import dill
+import multiprocessing
 import os
 import time
 import sys
+
+# Set up multiprocessing to use dill
+multiprocessing.set_start_method('spawn')
+dill.dump_session = dill.dump
+dill.load_session = dill.load
 
 def compute_batch_objective(batch_indices, flow, price, edges, G_edges, t, stn, ocpt):
     return [
@@ -95,7 +101,7 @@ class PaxFlowsSolver:
         ]
 
         # Use multiprocessing Pool
-        with Pool(processes=cpu_count()) as pool:
+        with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
             results = pool.starmap(compute_batch_objective, args)
 
         # Flatten the results
