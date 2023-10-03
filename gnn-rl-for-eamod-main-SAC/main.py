@@ -402,6 +402,7 @@ for i_episode in epochs:
         rebAction = rebal_flow_solver.optimize()
         time_e_end = time.time() - time_e
         time_8_end = time.time() - time_8
+        print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
 
         time_9 = time.time()
         # Take action in environment
@@ -425,7 +426,6 @@ for i_episode in epochs:
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
-    print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     
