@@ -83,7 +83,7 @@ class PaxFlowsSolver:
         self.m.update()
         time_c_end = time.time() - time_c
 
-        print(f"Time: {time_a_end}, {time_b_end}, {time_c_end}")
+        # print(f"Time: {time_a_end}, {time_b_end}, {time_c_end}")
 
     # def optimize(self):
     #     self.m.optimize()
