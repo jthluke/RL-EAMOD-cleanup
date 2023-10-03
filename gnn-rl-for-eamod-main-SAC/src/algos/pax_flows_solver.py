@@ -1,13 +1,9 @@
 # Class def for optimization
 import gurobipy as gp
 from gurobipy import quicksum
-from pathos.multiprocessing import ProcessingPool as Pool
 import numpy as np
 import os
 import time
-
-def compute_obj_component(i, flow, edges, price, G, current_time, stn, ocpt):
-    return flow[i] * (price[edges[i][0][0], edges[i][1][0]][current_time] - (G.edges[edges[i]]['time'][current_time] + stn) * ocpt)
 
 class PaxFlowsSolver:
 
@@ -72,26 +68,10 @@ class PaxFlowsSolver:
 
         stn = self.env.scenario.time_normalizer
         ocpt = self.env.scenario.operational_cost_per_timestep
-        current_time = self.env.time
-
-        # Create a pool of workers
-        pool = Pool()
-
-        # Use the pool's map function to parallelize the computation
-        results = pool.map(
-            compute_obj_component, 
-            range(len(self.env.edges)), 
-            [self.flow]*len(self.env.edges), 
-            [self.env.edges]*len(self.env.edges), 
-            [self.env.price]*len(self.env.edges), 
-            [self.env.G]*len(self.env.edges), 
-            [current_time]*len(self.env.edges), 
-            [stn]*len(self.env.edges), 
-            [ocpt]*len(self.env.edges)
-        )
-
-        # Sum up the results
-        obj = sum(results)
+        t = self.env.time
+        
+        obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][t] - (self.env.G.edges[self.env.edges[i]]
+                  ['time'][self.env.time] + stn) * ocpt) for i in range(len(self.env.edges)))
         
         time_a_end = time.time() - time_a
 
