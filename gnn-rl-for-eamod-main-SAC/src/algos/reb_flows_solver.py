@@ -76,15 +76,15 @@ class RebalFlowSolver:
     def update_objective(self, env):
         time_a = time.time()
 
-        stn = self.env.scenario.time_normalizer
-        ocpt = self.env.scenario.operational_cost_per_timestep
-        t = self.env.time + 1
+        stn = env.scenario.time_normalizer
+        ocpt = env.scenario.operational_cost_per_timestep
+        t = env.time + 1
 
         # Define the number of threads
-        num_threads = len(self.env.edges)  # Adjust based on your needs and the number of edges
+        num_threads = len(env.edges)  # Adjust based on your needs and the number of edges
 
         # Prepare arguments for parallel computation
-        args = [(e_idx, self.flow, self.env.G.edges, self.env.edges, t, stn, ocpt) for e_idx in range(len(self.env.edges))]
+        args = [(e_idx, self.flow, env.G.edges, env.edges, t, stn, ocpt) for e_idx in range(len(env.edges))]
 
         # Use ThreadPoolExecutor for parallel computation
         with ThreadPoolExecutor(max_workers=num_threads) as executor:
