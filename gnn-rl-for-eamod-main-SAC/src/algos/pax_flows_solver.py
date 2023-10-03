@@ -2,9 +2,15 @@
 import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
+from multiprocessing import Pool, cpu_count
 import os
 import time
 import sys
+
+def compute_obj_value(args):
+    i, flow, price, edges, G_edges, t, stn, ocpt = args
+    return flow[i] * (price[edges[i][0][0], edges[i][1][0]][t] - 
+                     (G_edges[edges[i]]['time'][t] + stn) * ocpt)
 
 class PaxFlowsSolver:
 
@@ -70,9 +76,19 @@ class PaxFlowsSolver:
         stn = self.env.scenario.time_normalizer
         ocpt = self.env.scenario.operational_cost_per_timestep
         t = self.env.time
-        
-        obj = quicksum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][t] - (self.env.G.edges[self.env.edges[i]]
-                  ['time'][self.env.time] + stn) * ocpt) for i in range(len(self.env.edges)))
+        price = self.env.price
+        G_edges = self.env.G.edges
+        edges = self.env.edges
+        flow = self.flow
+
+        # Prepare arguments for parallel computation
+        args = [(i, flow, price, edges, G_edges, t, stn, ocpt) for i in range(len(edges))]
+
+        # Use multiprocessing Pool
+        with Pool(processes=cpu_count()) as pool:
+            obj_values = pool.map(compute_obj_value, args)
+
+        obj = quicksum(obj_values)
         
         time_a_end = time.time() - time_a
 
