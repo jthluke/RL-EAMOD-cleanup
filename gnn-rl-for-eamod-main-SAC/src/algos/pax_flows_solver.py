@@ -3,13 +3,28 @@ import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
+import threading
 import os
 import time
 import sys
 
+# This is a global counter and a lock to ensure thread-safety
+active_threads = 0
+thread_lock = threading.Lock()
+
 def compute_obj_value(i, flow, price, edges, G_edges, t, stn, ocpt):
-    return flow[i] * (price[edges[i][0][0], edges[i][1][0]][t] - 
+    global active_threads
+    with thread_lock:
+        active_threads += 1
+        print(f"Active threads: {active_threads}")
+
+    result = flow[i] * (price[edges[i][0][0], edges[i][1][0]][t] - 
                      (G_edges[edges[i]]['time'][t] + stn) * ocpt)
+    
+    with thread_lock:
+        active_threads -= 1
+
+    return result
 
 class PaxFlowsSolver:
 
@@ -25,7 +40,7 @@ class PaxFlowsSolver:
         self.m.Params.Method = 2
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
-        self.m.Params.Threads = 60
+        self.m.Params.Threads = 5000
         self.m.setParam("LogFile", os.path.join(os.getcwd(), 'pax_flow_gurobi_log.log'))
 
         self.flow = self.m.addMVar(shape=(len(
@@ -75,8 +90,9 @@ class PaxFlowsSolver:
         stn = self.env.scenario.time_normalizer
         ocpt = self.env.scenario.operational_cost_per_timestep
 
-       # Define the number of threads
+        # Define the number of threads
         num_threads = len(self.env.edges) # Adjust based on your needs and the number of edges
+        print(f"Launching ThreadPoolExecutor with {num_threads} threads.")
 
         # Prepare arguments for parallel computation
         args = [(i, self.flow, self.env.price, self.env.edges, self.env.G.edges, self.env.time, stn, ocpt) for i in range(len(self.env.edges))]
