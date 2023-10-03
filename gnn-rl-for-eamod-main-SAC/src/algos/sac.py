@@ -119,7 +119,10 @@ class GNNActor(nn.Module):
             action = (concentration) / (concentration.sum() + 1e-20)
             log_prob = None
         else:
-            m = Dirichlet(concentration + 1e-20)
+            try:
+                m = Dirichlet(concentration + 1e-20)
+            except (ValueError):
+                m = Dirichlet(torch.ones_like(concentration) + 1e-20)
             action = m.rsample()
             log_prob = m.log_prob(action)
 
