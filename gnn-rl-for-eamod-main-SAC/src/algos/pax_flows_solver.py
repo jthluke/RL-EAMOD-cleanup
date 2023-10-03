@@ -3,6 +3,9 @@ import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
 import os
+import time
+import pathos.multiprocessing as pmp
+from itertools import repeat
 
 class PaxFlowsSolver:
 
@@ -53,18 +56,54 @@ class PaxFlowsSolver:
         self.m.setObjective(obj, gp.GRB.MAXIMIZE)
 
     def update_constraints(self):
-        for n in self.env.nodes:
-            self.cons_charge_graph[n].RHS = float(
-                self.env.acc[n][self.env.time])
-        for i in self.env.region:
-            for j in self.env.region:
-                self.cons_spatial_graph[(
-                    i, j)].RHS = self.env.demand[i, j][self.env.time]
+        # Parallelize the update for cons_charge_graph constraints
+        with pmp.ThreadingPool() as p:
+            p.map(update_cons_charge_graph_worker, [(n, self.cons_charge_graph, self.env) for n in self.env.nodes])
+
+        # Parallelize the update for cons_spatial_graph constraints
+        with pmp.ThreadingPool() as p:
+            p.map(update_cons_spatial_graph_worker, [(i, j, self.cons_spatial_graph, self.env) for i in self.env.region for j in self.env.region])
+
         self.m.update()
 
+    # def update_constraints(self):
+    #     for n in self.env.nodes:
+    #         self.cons_charge_graph[n].RHS = float(
+    #             self.env.acc[n][self.env.time])
+    #     for i in self.env.region:
+    #         for j in self.env.region:
+    #             self.cons_spatial_graph[(
+    #                 i, j)].RHS = self.env.demand[i, j][self.env.time]
+    #     self.m.update()
+
+    # def update_objective(self):
+    #     time_a = time.time()
+
+    #     stn = self.env.scenario.time_normalizer
+    #     ocpt = self.env.scenario.operational_cost_per_timestep
+    #     t = self.env.time
+        
+    #     obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][t] - (self.env.G.edges[self.env.edges[i]]
+    #               ['time'][self.env.time] + stn) * ocpt) for i in range(len(self.env.edges)))
+        
+    #     time_a_end = time.time() - time_a
+
+    #     time_b = time.time()
+    #     self.m.setObjective(obj, gp.GRB.MAXIMIZE)
+    #     time_b_end = time.time() - time_b
+
+    #     time_c = time.time()
+    #     self.m.update()
+    #     time_c_end = time.time() - time_c
+
+        # print(f"Time: {time_a_end}, {time_b_end}, {time_c_end}")
+    
     def update_objective(self):
-        obj = quicksum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][self.env.time] - (self.env.G.edges[self.env.edges[i]]
-                  ['time'][self.env.time]+self.env.scenario.time_normalizer) * self.env.scenario.operational_cost_per_timestep) for i in range(len(self.env.edges)))
+        with pmp.ThreadingPool() as p:
+            obj_values = p.map(obj_worker, [(i, self.flow, self.env) for i in range(len(self.env.edges))])
+        
+        obj = sum(obj_values)
+
         self.m.setObjective(obj, gp.GRB.MAXIMIZE)
         self.m.update()
 
@@ -84,3 +123,18 @@ class PaxFlowsSolver:
             return np.zeros(self.flow.shape)  # or handle other statuses as needed
         paxAction = self.flow.X
         return paxAction
+
+def update_cons_charge_graph_worker(args):
+    n, cons_charge_graph, env = args
+    cons_charge_graph[n].RHS = float(env.acc[n][env.time])
+
+def update_cons_spatial_graph_worker(args):
+    i, j, cons_spatial_graph, env = args
+    cons_spatial_graph[(i, j)].RHS = env.demand[i, j][env.time]
+
+def obj_worker(args):
+    i, flow, env = args
+    stn = env.scenario.time_normalizer
+    ocpt = env.scenario.operational_cost_per_timestep
+    t = env.time
+    return flow[i] * (env.price[env.edges[i][0][0], env.edges[i][1][0]][t] - (env.G.edges[env.edges[i]]['time'][t] + stn) * ocpt)

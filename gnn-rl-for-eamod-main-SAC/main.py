@@ -293,8 +293,6 @@ if zeroShotCity or zeroShotNodes:
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
-    if num_sn == 10 and city == 'NY':
-        model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48_test.pth')
     if num_sn > 10:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
@@ -325,6 +323,11 @@ for i_episode in epochs:
     current_eps = []
     done = False
     step = 0
+    time_a_end = 0
+    time_b_end = 0
+    time_c_end = 0
+    time_d_end = 0
+    time_e_end = 0
 
     while (not done):
         time_i_start = time.time()
@@ -337,8 +340,13 @@ for i_episode in epochs:
             # initialize optimization problem in the first step
             pax_flows_solver = PaxFlowsSolver(env=env, gurobi_env=gurobi_env)
         else:
+            time_a = time.time()
             pax_flows_solver.update_constraints()
+            time_a_end = time.time() - time_a
+
+            time_b = time.time()
             pax_flows_solver.update_objective()
+            time_b_end = time.time() - time_b
         time_2_end = time.time() - time_2
         
         time_3 = time.time()
@@ -387,10 +395,17 @@ for i_episode in epochs:
         # initialize optimization problem in the first step
             rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
         else:
+            time_c = time.time()
             rebal_flow_solver.update_constraints(desired_acc, env)
+            time_c_end = time.time() - time_c
+            time_d = time.time()
             rebal_flow_solver.update_objective(env)
+            time_d_end = time.time() - time_d
+        time_e = time.time()
         rebAction = rebal_flow_solver.optimize()
+        time_e_end = time.time() - time_e
         time_8_end = time.time() - time_8
+        # print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
 
         time_9 = time.time()
         # Take action in environment
