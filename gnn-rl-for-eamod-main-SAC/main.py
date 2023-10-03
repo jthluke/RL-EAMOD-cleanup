@@ -325,6 +325,11 @@ for i_episode in epochs:
     current_eps = []
     done = False
     step = 0
+    time_a_end = 0
+    time_b_end = 0
+    time_c_end = 0
+    time_d_end = 0
+    time_e_end = 0
 
     while (not done):
         time_i_start = time.time()
