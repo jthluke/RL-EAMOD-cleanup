@@ -4,10 +4,6 @@ from gurobipy import quicksum
 import numpy as np
 import os
 import time
-from concurrent.futures import ThreadPoolExecutor
-
-def compute_obj2_value(e_idx, flow, G_edges, edges, t, stn, ocpt):
-    return flow[e_idx] * (G_edges[edges[e_idx][0], edges[e_idx][1]]['time'][t] + stn) * ocpt
 
 
 class RebalFlowSolver:  
@@ -22,7 +18,7 @@ class RebalFlowSolver:
         self.m.Params.Method = 2
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
-        self.m.Params.Threads = 1024
+        self.m.Params.Threads = 60
         self.m.setParam("LogFile", os.path.join(os.getcwd(), 'reb_flow_gurobi_log.log'))
 
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
@@ -75,23 +71,7 @@ class RebalFlowSolver:
         
     def update_objective(self, env):
         time_a = time.time()
-
-        stn = env.scenario.time_normalizer
-        ocpt = env.scenario.operational_cost_per_timestep
-        t = env.time + 1
-
-        # Define the number of threads
-        num_threads = len(env.edges)  # Adjust based on your needs and the number of edges
-
-        # Prepare arguments for parallel computation
-        args = [(e_idx, self.flow, env.G.edges, env.edges, t, stn, ocpt) for e_idx in range(len(env.edges))]
-
-        # Use ThreadPoolExecutor for parallel computation
-        with ThreadPoolExecutor(max_workers=num_threads) as executor:
-            obj2_values = list(executor.map(lambda p: compute_obj2_value(*p), args))
-
-        self.obj2 = quicksum(obj2_values)
-    
+        self.obj2 = sum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep) for e_idx in range(len(env.edges)))
         time_a_end = time.time() - time_a
 
         time_b = time.time()
@@ -101,8 +81,6 @@ class RebalFlowSolver:
         time_c = time.time()
         self.m.update()
         time_c_end = time.time() - time_c
-
-        print(f"Time: {time_a_end}, {time_b_end}, {time_c_end}")
 
     # def optimize(self):
     #     self.m.optimize()

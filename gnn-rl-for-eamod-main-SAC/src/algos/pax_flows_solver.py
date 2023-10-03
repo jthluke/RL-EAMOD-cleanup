@@ -2,14 +2,8 @@
 import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor
 import os
 import time
-import sys
-
-def compute_obj_value(i, flow, price, edges, G_edges, t, stn, ocpt):
-    return flow[i] * (price[edges[i][0][0], edges[i][1][0]][t] - 
-                     (G_edges[edges[i]]['time'][t] + stn) * ocpt)
 
 class PaxFlowsSolver:
 
@@ -25,7 +19,7 @@ class PaxFlowsSolver:
         self.m.Params.Method = 2
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
-        self.m.Params.Threads = 1024
+        self.m.Params.Threads = 60
         self.m.setParam("LogFile", os.path.join(os.getcwd(), 'pax_flow_gurobi_log.log'))
 
         self.flow = self.m.addMVar(shape=(len(
@@ -74,18 +68,10 @@ class PaxFlowsSolver:
 
         stn = self.env.scenario.time_normalizer
         ocpt = self.env.scenario.operational_cost_per_timestep
-
-       # Define the number of threads
-        num_threads = len(self.env.edges) # Adjust based on your needs and the number of edges
-
-        # Prepare arguments for parallel computation
-        args = [(i, self.flow, self.env.price, self.env.edges, self.env.G.edges, self.env.time, stn, ocpt) for i in range(len(self.env.edges))]
-
-        # Use ThreadPoolExecutor for parallel computation
-        with ThreadPoolExecutor(max_workers=num_threads) as executor:
-            obj_values = list(executor.map(lambda p: compute_obj_value(*p), args))
-
-        obj = quicksum(obj_values)
+        t = self.env.time
+        
+        obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][t] - (self.env.G.edges[self.env.edges[i]]
+                  ['time'][self.env.time] + stn) * ocpt) for i in range(len(self.env.edges)))
         
         time_a_end = time.time() - time_a
 
