@@ -190,7 +190,7 @@ else:
         gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
         gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
         gurobi_env.setParam('LICENSEID', 2403732)
-        # gurobi_env.setParam("OutputFlag",0)
+        gurobi_env.setParam("OutputFlag",0)
         gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
@@ -337,8 +337,13 @@ for i_episode in epochs:
             # initialize optimization problem in the first step
             pax_flows_solver = PaxFlowsSolver(env=env, gurobi_env=gurobi_env)
         else:
+            time_a = time.time()
             pax_flows_solver.update_constraints()
+            time_a_end = time.time() - time_a
+
+            time_b = time.time()
             pax_flows_solver.update_objective()
+            time_b_end = time.time() - time_b
         time_2_end = time.time() - time_2
         
         time_3 = time.time()
@@ -387,9 +392,15 @@ for i_episode in epochs:
         # initialize optimization problem in the first step
             rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
         else:
+            time_c = time.time()
             rebal_flow_solver.update_constraints(desired_acc, env)
+            time_c_end = time.time() - time_c
+            time_d = time.time()
             rebal_flow_solver.update_objective(env)
+            time_d_end = time.time() - time_d
+        time_e = time.time()
         rebAction = rebal_flow_solver.optimize()
+        time_e_end = time.time() - time_e
         time_8_end = time.time() - time_8
 
         time_9 = time.time()
@@ -414,6 +425,7 @@ for i_episode in epochs:
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
+    print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     
