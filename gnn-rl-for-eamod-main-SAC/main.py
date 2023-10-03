@@ -293,8 +293,6 @@ if zeroShotCity or zeroShotNodes:
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
-    if num_sn == 10 and city == 'NY':
-        model.load_checkpoint(path=f'ckpt/NYC_{num_sn}_9000_48_test.pth')
     if num_sn > 10:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
