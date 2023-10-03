@@ -121,7 +121,7 @@ class RebalFlowSolver:
 
     def obj_sum(self, env):
         with pmp.ThreadingPool() as p:
-            outputs = p.map(obj_sum_worker, range(len(env.edges)), repeat(self.flow), repeat(env))
+            outputs = p.map(obj_sum_worker, [(i, self.flow, env) for i in range(len(env.edges))])
         return outputs
 
 
