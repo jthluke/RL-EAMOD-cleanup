@@ -58,11 +58,11 @@ class PaxFlowsSolver:
     def update_constraints(self):
         # Parallelize the update for cons_charge_graph constraints
         with pmp.ThreadingPool() as p:
-            p.map(update_cons_charge_graph_worker, self.env.nodes, repeat(self.cons_charge_graph), repeat(self.env))
+            p.map(update_cons_charge_graph_worker, [(n, self.cons_charge_graph, self.env) for n in self.env.nodes])
 
         # Parallelize the update for cons_spatial_graph constraints
         with pmp.ThreadingPool() as p:
-            p.starmap(update_cons_spatial_graph_worker, [(i, j) for i in self.env.region for j in self.env.region], repeat(self.cons_spatial_graph), repeat(self.env))
+            p.map(update_cons_spatial_graph_worker, [(i, j, self.cons_spatial_graph, self.env) for i in self.env.region for j in self.env.region])
 
         self.m.update()
 
@@ -100,7 +100,7 @@ class PaxFlowsSolver:
     
     def update_objective(self):
         with pmp.ThreadingPool() as p:
-            obj_values = p.map(obj_worker, range(len(self.env.edges)), repeat(self.flow), repeat(self.env))
+            obj_values = p.map(obj_worker, [(i, self.flow, self.env) for i in range(len(self.env.edges))])
         
         obj = sum(obj_values)
 
@@ -124,13 +124,16 @@ class PaxFlowsSolver:
         paxAction = self.flow.X
         return paxAction
 
-def update_cons_charge_graph_worker(n, cons_charge_graph, env):
+def update_cons_charge_graph_worker(args):
+    n, cons_charge_graph, env = args
     cons_charge_graph[n].RHS = float(env.acc[n][env.time])
 
-def update_cons_spatial_graph_worker(i, j, cons_spatial_graph, env):
+def update_cons_spatial_graph_worker(args):
+    i, j, cons_spatial_graph, env = args
     cons_spatial_graph[(i, j)].RHS = env.demand[i, j][env.time]
 
-def obj_worker(i, flow, env):
+def obj_worker(args):
+    i, flow, env = args
     stn = env.scenario.time_normalizer
     ocpt = env.scenario.operational_cost_per_timestep
     t = env.time
