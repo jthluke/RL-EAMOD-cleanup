@@ -406,17 +406,11 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            if city == 'NY' and num_sn == 10:
+            for step in range(50):
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
                 model = model.float()
                 model.update(data=batch)  # update model
-            else:
-                for step in range(50):
-                    batch = model.replay_buffer.sample_batch(
-                        args.batch_size)  # sample from replay buffer
-                    model = model.float()
-                    model.update(data=batch)  # update model
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
