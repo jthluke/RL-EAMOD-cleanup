@@ -2,6 +2,7 @@
 import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
+import os
 
 class PaxFlowsSolver:
 
@@ -18,6 +19,7 @@ class PaxFlowsSolver:
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
         self.m.Params.Threads = 60
+        self.m.setParam("LogFile", os.path.join(os.getcwd(), 'pax_flow_gurobi_log.log'))
 
         self.flow = self.m.addMVar(shape=(len(
             self.env.edges)), lb=0.0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow")
