@@ -3,6 +3,7 @@ import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
 import os
+import time
 
 class PaxFlowsSolver:
 
@@ -63,10 +64,20 @@ class PaxFlowsSolver:
         self.m.update()
 
     def update_objective(self):
+        time_a = time.time()
         obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][self.env.time] - (self.env.G.edges[self.env.edges[i]]
                   ['time'][self.env.time]+self.env.scenario.time_normalizer) * self.env.scenario.operational_cost_per_timestep) for i in range(len(self.env.edges)))
+        time_a_end = time.time() - time_a
+
+        time_b = time.time()
         self.m.setObjective(obj, gp.GRB.MAXIMIZE)
+        time_b_end = time.time() - time_b
+
+        time_c = time.time()
         self.m.update()
+        time_c_end = time.time() - time_c
+
+        print(f"Time a: {time_a_end}, Time b: {time_b_end}, Time c: {time_c_end}")
 
     # def optimize(self):
     #     self.m.optimize()

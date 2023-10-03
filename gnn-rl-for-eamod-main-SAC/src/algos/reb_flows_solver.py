@@ -3,6 +3,7 @@ import gurobipy as gp
 from gurobipy import quicksum
 import numpy as np
 import os
+import time
 
 
 class RebalFlowSolver:  
@@ -69,9 +70,19 @@ class RebalFlowSolver:
         self.m.update()
         
     def update_objective(self, env):
+        time_a = time.time()
         self.obj2 = sum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep) for e_idx in range(len(env.edges)))
+        time_a_end = time.time() - time_a
+
+        time_b = time.time()
         self.m.setObjective(self.obj1+self.obj2, gp.GRB.MINIMIZE)
+        time_b_end = time.time() - time_b
+
+        time_c = time.time()
         self.m.update()
+        time_c_end = time.time() - time_c
+
+        print(f"Time a: {time_a_end}, Time b: {time_b_end}, Time c: {time_c_end}")
 
     # def optimize(self):
     #     self.m.optimize()
