@@ -1,14 +1,10 @@
 # Class def for optimization
 import gurobipy as gp
 from gurobipy import quicksum
-from pathos.multiprocessing import ProcessingPool as Pool
 import numpy as np
 import os
 import time
-import sys
 
-def compute_obj2_component(e_idx, flow, edges, G, t, stn, ocpt):
-    return flow[e_idx] * (G.edges[edges[e_idx][0], edges[e_idx][1]]['time'][t] + stn) * ocpt
 
 class RebalFlowSolver:  
     def __init__(self, env, desiredAcc, gurobi_env):
@@ -74,27 +70,14 @@ class RebalFlowSolver:
         self.m.update()
         
     def update_objective(self, env):
-        sys.setrecursionlimit(7500)
         time_a = time.time()
 
         stn = env.scenario.time_normalizer
         ocpt = env.scenario.operational_cost_per_timestep
         t = env.time + 1
-
-        # Create a pool of workers with maximum available CPU cores
-        num_cores = os.cpu_count()
-        pool = Pool(nodes=num_cores)
-
-        # Use the pool's map function to parallelize the computation
-        results = pool.map(compute_obj2_component, range(len(env.edges)), [self.flow]*len(env.edges), [env.edges]*len(env.edges), [env.G]*len(env.edges), [t]*len(env.edges), [stn]*len(env.edges), [ocpt]*len(env.edges))
-
-        # Sum up the results
-        self.obj2 = sum(results)
-
-        # Close the pool
-        pool.close()
-        pool.join()
         
+        self.obj2 = quicksum((self.flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][t] + stn) * ocpt) for e_idx in range(len(env.edges)))
+    
         time_a_end = time.time() - time_a
 
         time_b = time.time()

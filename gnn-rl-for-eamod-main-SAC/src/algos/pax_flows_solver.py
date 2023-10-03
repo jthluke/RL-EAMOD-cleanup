@@ -71,7 +71,7 @@ class PaxFlowsSolver:
         ocpt = self.env.scenario.operational_cost_per_timestep
         t = self.env.time
         
-        obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][t] - (self.env.G.edges[self.env.edges[i]]
+        obj = quicksum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][t] - (self.env.G.edges[self.env.edges[i]]
                   ['time'][self.env.time] + stn) * ocpt) for i in range(len(self.env.edges)))
         
         time_a_end = time.time() - time_a
