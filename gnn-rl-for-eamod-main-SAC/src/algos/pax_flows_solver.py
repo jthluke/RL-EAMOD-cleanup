@@ -63,7 +63,7 @@ class PaxFlowsSolver:
         self.m.update()
 
     def update_objective(self):
-        obj = quicksum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][self.env.time] - (self.env.G.edges[self.env.edges[i]]
+        obj = sum(self.flow[i] * (self.env.price[self.env.edges[i][0][0], self.env.edges[i][1][0]][self.env.time] - (self.env.G.edges[self.env.edges[i]]
                   ['time'][self.env.time]+self.env.scenario.time_normalizer) * self.env.scenario.operational_cost_per_timestep) for i in range(len(self.env.edges)))
         self.m.setObjective(obj, gp.GRB.MAXIMIZE)
         self.m.update()
