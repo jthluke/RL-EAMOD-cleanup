@@ -5,6 +5,7 @@ import numpy as np
 import os
 import pathos.multiprocessing as pmp
 from itertools import repeat
+import time
 
 
 class RebalFlowSolver:
@@ -81,10 +82,20 @@ class RebalFlowSolver:
         self.m.update()
 
     def update_objective(self, env):
+        time_a = time.time()
         outputs = self.obj_sum(env)
         self.obj2 = quicksum(outputs)
+        time_a_end = time.time() - time_a
+
+        time_b = time.time()
         self.m.setObjective(self.obj1 + self.obj2, gp.GRB.MINIMIZE)
+        time_b_end = time.time() - time_b
+
+        time_c = time.time()
         self.m.update()
+        time_c_end = time.time() - time_c
+
+        print(f"Time: {time_a_end}, {time_b_end}, {time_c_end}")
 
     # def optimize(self):
     #     self.m.optimize()
