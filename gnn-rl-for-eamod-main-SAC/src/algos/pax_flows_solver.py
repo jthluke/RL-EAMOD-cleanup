@@ -40,7 +40,7 @@ class PaxFlowsSolver:
         self.m.Params.Method = 2
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
-        self.m.Params.Threads = 5000
+        self.m.Params.Threads = 1024
         self.m.setParam("LogFile", os.path.join(os.getcwd(), 'pax_flow_gurobi_log.log'))
 
         self.flow = self.m.addMVar(shape=(len(
