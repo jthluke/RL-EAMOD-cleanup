@@ -64,21 +64,31 @@ class RebalFlowSolver:
                                                  t + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep
         self.m.setObjective(self.obj1 + self.obj2, gp.GRB.MINIMIZE)
 
-    def update_constraints(self, desired_acc, env):
-        desired_acc_checksum = 0
-        acc_checksum = 0
-        for n_idx in range(len(env.nodes)):
-            node_charge = env.nodes[n_idx]
+    # def update_constraints(self, desired_acc, env):
+    #     desired_acc_checksum = 0
+    #     acc_checksum = 0
+    #     for n_idx in range(len(env.nodes)):
+    #         node_charge = env.nodes[n_idx]
 
-            desired_acc_checksum += desired_acc[node_charge]
-            acc_checksum += env.acc[node_charge][env.time + 1]
-            self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
-            self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
-        assert abs(desired_acc_checksum - acc_checksum) < 1e-5
-        for r_idx in range(env.number_nodes_spatial):
-            self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - \
-                                                               env.scenario.cars_charging_per_station[r_idx][
-                                                                   env.time + 1]
+    #         desired_acc_checksum += desired_acc[node_charge]
+    #         acc_checksum += env.acc[node_charge][env.time + 1]
+    #         self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
+    #         self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
+    #     assert abs(desired_acc_checksum - acc_checksum) < 1e-5
+    #     for r_idx in range(env.number_nodes_spatial):
+    #         self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - \
+    #                                                            env.scenario.cars_charging_per_station[r_idx][
+    #                                                                env.time + 1]
+    #     self.m.update()
+    def update_constraints(self, desired_acc, env):
+        # Parallelize the update for cons_charge_graph constraints
+        with pmp.ThreadingPool() as p:
+            p.starmap(self.update_cons_charge_graph_worker, zip(range(len(env.nodes)), repeat(desired_acc), repeat(env)))
+
+        # Parallelize the update for cons_spatial_graph_charging_cars constraints
+        with pmp.ThreadingPool() as p:
+            p.starmap(self.update_cons_spatial_graph_charging_cars_worker, zip(range(env.number_nodes_spatial), repeat(env)))
+
         self.m.update()
 
     def update_objective(self, env):
@@ -126,3 +136,12 @@ class RebalFlowSolver:
 def obj_sum_worker(e_idx, flow, env):
     return flow[e_idx] * (env.G.edges[env.edges[e_idx][0], env.edges[e_idx][1]]['time'][
                                                  env.time + 1] + env.scenario.time_normalizer) * env.scenario.operational_cost_per_timestep
+
+def update_cons_charge_graph_worker(self, n_idx, desired_acc, env):
+        node_charge = env.nodes[n_idx]
+        self.cons_charge_graph1[n_idx].RHS = env.acc[node_charge][env.time + 1]
+        self.cons_charge_graph2[n_idx].RHS = desired_acc[node_charge] - env.acc[node_charge][env.time + 1]
+
+def update_cons_spatial_graph_charging_cars_worker(self, r_idx, env):
+    self.cons_spatial_graph_charging_cars[r_idx].RHS = env.scenario.cars_per_station_capacity[r_idx] - \
+                                                        env.scenario.cars_charging_per_station[r_idx][env.time + 1]
