@@ -297,7 +297,7 @@ else:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
         else:
-            model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
