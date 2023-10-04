@@ -123,6 +123,7 @@ class GNNActor(nn.Module):
                 m = Dirichlet(concentration + 1e-20)
                 action = m.rsample()
                 log_prob = m.log_prob(action)
+                print(log_prob.shape)
             except ValueError:
                 # Handle the error by returning placeholder values
                 action = torch.full((concentration.size(0), concentration.size(1)), 1.0 / self.act_dim, device=concentration.device)
