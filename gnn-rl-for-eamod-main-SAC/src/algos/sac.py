@@ -109,19 +109,16 @@ class GNNActor(nn.Module):
         self.lin3 = nn.Linear(hidden_size, 1)
 
     def forward(self, state, edge_index, deterministic=False):
-        while True:  # Loop until a valid concentration is obtained
-            out = F.relu(self.conv1(state, edge_index))
-            x = out + state
-            x = x.reshape(-1, self.act_dim, self.in_channels)
-            x = F.leaky_relu(self.lin1(x))
-            x = F.leaky_relu(self.lin2(x))
-            x = F.softplus(self.lin3(x))
-            concentration = x.squeeze(-1)
-
-            if not torch.isnan(concentration).any():
-                break  # Break the loop if concentration is valid
-            print("NaN detected in concentration. Attempting to revert model state to last checkpoint.")
-            self.load_from_ckpt()
+        out = F.relu(self.conv1(state, edge_index))
+        x = out + state
+        x = x.reshape(-1, self.act_dim, self.in_channels)
+        x = F.leaky_relu(self.lin1(x))
+        x = F.leaky_relu(self.lin2(x))
+        x = F.softplus(self.lin3(x))
+        concentration = x.squeeze(-1)
+        
+        if concentration.isnan().any():
+            raise ValueError('Nan in concentration')
         
         if deterministic:
             action = (concentration) / (concentration.sum() + 1e-20)
@@ -132,13 +129,6 @@ class GNNActor(nn.Module):
             log_prob = m.log_prob(action)
 
         return action, log_prob
-    
-    def load_from_ckpt(self):
-        checkpoint_path = f'{self.city}_{self.act_dim//19}_9000_48_test'
-        checkpoint = torch.load(path=f'ckpt/{checkpoint_path}.pth', map_location='cpu')
-        self.load_state_dict(checkpoint["model"])
-        for key, _ in self.optimizers.items():
-            self.optimizers[key].load_state_dict(checkpoint[key])
 
 #########################################
 ############## CRITICS ##################
@@ -412,7 +402,12 @@ class SAC(nn.Module):
         q2 = self.critic2(state_batch, edge_index, action_batch)
         with torch.no_grad():
             # Target actions come from current policy
-            a2, logp_a2 = self.actor(next_state_batch, edge_index2)
+            
+            try:
+                a2, logp_a2 = self.actor(next_state_batch, edge_index2)
+            except ValueError:
+                raise ValueError("ValueError")
+            
             q1_pi_targ = self.critic1_target(next_state_batch, edge_index2, a2)
             q2_pi_targ = self.critic2_target(next_state_batch, edge_index2, a2)
             q_pi_targ = torch.min(q1_pi_targ, q2_pi_targ)
@@ -429,7 +424,11 @@ class SAC(nn.Module):
 
         state_batch, edge_index = data.x_s, data.edge_index_s,
 
-        actions, logp_a = self.actor(state_batch, edge_index)
+        try:
+            actions, logp_a = self.actor(state_batch, edge_index)
+        except ValueError:
+            raise ValueError("ValueError")
+        
         q1_1 = self.critic1(state_batch, edge_index, actions)
         q2_a = self.critic2(state_batch, edge_index,  actions)
         q_a = torch.min(q1_1, q2_a)
@@ -449,7 +448,10 @@ class SAC(nn.Module):
 
     def update(self, data):
 
-        loss_q1, loss_q2 = self.compute_loss_q(data)
+        try:
+            loss_q1, loss_q2 = self.compute_loss_q(data)
+        except ValueError:
+            raise ValueError("ValueError")
 
         loss_q1 = loss_q1.float()
         loss_q2 = loss_q2.float()
@@ -486,7 +488,12 @@ class SAC(nn.Module):
 
         # one gradient descent step for policy network
         self.optimizers["a_optimizer"].zero_grad()
-        loss_pi = self.compute_loss_pi(data)
+        
+        try:
+            loss_pi = self.compute_loss_pi(data)
+        except ValueError:
+            raise ValueError("ValueError")
+        
         loss_pi.backward(retain_graph=False)
         nn.utils.clip_grad_norm_(self.actor.parameters(), 10)
         self.optimizers["a_optimizer"].step()

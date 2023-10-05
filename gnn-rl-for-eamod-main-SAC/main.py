@@ -426,7 +426,10 @@ for i_episode in epochs:
                 batch = model.replay_buffer.sample_batch(
                     args.batch_size)  # sample from replay buffer
                 model = model.float()
-                model.update(data=batch)  # update model
+                try:
+                    model.update(data=batch)  # update model
+                except ValueError:
+                    model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
