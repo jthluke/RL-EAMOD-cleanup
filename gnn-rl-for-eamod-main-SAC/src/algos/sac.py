@@ -115,18 +115,14 @@ class GNNActor(nn.Module):
         x = F.leaky_relu(self.lin2(x))
         x = F.softplus(self.lin3(x))
         concentration = x.squeeze(-1)
+        concentration = torch.nan_to_num(concentration, nan=0)
         if deterministic:
             action = (concentration) / (concentration.sum() + 1e-20)
             log_prob = None
         else:
-            try:
-                m = Dirichlet(concentration + 1e-20)
-                action = m.rsample()
-                log_prob = m.log_prob(action)
-            except ValueError:
-                # Handle the error by returning placeholder values
-                action = torch.full((concentration.size(0), concentration.size(1)), 1.0 / self.act_dim, device=concentration.device)
-                log_prob = torch.zeros(concentration.size(0), device=concentration.device)
+            m = Dirichlet(concentration + 1e-20)
+            action = m.rsample()
+            log_prob = m.log_prob(action)
 
         return action, log_prob
 
