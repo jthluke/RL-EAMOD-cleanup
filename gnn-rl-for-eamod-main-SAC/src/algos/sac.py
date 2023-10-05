@@ -284,11 +284,11 @@ class SAC(nn.Module):
         alpha=0.2,  # entropy coefficient
         gamma=0.99,  # discount factor
         polyak=0.995,  # polyak averaging for Q-targets
-        p_lr=3e-4,  # actor learning rate
-        q_lr=1e-3,  # critic learning reate
+        p_lr=1e-4,  # actor learning rate
+        q_lr=5e-4,  # critic learning reate
         device=torch.device("cpu"),
         use_automatic_entropy_tuning=False,
-        clip=200,
+        clip=5,
         critic_version=4,
         city='NY'
     ):
