@@ -98,8 +98,9 @@ class GNNActor(nn.Module):
     Actor \pi(a_t | s_t) parametrizing the concentration parameters of a Dirichlet Policy.
     """
 
-    def __init__(self, in_channels, hidden_size=32, act_dim=6):
+    def __init__(self, in_channels, hidden_size=32, act_dim=6, city='NY'):
         super().__init__()
+        self.city = city
         self.in_channels = in_channels
         self.act_dim = act_dim
         self.conv1 = GCNConv(in_channels, in_channels)
@@ -108,14 +109,20 @@ class GNNActor(nn.Module):
         self.lin3 = nn.Linear(hidden_size, 1)
 
     def forward(self, state, edge_index, deterministic=False):
-        out = F.relu(self.conv1(state, edge_index))
-        x = out + state
-        x = x.reshape(-1, self.act_dim, self.in_channels)
-        x = F.leaky_relu(self.lin1(x))
-        x = F.leaky_relu(self.lin2(x))
-        x = F.softplus(self.lin3(x))
-        concentration = x.squeeze(-1)
-        concentration = torch.nan_to_num(concentration, nan=0)
+        while True:  # Loop until a valid concentration is obtained
+            out = F.relu(self.conv1(state, edge_index))
+            x = out + state
+            x = x.reshape(-1, self.act_dim, self.in_channels)
+            x = F.leaky_relu(self.lin1(x))
+            x = F.leaky_relu(self.lin2(x))
+            x = F.softplus(self.lin3(x))
+            concentration = x.squeeze(-1)
+
+            if not torch.isnan(concentration).any():
+                break  # Break the loop if concentration is valid
+            print("NaN detected in concentration. Attempting to revert model state to last checkpoint.")
+            self.load_from_ckpt()
+        
         if deterministic:
             action = (concentration) / (concentration.sum() + 1e-20)
             log_prob = None
@@ -125,6 +132,13 @@ class GNNActor(nn.Module):
             log_prob = m.log_prob(action)
 
         return action, log_prob
+    
+    def load_from_ckpt(self):
+        checkpoint_path = f'{self.city}_{self.act_dim//19}_9000_48_test'
+        checkpoint = torch.load(path=f'ckpt/{checkpoint_path}.pth', map_location='cpu')
+        self.load_state_dict(checkpoint["model"])
+        for key, _ in self.optimizers.items():
+            self.optimizers[key].load_state_dict(checkpoint[key])
 
 #########################################
 ############## CRITICS ##################
@@ -286,9 +300,11 @@ class SAC(nn.Module):
         use_automatic_entropy_tuning=False,
         clip=200,
         critic_version=4,
+        city='NY'
     ):
         super(SAC, self).__init__()
         self.env = env
+        self.city = city
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.device = device
@@ -308,7 +324,7 @@ class SAC(nn.Module):
         self.replay_buffer = ReplayData(device=device)
         # nnets
         self.actor = GNNActor(
-            self.input_size, self.hidden_size, act_dim=self.act_dim)
+            self.input_size, self.hidden_size, act_dim=self.act_dim, city=self.city)
         self.actor.to(self.device)
         print(self.device)
         print(self.actor)

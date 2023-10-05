@@ -253,7 +253,8 @@ model = SAC(
     alpha=args.alpha,
     use_automatic_entropy_tuning=False,
     critic_version=args.critic_version,
-    device=device
+    device=device,
+    city=city
 ).to(device)
 
 if test:
