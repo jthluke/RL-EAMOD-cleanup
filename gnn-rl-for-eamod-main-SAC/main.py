@@ -368,9 +368,17 @@ for i_episode in epochs:
         time_6 = time.time()
         # sample from Dirichlet (Step 2 in paper)
         if test:
-            action_rl = model.select_action(o, deterministic=True)
+            try:
+                action_rl = model.select_action(o, deterministic=True)
+            except ValueError:
+                model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+                action_rl = model.select_action(o, deterministic=True)
         else:
-            action_rl = model.select_action(o)
+            try:
+                action_rl = model.select_action(o)
+            except ValueError:
+                model.load_checkpoint(path=f'ckpt/{checkpoint_path}.pth')
+                action_rl = model.select_action(o)
         time_6_end = time.time() - time_6
 
         time_7 = time.time()
