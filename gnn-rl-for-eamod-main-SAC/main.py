@@ -120,7 +120,7 @@ parser.add_argument('--grad_norm_clip_a', type=float, default=0.5, metavar='N',
 parser.add_argument('--grad_norm_clip_c', type=float, default=0.5, metavar='N',
                     help='Gradient norm clipping for the critic')
 
-parser.add_argument("--batch_size", type=int, default=100,
+parser.add_argument("--batch_size", type=int, default=256,
                     help='defines batch size')
 parser.add_argument("--alpha", type=float, default=0.3,
                     help='defines entropy coefficient')
@@ -168,13 +168,23 @@ experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
 
 # if num_sn == 20:
+# gurobi_env = gp.Env(empty=True)
+# gurobi = "Justin"
+# gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+# gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+# gurobi_env.setParam('LICENSEID', 844698)
+# gurobi_env.setParam("OutputFlag",0)
+# gurobi_env.start()
+
+
 gurobi_env = gp.Env(empty=True)
-gurobi = "Justin"
-gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-gurobi_env.setParam('LICENSEID', 844698)
+gurobi = "Daniele"
+gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
+gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
+gurobi_env.setParam('LICENSEID', 2403732)
 gurobi_env.setParam("OutputFlag",0)
 gurobi_env.start()
+
 # else:
 #     if city == 'SF':
 #         gurobi_env = gp.Env(empty=True)
@@ -419,14 +429,24 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            for step in range(50):
-                batch = model.replay_buffer.sample_batch(
-                    args.batch_size)  # sample from replay buffer
-                model = model.float()
-                try:
-                    model.update(data=batch)  # update model
-                except ValueError:
-                    model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+            if i_episode > 500:
+                for step in range(100):
+                    batch = model.replay_buffer.sample_batch(
+                        args.batch_size)  # sample from replay buffer
+                    model = model.float()
+                    try:
+                        model.update(data=batch)  # update model
+                    except ValueError:
+                        model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+            else:
+                for step in range(50):
+                    batch = model.replay_buffer.sample_batch(
+                        args.batch_size)  # sample from replay buffer
+                    model = model.float()
+                    try:
+                        model.update(data=batch)  # update model
+                    except ValueError:
+                        model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
