@@ -167,31 +167,31 @@ experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes
 # energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
 
-if num_sn == 20:
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Justin"
-    # gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-    # gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-    # gurobi_env.setParam('LICENSEID', 844698)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-else:
-    if city == 'SF':
-        gurobi_env = gp.Env(empty=True)
-        gurobi = "Aaryan"
-        gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
-        gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
-        gurobi_env.setParam('LICENSEID', 2403727)
-        gurobi_env.setParam("OutputFlag",0)
-        gurobi_env.start()
-    else:
-        gurobi_env = gp.Env(empty=True)
-        gurobi = "Daniele"
-        gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
-        gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
-        gurobi_env.setParam('LICENSEID', 2403732)
-        gurobi_env.setParam("OutputFlag",0)
-        gurobi_env.start()
+# if num_sn == 20:
+gurobi_env = gp.Env(empty=True)
+gurobi = "Justin"
+# gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+# gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+# gurobi_env.setParam('LICENSEID', 844698)
+gurobi_env.setParam("OutputFlag",0)
+gurobi_env.start()
+# else:
+#     if city == 'SF':
+#         gurobi_env = gp.Env(empty=True)
+#         gurobi = "Aaryan"
+#         gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
+#         gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
+#         gurobi_env.setParam('LICENSEID', 2403727)
+#         gurobi_env.setParam("OutputFlag",0)
+#         gurobi_env.start()
+#     else:
+#         gurobi_env = gp.Env(empty=True)
+#         gurobi = "Daniele"
+#         gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
+#         gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
+#         gurobi_env.setParam('LICENSEID', 2403732)
+#         gurobi_env.setParam("OutputFlag",0)
+#         gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
 env = AMoD(scenario)
@@ -260,17 +260,6 @@ model = SAC(
 if test:
     model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
 
-# get .pkl file from data folder
-# with open(os.path.join('data', problem_folder, f'MPC_SARS_{checkpoint_path}.pkl'), 'rb') as f:
-#     data = pickle.load(f)
-    
-#     for key in data.keys():
-#         o_1 = data[key][0]
-#         a = [np.float32(x) for x in data[key][1]]
-#         r = data[key][2]
-#         o_2 = data[key][3]
-#         model.replay_buffer.store(o_1, a, r * args.rew_scale, o_2)
-
 train_episodes = args.max_episodes  # set max number of training episodes
 epochs = trange(train_episodes)  # epoch iterator
 best_reward = -np.inf  # set best reward
@@ -298,7 +287,7 @@ else:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_10_9000_48_test.pth')
         else:
-            model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/SF_15_9000_48_test.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
