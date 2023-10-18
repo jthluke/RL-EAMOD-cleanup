@@ -84,7 +84,6 @@ class ReplayData:
         else:
             return Batch.from_data_list(data, follow_batch=['x_s', 'x_t']).to(self.device)
 
-
 class Scalar(nn.Module):
     def __init__(self, init_value):
         super().__init__()
