@@ -53,6 +53,7 @@ class ReplayData:
     """
     Replay buffer for SAC agents
     """
+    MAX_SIZE = 1000000  # Max size of the replay buffer
 
     def __init__(self, device):
         self.device = device
@@ -60,6 +61,11 @@ class ReplayData:
         self.rewards = []
 
     def store(self, data1, action, reward, data2):
+        # If the buffer size exceeds the max size, remove the oldest data
+        if len(self.data_list) >= ReplayData.MAX_SIZE:
+            self.data_list.pop(0)
+            self.rewards.pop(0)
+        
         self.data_list.append(PairData(data1.edge_index, data1.x, torch.as_tensor(
             reward), torch.as_tensor(action), data2.edge_index, data2.x))
         self.rewards.append(reward)
