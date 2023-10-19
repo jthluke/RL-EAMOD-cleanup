@@ -185,13 +185,22 @@ energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_dis
 # gurobi_env.setParam("OutputFlag",0)
 # gurobi_env.start()
 
-gurobi_env = gp.Env(empty=True)
-gurobi = "Aaryan"
-gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
-gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
-gurobi_env.setParam('LICENSEID', 2403727)
-gurobi_env.setParam("OutputFlag",0)
-gurobi_env.start()
+if city == 'SF':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Aaryan"
+    gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
+    gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
+    gurobi_env.setParam('LICENSEID', 2403727)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
+else:
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Daniele"
+    gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
+    gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
+    gurobi_env.setParam('LICENSEID', 2403732)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
 
 # else:
 #     if city == 'SF':
@@ -437,24 +446,14 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            if i_episode > 500:
-                for step in range(100):
-                    batch = model.replay_buffer.sample_batch(
-                        args.batch_size)  # sample from replay buffer
-                    model = model.float()
-                    try:
-                        model.update(data=batch)  # update model
-                    except ValueError:
-                        model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
-            else:
-                for step in range(50):
-                    batch = model.replay_buffer.sample_batch(
-                        args.batch_size)  # sample from replay buffer
-                    model = model.float()
-                    try:
-                        model.update(data=batch)  # update model
-                    except ValueError:
-                        model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+            for step in range(100):
+                batch = model.replay_buffer.sample_batch(
+                    args.batch_size)  # sample from replay buffer
+                model = model.float()
+                try:
+                    model.update(data=batch)  # update model
+                except ValueError:
+                    model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
