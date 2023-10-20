@@ -314,7 +314,7 @@ else:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_10_9000_48_test.pth')
         else:
-            model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/SF_15_9000_48_test.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
@@ -446,14 +446,25 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            for step in range(100):
-                batch = model.replay_buffer.sample_batch(
-                    args.batch_size)  # sample from replay buffer
-                model = model.float()
-                try:
-                    model.update(data=batch)  # update model
-                except ValueError:
-                    model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+            if (city == "SF"):
+                for step in range(100):
+                    batch = model.replay_buffer.sample_batch(
+                        args.batch_size)  # sample from replay buffer
+                    model = model.float()
+                    try:
+                        model.update(data=batch)  # update model
+                    except ValueError:
+                        model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+            else:
+                for step in range(50):
+                    batch = model.replay_buffer.sample_batch(
+                        args.batch_size)  # sample from replay buffer
+                    model = model.float()
+                    try:
+                        model.update(data=batch)  # update model
+                    except ValueError:
+                        model.load_checkpoint(path=f'ckpt/{checkpoint_path}_test.pth')
+
     
     # see which time is highest
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
