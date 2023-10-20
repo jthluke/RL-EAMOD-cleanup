@@ -47,7 +47,12 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False, 
         for o in env.region:
             for d in env.region:
                 # Constraint: no more passenger flow than demand on pax edges
-                m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= env.demand[o, d][t + time])            
+                if noisy:
+                    demand = env.noisy_demand[o, d][t + time]
+                else:
+                    demand = env.demand[o, d][t + time]
+                
+                m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= demand)            
         # pax flow should be zero on rebal edges
         m.addConstr(sum(pax_flow[t, env.charging_edges]) == 0)
         for n in env.nodes:
