@@ -61,11 +61,12 @@ class AMoD:
             
             self.demand = self.scenario.demand_input
             
-            # Creating the noisy_demand dictionary
             self.noisy_demand = defaultdict(dict)
             for (o, d), demand_data in self.scenario.demand_input.items():
                 for t, v in demand_data.items():
-                    noise = 0.01 * t * v  # Linear growing noise
+                    amplitude = 0.01 * t * v
+                    oscillation = math.sin(2 * math.pi * t / 12)  # 4 oscillations from t=0 to t=47
+                    noise = amplitude * oscillation
                     self.noisy_demand[(o, d)][t] = v + noise
 
             self.price = self.scenario.p
