@@ -43,6 +43,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False, 
         for t in range(mpc_horizon):
             # print(env.scenario.cars_charging_per_station[n][t+time+1])
             charging_cars_per_location[n][t] = copy.copy(env.scenario.cars_charging_per_station[n][t+time+1])
+    noise = np.random.normal(0.6, 0.15, 1)[0]
     for t in range(mpc_horizon):
         for o in env.region:
             for d in env.region:
@@ -56,7 +57,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False, 
                 #     demand = env.demand[o, d][t + time]
                 demand = env.demand[o, d][t + time]
                 if noisy:
-                    demand = env.demand[o, d][t + time] * 0.1 * (t + 5)
+                    demand = env.demand[o, d][t + time] * (noise * (t + 1))
                 m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= demand)            
         # pax flow should be zero on rebal edges
         m.addConstr(sum(pax_flow[t, env.charging_edges]) == 0)
