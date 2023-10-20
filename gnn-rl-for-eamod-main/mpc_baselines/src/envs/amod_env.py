@@ -63,7 +63,7 @@ class AMoD:
             
             # Creating the noisy_demand dictionary
             self.noisy_demand = defaultdict(dict)
-            for (o, d), demand_data in self.demand_input.items():
+            for (o, d), demand_data in self.scenario.demand_input.items():
                 for t, v in demand_data.items():
                     self.noisy_demand[(o, d)][t] = np.random.normal(v, v * 0.1 * t, 1)[0]
 
