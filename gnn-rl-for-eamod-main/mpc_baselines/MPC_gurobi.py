@@ -48,14 +48,14 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False, 
             for d in env.region:
                 # Constraint: no more passenger flow than demand on pax edges
                 
-                if noisy:
-                    # create a gaussian distribution with mean = actual demand
-                    # an var increasing with the time step
-                    demand = np.random.normal(env.demand[o, d][t + time], env.demand[o, d][t + time] * 0.1 * t, 1)[0]
-                else:
-                    demand = env.demand[o, d][t + time]
-                
-                m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= demand)
+                # if noisy:
+                #     # create a gaussian distribution with mean = actual demand
+                #     # an var increasing with the time step
+                #     demand = np.random.normal(env.demand[o, d][t + time], env.demand[o, d][t + time] * 0.1 * t, 1)[0]
+                # else:
+                #     demand = env.demand[o, d][t + time]
+                noise = np.random.normal(0, env.demand[o, d][t + time] * 0.1 * t, 1)[0] if noisy else 0
+                m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= env.demand[o, d][t + time] + noise)            
         # pax flow should be zero on rebal edges
         m.addConstr(sum(pax_flow[t, env.charging_edges]) == 0)
         for n in env.nodes:
