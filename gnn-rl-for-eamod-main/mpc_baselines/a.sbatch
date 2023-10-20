@@ -2,10 +2,10 @@
 #SBATCH --job-name=mpc
 #SBATCH --output=mpc.%j.out
 #SBATCH --error=mpc.%j.err
-#SBATCH --time=2-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --qos=long
 #SBATCH --partition=normal
-#SBATCH -c 16
+#SBATCH -c 32
 
 conda activate
 
