@@ -65,7 +65,8 @@ class AMoD:
             self.noisy_demand = defaultdict(dict)
             for (o, d), demand_data in self.scenario.demand_input.items():
                 for t, v in demand_data.items():
-                    self.noisy_demand[(o, d)][t] = np.random.normal(v, v * 0.1 * t, 1)[0]
+                    noise = 0.01 * t * v  # Linear growing noise
+                    self.noisy_demand[(o, d)][t] = v + noise
 
             self.price = self.scenario.p
             # number of vehicles within each node, key: i - node, t - time
