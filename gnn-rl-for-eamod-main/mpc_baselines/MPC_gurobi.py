@@ -56,7 +56,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False, 
                 #     demand = env.demand[o, d][t + time]
                 demand = env.demand[o, d][t + time]
                 if noisy:
-                    demand = np.random.normal(env.demand[o, d][t + time], env.demand[o, d][t + time] * 0.1 * (t + 5), 1)[0]
+                    demand = env.demand[o, d][t + time] * 0.1 * (t + 5)
                 m.addConstr(sum(pax_flow[t, env.map_o_d_regions_to_pax_edges[(o,d)]]) <= demand)            
         # pax flow should be zero on rebal edges
         m.addConstr(sum(pax_flow[t, env.charging_edges]) == 0)
