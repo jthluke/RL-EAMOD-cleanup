@@ -58,7 +58,10 @@ class AMoD:
                 self.arrDemand[i] = defaultdict(float)
 
             self.price = defaultdict(dict)  # price
+            
             self.demand = self.scenario.demand_input
+            self.noisy_demand = {key: np.random.normal(value, value * 0.1 * key, 1)[0] for key, value in self.demand.items()}
+
             self.price = self.scenario.p
             # number of vehicles within each node, key: i - node, t - time
             self.acc = defaultdict(dict)
