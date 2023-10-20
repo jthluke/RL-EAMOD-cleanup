@@ -59,7 +59,7 @@ def solve_mpc(env, gurobi_env=None, mpc_horizon=30, return_initial_state=False, 
                     print("Time t:", t)
                     noise_value = env.demand[o, d][t + time] * 0.1 * t
                     print("Noise value before random:", noise_value)
-                    noise = np.random.normal(0, noise_value, 1)[0]
+                    noise = np.random.normal(env.demand[o, d][t + time], noise_value, 1)[0]
                     print("Noise:", noise)
                 else:
                     noise = 0
