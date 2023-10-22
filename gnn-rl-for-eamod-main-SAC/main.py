@@ -97,6 +97,8 @@ parser.add_argument('--zeroShotCity', type=bool, default=False,
                     help='whether to try different city')
 parser.add_argument('--zeroShotNodes', type=bool, default=False,
                     help='whether to try different number of nodes')
+parser.add_argument('--scratch', type=bool, default=False,
+                    help='whether to start training from scratch')
 
 # Model parameters
 parser.add_argument('--test', type=bool, default=False,
@@ -310,7 +312,7 @@ if zeroShotCity or zeroShotNodes:
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
-    if num_sn > 10:
+    if num_sn > 10 and not args.scratch:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_10_9000_48_test.pth')
         else:
@@ -446,7 +448,7 @@ for i_episode in epochs:
         # stop episode if terminating conditions are met
         step += 1
         if i_episode > 10:
-            if (city == "SF"):
+            if (city == "SF") and not args.scratch:
                 for step in range(100):
                     batch = model.replay_buffer.sample_batch(
                         args.batch_size)  # sample from replay buffer

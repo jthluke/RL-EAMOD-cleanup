@@ -58,7 +58,17 @@ class AMoD:
                 self.arrDemand[i] = defaultdict(float)
 
             self.price = defaultdict(dict)  # price
+            
             self.demand = self.scenario.demand_input
+            
+            self.noisy_demand = defaultdict(dict)
+            for (o, d), demand_data in self.scenario.demand_input.items():
+                for t, v in demand_data.items():
+                    amplitude = 0.01 * t * v
+                    oscillation = math.sin(2 * math.pi * t / 12)  # 4 oscillations from t=0 to t=47
+                    noise = amplitude * oscillation
+                    self.noisy_demand[(o, d)][t] = v + noise
+
             self.price = self.scenario.p
             # number of vehicles within each node, key: i - node, t - time
             self.acc = defaultdict(dict)
@@ -241,67 +251,6 @@ class AMoD:
            self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
            self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
            self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
-
-        # for k in range(len(self.edges)):
-        #     i, j = self.edges[k]
-        #     i_region = i[0]
-        #     j_region = j[0]
-            
-        #     if (i_region, j_region) not in self.demand or t not in self.demand[i_region, j_region] or self.paxAction[k] < 1e-3 or i[1] < j[1]:
-        #         continue
-
-        #     # Ensure paxAction[k] is within the valid range
-        #     self.paxAction[k] = max(0, min(self.acc[i][t+1], paxAction[k]))
-
-        #     # Sanity check assertions
-        #     assert paxAction[k] < self.acc[i][t+1] + 1e-3
-        #     assert paxAction[k] >= 0
-
-        #     self.servedDemand[i_region,j_region][t] += self.paxAction[k]
-        #     satisfied_demand[i_region] += self.paxAction[k]
-        #     self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
-        #     self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
-        #     self.acc[i][t+1] -= self.paxAction[k]
-        #     self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
-        #     self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
-        #     self.info['served_demand'] += self.paxAction[k]
-        #     self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-        #     self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-        #     self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
-        #     self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
-        
-        # if paxAction is None:
-        #    paxAction = pax_flows_solver.optimize()
-        # self.paxAction = paxAction
-        # # serving passengers
-        # satisfied_demand = np.zeros(self.number_nodes_spatial)
-        # total_demand = np.zeros(self.number_nodes_spatial)
-        # for origin in range(self.number_nodes_spatial):
-        #     for destination in range(self.number_nodes_spatial):
-        #         total_demand[origin] += self.demand[origin, destination][t]
-        # for k in range(len(self.edges)):
-        #     i, j = self.edges[k]
-        #     i_region = i[0]
-        #     j_region = j[0]
-        #     if (i_region, j_region) not in self.demand or t not in self.demand[i_region, j_region] or self.paxAction[k] < 1e-3 or i[1] < j[1]:
-        #         continue
-        #     # I moved the min operator above, since we want paxFlow to be consistent with paxAction
-        #     assert paxAction[k] < self.acc[i][t+1] + 1e-3
-        #     assert paxAction[k] >= 0
-        #     self.paxAction[k] = min(self.acc[i][t+1], paxAction[k])
-        #     self.servedDemand[i_region,j_region][t] += self.paxAction[k]
-
-        #     satisfied_demand[i_region] += self.paxAction[k]
-        #     self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]] = self.paxAction[k]
-        #     self.info["operating_cost"] += (self.G.edges[i,j]['time'][self.time]+ self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep*self.paxAction[k]
-        #     self.acc[i][t+1] -= self.paxAction[k]
-        #     self.acc_spatial[i[0]][t+1] -= self.paxAction[k]
-        #     self.n_customer_vehicles_spatial[i[0]][t+1] += self.paxAction[k]
-        #     self.info['served_demand'] += self.paxAction[k]
-        #     self.dacc[j][t+self.G.edges[i,j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i,j][t+self.G.edges[i,j]['time'][self.time]]
-        #     self.dacc_spatial[j_region][t+self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer] += self.paxFlow[i, j][t+self.G.edges[i, j]['time'][self.time]]
-        #     self.reward += self.paxAction[k]*(self.price[i_region, j_region][t] - (self.G.edges[i, j]['time'][self.time]+self.scenario.time_normalizer)*self.scenario.operational_cost_per_timestep)
-        #     self.info['revenue'] += self.paxAction[k]*(self.price[i_region,j_region][t])
 
         test_spatial_acc_count = np.zeros(self.number_nodes_spatial)
         for n in self.nodes:

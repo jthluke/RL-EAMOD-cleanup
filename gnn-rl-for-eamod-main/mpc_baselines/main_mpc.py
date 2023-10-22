@@ -47,6 +47,8 @@ parser.add_argument('--initial_state', type=bool, default=False,
                     help='forces MPC to return system to initial charge')
 parser.add_argument('--mpc_horizon', type=int, default=36, metavar='N',
                     help='MPC horizon (default: 36)')
+parser.add_argument('--noisy', type=bool, default=False,
+                    help='gives MPC a noisy forecast of the demand')
 parser.add_argument('--subproblem', type=int, default=0, metavar='N',
                     help='which subproblem to run (default: 0)')
 parser.add_argument('--seed', type=int, default=10, metavar='S',
@@ -156,7 +158,7 @@ wandb.init(
 
 opt_rew = []
 
-mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state)
+mpc = MPC(env, gurobi_env, mpc_horizon, args.initial_state, args.noisy)
 done = False
 served = 0
 rebcost = 0
