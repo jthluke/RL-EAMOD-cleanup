@@ -314,7 +314,7 @@ else:
     model.train()  # set model in train mode
     if num_sn > 10 and not args.scratch:
         if city == 'NY':
-            model.load_checkpoint(path='ckpt/NYC_10_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/NYC_15_9000_48_test.pth')
         else:
             model.load_checkpoint(path='ckpt/SF_15_9000_48_test.pth')
 
