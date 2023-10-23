@@ -187,7 +187,7 @@ energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_dis
 # gurobi_env.setParam("OutputFlag",0)
 # gurobi_env.start()
 
-if city == 'SF':
+if city == 'SF' and num_sn != 10:
     gurobi_env = gp.Env(empty=True)
     gurobi = "Aaryan"
     gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
@@ -312,6 +312,8 @@ if zeroShotCity or zeroShotNodes:
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
+    if num_sn == 10 and city == 'SF':
+        model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
     if num_sn > 10 and not args.scratch:
         if city == 'NY':
             model.load_checkpoint(path='ckpt/NYC_15_9000_48_test.pth')
