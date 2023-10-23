@@ -239,6 +239,13 @@ else:
     scale_factor = 0.00001
     scale_price = 0.1
 # NY 5 
+et = experiment
+
+# if zeroShotCity or zeroShotNodes, temporarily alter experiment name accordingly
+if zeroShotCity:
+    experiment += '_zeroShotCity'
+if zeroShotNodes:
+    experiment += '_zeroShotNodes'
 
 # set up wandb
 wandb.init(
@@ -267,6 +274,8 @@ wandb.init(
         "charge_levels_per_timestep": env.scenario.charge_levels_per_charge_step, 
         "licence": gurobi,
       })
+
+experiment = et
 
 if city == 'NY':
     checkpoint_path = f"NYC_{num_sn}_{args.max_episodes}_{args.T}"
@@ -306,9 +315,15 @@ if zeroShotCity or zeroShotNodes:
             scale_price = 0.1
     else:
         if city == 'NY':
-            model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
+            if num_sn == 10:
+                model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
+            if num_sn == 15:
+                model.load_checkpoint(path='ckpt/NYC_10_9000_48_test.pth')
         else:
-            model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
+            if num_sn == 10:
+                model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
+            if num_sn == 15:
+                model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
