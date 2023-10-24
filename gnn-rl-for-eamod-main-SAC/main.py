@@ -168,7 +168,7 @@ else:
     problem_folder = 'SF'
     file_path = os.path.join('data', problem_folder, str(num_sn), f'SF_{num_sn}.json')
 
-experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T)
+experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_new'
 # energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
 
