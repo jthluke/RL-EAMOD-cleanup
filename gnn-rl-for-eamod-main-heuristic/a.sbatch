@@ -9,25 +9,25 @@
 
 conda activate
 
-python main.py --charging_heuristic empty_to_full --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_nothing --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_one_step --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic relative_charging --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
+python main.py --charging_heuristic empty_to_full --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_nothing --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_one_step --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic relative_charging --equal_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
 
-python main.py --charging_heuristic empty_to_full --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_nothing --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_one_step --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic relative_charging --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10
+python main.py --charging_heuristic empty_to_full --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_nothing --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_one_step --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic relative_charging --prop_distr_baseline True --spatial_nodes 5 --T 48 --city SF --max_episodes 10 --gurobi Justin
 
-python main.py --charging_heuristic empty_to_full --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_nothing --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_one_step --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic relative_charging --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
+python main.py --charging_heuristic empty_to_full --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_nothing --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_one_step --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic relative_charging --equal_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
 
-python main.py --charging_heuristic empty_to_full --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_nothing --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic off_peak_one_step --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
-python main.py --charging_heuristic relative_charging --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10
+python main.py --charging_heuristic empty_to_full --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_nothing --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic off_peak_one_step --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
+python main.py --charging_heuristic relative_charging --prop_distr_baseline True --spatial_nodes 10 --T 48 --city SF --max_episodes 10 --gurobi Justin
 
 
 

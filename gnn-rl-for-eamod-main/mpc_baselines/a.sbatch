@@ -9,17 +9,17 @@
 
 conda activate
 
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city NY
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 2 --city NY --noisy True
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city NY --gurobi Daniele
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 2 --city NY --noisy True --gurobi Daniele
 
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city NY
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city NY --noisy True
+python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city NY --gurobi Daniele
+python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city NY --noisy True --gurobi Daniele
 
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city SF
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 2 --city SF --noisy True
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city SF --gurobi Daniele
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 2 --city SF --noisy True --gurobi Daniele
 
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city SF
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city SF --noisy True
+python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city SF --gurobi Daniele
+python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city SF --noisy True --gurobi Daniele
 
 # python main_mpc.py --spatial_nodes 15 --mpc_horizon 48 --city SF
 # python main_mpc.py --spatial_nodes 15 --mpc_horizon 2 --city SF --noisy True
