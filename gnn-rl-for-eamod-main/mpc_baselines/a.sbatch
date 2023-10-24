@@ -12,14 +12,14 @@ conda activate
 python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city NY --gurobi Justin
 python main_mpc.py --spatial_nodes 5 --mpc_horizon 2 --city NY --noisy True --gurobi Justin
 
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city NY --gurobi Justin
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city NY --noisy True --gurobi Justin
+# python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city NY --gurobi Justin
+# python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city NY --noisy True --gurobi Justin
 
 python main_mpc.py --spatial_nodes 5 --mpc_horizon 48 --city SF --gurobi Justin
 python main_mpc.py --spatial_nodes 5 --mpc_horizon 2 --city SF --noisy True --gurobi Justin
 
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city SF --gurobi Justin
-python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city SF --noisy True --gurobi Justin
+# python main_mpc.py --spatial_nodes 10 --mpc_horizon 48 --city SF --gurobi Justin
+# python main_mpc.py --spatial_nodes 10 --mpc_horizon 2 --city SF --noisy True --gurobi Justin
 
 # python main_mpc.py --spatial_nodes 15 --mpc_horizon 48 --city SF
 # python main_mpc.py --spatial_nodes 15 --mpc_horizon 2 --city SF --noisy True
