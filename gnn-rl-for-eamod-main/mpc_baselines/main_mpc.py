@@ -103,7 +103,7 @@ else:
     env_test = AMoD(scenario_test)
 
 print('mpc_horizon', mpc_horizon, 'episodeLength', tf)
-experiment += "_RL_approach_constraint"
+experiment += "_RL_approach_constraint_new"
 
 # set Gurobi environment mine
 # gurobi_env = gp.Env(empty=True)

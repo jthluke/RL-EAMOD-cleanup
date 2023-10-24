@@ -150,6 +150,8 @@ if use_equal_distr_baseline:
 if use_prop_distr_baseline:
     experiment = 'proportional_distr_baseline_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_heuristic_' + charging_heuristic
 
+experiment += '_new'
+
 # set Gurobi environment mine
 # gurobi_env = gp.Env(empty=True)
 # gurobi = "Dominik"
