@@ -59,6 +59,9 @@ parser.add_argument('--spatial_nodes', type=int, default=5, metavar='N',
                     help='number of spatial nodes (default: 5)')
 parser.add_argument('--city', type=str, default='NY', metavar='N',
                     help='city (default: NY)')
+parser.add_argument('--gurobi', type=str, default='Daniele', metavar='N',
+                    help='gurobi license (default: Daniele)')
+
 args = parser.parse_args()
 
 mpc_horizon = args.mpc_horizon
@@ -112,13 +115,30 @@ experiment += "_RL_approach_constraint"
 # gurobi_env.start()
 
 # set Gurobi environment Justin
-gurobi_env = gp.Env(empty=True)
-gurobi = "Justin"
-gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-gurobi_env.setParam('LICENSEID', 844698)
-gurobi_env.setParam("OutputFlag",0)
-gurobi_env.start()
+if args.gurobi == 'Daniele':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Daniele"
+    gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
+    gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
+    gurobi_env.setParam('LICENSEID', 2403732)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
+if args.gurobi == 'Aaryan':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Aaryan"
+    gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
+    gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
+    gurobi_env.setParam('LICENSEID', 2403727)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
+if args.gurobi == 'Justin':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Justin"
+    gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
+    gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
+    gurobi_env.setParam('LICENSEID', 844698)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
 
 # set Gurobi environment Justin
 # gurobi_env = gp.Env(empty=True)
