@@ -197,6 +197,8 @@ class AMoD:
             return self.increased_charging_off_peaks()
         elif heuristic == 'off_peak_one_step':
             return self.increased_charging_off_peaks_one_step()
+        elif heuristic == 'off_peak_nothing':
+            return self.increased_charging_off_peaks_nothing()
         elif heuristic == "relative_charging":
             return self.increased_charging_off_peaks_one_step_relative()
         else:
@@ -279,7 +281,37 @@ class AMoD:
             return charging_heuristic_reward
         else:
             return self.empty_to_full_charge()
+        
+    def increased_charging_off_peaks_nothing(self):
+        # increase charging during Mid day low (charge bottom 30%)
+        charging_heuristic_reward = 0
+        hour = int(self.time * self.scenario.time_granularity)
+        if hour not in self.scenario.peak_hours:
+            # we want to charge as many vehicles as possible in the bottom third of charge, starting with the lowest charges
+            charge_limit = math.ceil(self.scenario.number_charge_levels*0.3)
+            for c in range(charge_limit):
+                for region in self.nodes_spatial:
+                    n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
+                    if self.acc[(region, c)][self.time+1] > 0 and n_available_chargers > 0:
+                        target_charge = min(self.scenario.number_charge_levels - 1, c+self.scenario.charge_levels_per_charge_step)
+                        charge_diff = target_charge - c
+                        charge_time = math.ceil(charge_diff/self.scenario.charge_levels_per_charge_step) - self.scenario.time_normalizer
+                        n_new_charging_vehicles = min(self.acc[(region, c)][self.time+1], n_available_chargers)
+                        avg_energy_price = np.mean(self.scenario.p_energy[self.time:self.time+charge_time+self.scenario.time_normalizer])
+                        charging_heuristic_reward -= n_new_charging_vehicles * charge_diff * avg_energy_price
+                        if (self.time+charge_time) not in self.rebFlow[(region, c), (region, target_charge)].keys():
+                            self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] = 0
+                        self.rebFlow[(region, c), (region, target_charge)][self.time+charge_time] += n_new_charging_vehicles
+                        self.scenario.cars_charging_per_station[region] += n_new_charging_vehicles
+                        self.acc[(region, c)][self.time+1] -= n_new_charging_vehicles
+                        self.acc_spatial[region][self.time+1] -= n_new_charging_vehicles
+                        self.n_charging_vehicles_spatial[region][self.time+1] += n_new_charging_vehicles
+                        self.new_charging_vehicles[region][self.time+1] += n_new_charging_vehicles
+            return charging_heuristic_reward
+        else:
+            return 0
 
+    # looks at vehilces in bottom 30% of charge levels across all spatial nodes
     def increased_charging_off_peaks_one_step(self):
         # increase charging during Mid day low (charge bottom 30%)
         charging_heuristic_reward = 0
@@ -308,16 +340,15 @@ class AMoD:
             return charging_heuristic_reward
         else:
             return self.empty_to_one_step()
-
+        
+    # looks at 30% of vehicles at a spatial node and then looks at charge levels from 0 upwards
     def increased_charging_off_peaks_one_step_relative(self):
-        # increase charging during Mid day low (charge bottom 30%) of vehicles
         charging_heuristic_reward = 0
         hour = int(self.time * self.scenario.time_granularity)
         remaining_available_vehicles_for_charging = np.zeros(self.number_nodes_spatial)
         for region in self.nodes_spatial:
             remaining_available_vehicles_for_charging[region] = 0.3*self.acc_spatial[region][self.time+1]
         if hour not in self.scenario.peak_hours:
-            # we want to charge as many vehicles as possible in the bottom third of vehicles, starting with the lowest charges
             for region in self.nodes_spatial:
                 for c in range(self.scenario.number_charge_levels):
                     n_available_chargers = self.scenario.cars_per_station_capacity[region] - self.scenario.cars_charging_per_station[region]
