@@ -9,8 +9,17 @@
 
 conda activate
 
-python main.py --spatial_nodes 5 --T 48 --city NY --scratch True --gurobi Justin
-python main.py --spatial_nodes 5 --T 48 --city SF --scratch True --gurobi Justin
+python main.py --spatial_nodes 5 --T 48 --city NY --scratch True --gurobi Justin - running on sherlock 
+python main.py --spatial_nodes 5 --T 48 --city SF --scratch True --gurobi Justin - running on sherlock 
+
+python main.py --spatial_nodes 10 --T 48 --city NY --scratch True --gurobi Aaryan - running on IRIS
+python main.py --spatial_nodes 10 --T 48 --city SF --scratch True --gurobi Aaryan - running on IRIS
+
+python main.py --spatial_nodes 10 --T 48 --city NY --gurobi Justin2 - running on sherlock
+python main.py --spatial_nodes 10 --T 48 --city SF --gurobi Justin2 - running on sherlock
+
+python main.py --spatial_nodes 15 --T 48 --city NY --scratch True --gurobi Daniele - running on sherlock
+python main.py --spatial_nodes 15 --T 48 --city SF --scratch True --gurobi Daniele - running on sherlock
 
 # python main.py --spatial_nodes 10 --T 48 --city NY --scratch True
 # python main.py --spatial_nodes 10 --T 48 --city SF --scratch True

@@ -214,6 +214,14 @@ if args.gurobi == 'Justin':
     gurobi_env.setParam('LICENSEID', 844698)
     gurobi_env.setParam("OutputFlag",0)
     gurobi_env.start()
+if args.gurobi == 'Justin2':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Justin2"
+    gurobi_env.setParam('WLSACCESSID', '1a1fe5b7-4a13-40a7-9b38-411ea3e5f099')
+    gurobi_env.setParam('WLSSECRET', 'b0f7f971-2ffe-40d1-a287-039fe9934bde')
+    gurobi_env.setParam('LICENSEID', 2430074)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
 
 # else:
 #     if city == 'SF':
@@ -338,15 +346,22 @@ if zeroShotCity or zeroShotNodes:
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
-    
-    if num_sn == 10 and city == 'SF' and not args.scratch:
-        model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
-    
-    if num_sn > 10 and not args.scratch:
+
+    if not args.scratch:
+        warm_start_num_sn = num_sn - 5
         if city == 'NY':
-            model.load_checkpoint(path='ckpt/NYC_15_9000_48_test.pth')
+            model.load_checkpoint(path=f'ckpt/NYC_{warm_start_num_sn}_9000_48_test.pth')
         else:
-            model.load_checkpoint(path='ckpt/SF_15_9000_48_test.pth')
+            model.load_checkpoint(path=f'ckpt/SF_{warm_start_num_sn}_9000_48_test.pth')
+    
+    # if num_sn == 10 and city == 'SF' and not args.scratch:
+    #     model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
+    
+    # if num_sn > 10 and not args.scratch:
+    #     if city == 'NY':
+    #         model.load_checkpoint(path='ckpt/NYC_15_9000_48_test.pth')
+    #     else:
+    #         model.load_checkpoint(path='ckpt/SF_15_9000_48_test.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
