@@ -10,7 +10,7 @@
 conda activate
 
 python main.py --spatial_nodes 5 --T 48 --city NY --scratch True --gurobi Justin - running on sherlock 
-python main.py --spatial_nodes 5 --T 48 --city SF --scratch True --gurobi Justin - running on sherlock 
+python main.py --spatial_nodes 5 --T 48 --city SF --scratch True --gurobi Justin - running on sherlock
 
 python main.py --spatial_nodes 10 --T 48 --city NY --scratch True --gurobi Aaryan - running on IRIS
 python main.py --spatial_nodes 10 --T 48 --city SF --scratch True --gurobi Aaryan - running on IRIS
