@@ -99,6 +99,8 @@ parser.add_argument('--zeroShotNodes', type=bool, default=False,
                     help='whether to try different number of nodes')
 parser.add_argument('--scratch', type=bool, default=False,
                     help='whether to start training from scratch')
+parser.add_argument('--resume', type=bool, default=False,
+                    help='whether to resume training')
 
 parser.add_argument('--gurobi', type=str, default='Daniele', metavar='N',
                     help='gurobi license (default: Daniele)')
@@ -348,11 +350,14 @@ else:
     model.train()  # set model in train mode
 
     if not args.scratch:
-        warm_start_num_sn = num_sn - 5
-        if city == 'NY':
-            model.load_checkpoint(path=f'ckpt/NYC_{warm_start_num_sn}_9000_48_test.pth')
+        if not args.resume:
+            warm_start_num_sn = num_sn - 5
+            if city == 'NY':
+                model.load_checkpoint(path=f'ckpt/NYC_{warm_start_num_sn}_9000_48_test.pth')
+            else:
+                model.load_checkpoint(path=f'ckpt/SF_{warm_start_num_sn}_9000_48_test.pth')
         else:
-            model.load_checkpoint(path=f'ckpt/SF_{warm_start_num_sn}_9000_48_test.pth')
+            model.load_checkpoint(path=f'ckpt/{checkpoint_path}.pth')
     
     # if num_sn == 10 and city == 'SF' and not args.scratch:
     #     model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
