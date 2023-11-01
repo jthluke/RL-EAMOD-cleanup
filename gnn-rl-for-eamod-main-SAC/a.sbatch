@@ -24,8 +24,8 @@ python main.py --spatial_nodes 10 --T 48 --city SF --gurobi Justin2 - running on
 python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Daniele2 - running on sherlock (aaryan)
 python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Daniele2 - running on sherlock (aaryan)
 
-python main.py --spatial_nodes 15 --T 48 --city NY --scratch True --gurobi Daniele - running on sherlock (justin)
-python main.py --spatial_nodes 15 --T 48 --city SF --scratch True --gurobi Daniele - running on sherlock (justin)
+python main.py --spatial_nodes 15 --T 48 --city NY --resume True --gurobi Daniele - resuming on sherlock (justin)
+python main.py --spatial_nodes 15 --T 48 --city SF --resume True --gurobi Daniele - resuming on sherlock (justin)
 
 # python main.py --spatial_nodes 10 --T 48 --city NY --scratch True
 # python main.py --spatial_nodes 10 --T 48 --city SF --scratch True
