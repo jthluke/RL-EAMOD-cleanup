@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+#SBATCH --job-name=rl_10
+#SBATCH --output=rl_10.%j.out
+#SBATCH --error=rl_10.%j.err
+#SBATCH --time=2-00:00:00
+#SBATCH --partition=gpu
+#SBATCH -c 32
+#SBATCH -G 1
+#SBATCH --mem=30GB
+
+conda activate
+
+python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Daniele2
+

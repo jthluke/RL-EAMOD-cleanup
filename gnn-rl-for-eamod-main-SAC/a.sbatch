@@ -18,8 +18,8 @@ conda activate
 python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Justin - running on IRIS - RESUMED
 python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Justin - running on IRIS - RESUME
 
-python main.py --spatial_nodes 10 --T 48 --city NY --gurobi Justin2 - running on sherlock (justin)
-python main.py --spatial_nodes 10 --T 48 --city SF --gurobi Justin2 - running on sherlock (justin)
+python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Justin2 - running on sherlock (justin)
+python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Justin2 - running on sherlock (justin)
 
 python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Daniele2 - running on sherlock (aaryan)
 python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Daniele2 - running on sherlock (aaryan)
