@@ -9,17 +9,23 @@
 
 conda activate
 
-python main.py --spatial_nodes 5 --T 48 --city NY --scratch True --gurobi Justin - running on sherlock 
-python main.py --spatial_nodes 5 --T 48 --city SF --scratch True --gurobi Justin - running on sherlock
+# python main.py --spatial_nodes 5 --T 48 --city NY --scratch True --gurobi Justin - running on sherlock - Completed
+# python main.py --spatial_nodes 5 --T 48 --city SF --scratch True --gurobi Justin - running on sherlock - Completed
 
-python main.py --spatial_nodes 10 --T 48 --city NY --scratch True --gurobi Aaryan - running on IRIS
-python main.py --spatial_nodes 10 --T 48 --city SF --scratch True --gurobi Aaryan - running on IRIS
+# python main.py --spatial_nodes 10 --T 48 --city NY --scratch True --gurobi Aaryan - running on IRIS - Crashed
+# python main.py --spatial_nodes 10 --T 48 --city SF --scratch True --gurobi Aaryan - running on IRIS - Crashed
 
-python main.py --spatial_nodes 10 --T 48 --city NY --gurobi Justin2 - running on sherlock
-python main.py --spatial_nodes 10 --T 48 --city SF --gurobi Justin2 - running on sherlock
+python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Justin - running on IRIS - RESUMED
+python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Justin - running on IRIS - RESUME
 
-python main.py --spatial_nodes 15 --T 48 --city NY --scratch True --gurobi Daniele - running on sherlock
-python main.py --spatial_nodes 15 --T 48 --city SF --scratch True --gurobi Daniele - running on sherlock
+python main.py --spatial_nodes 10 --T 48 --city NY --gurobi Justin2 - running on sherlock (justin)
+python main.py --spatial_nodes 10 --T 48 --city SF --gurobi Justin2 - running on sherlock (justin)
+
+python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Daniele2 - running on sherlock (aaryan)
+python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Daniele2 - running on sherlock (aaryan)
+
+python main.py --spatial_nodes 15 --T 48 --city NY --scratch True --gurobi Daniele - running on sherlock (justin)
+python main.py --spatial_nodes 15 --T 48 --city SF --scratch True --gurobi Daniele - running on sherlock (justin)
 
 # python main.py --spatial_nodes 10 --T 48 --city NY --scratch True
 # python main.py --spatial_nodes 10 --T 48 --city SF --scratch True

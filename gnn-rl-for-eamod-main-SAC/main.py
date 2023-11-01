@@ -200,6 +200,22 @@ if args.gurobi == 'Daniele':
     gurobi_env.setParam('LICENSEID', 2403732)
     gurobi_env.setParam("OutputFlag",0)
     gurobi_env.start()
+if args.gurobi == 'Daniele2':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Daniele2"
+    gurobi_env.setParam('WLSACCESSID', '672d91ba-fee2-4007-aeee-434877507382')
+    gurobi_env.setParam('WLSSECRET', '778fbd58-b1b4-4ec4-ae51-53304b1cfbbd')
+    gurobi_env.setParam('LICENSEID', 2431155)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
+if args.gurobi == 'Daniele3':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Daniele2"
+    gurobi_env.setParam('WLSACCESSID', 'f07bce97-f3f5-484b-919f-5ee314418659')
+    gurobi_env.setParam('WLSSECRET', 'd934832c-3415-4ead-a636-bd4b5ccb95b1')
+    gurobi_env.setParam('LICENSEID', 2431159)
+    gurobi_env.setParam("OutputFlag",0)
+    gurobi_env.start()
 if args.gurobi == 'Aaryan':
     gurobi_env = gp.Env(empty=True)
     gurobi = "Aaryan"
