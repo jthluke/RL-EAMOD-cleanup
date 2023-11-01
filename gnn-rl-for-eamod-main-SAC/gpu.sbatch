@@ -4,6 +4,7 @@
 #SBATCH --error=rl_10.%j.err
 #SBATCH --time=4-00:00:00
 #SBATCH --qos=long
+#SBATCH --partition=gpu
 #SBATCH -c 32
 #SBATCH -G 1
 #SBATCH --mem=30GB
