@@ -7,7 +7,6 @@
 #SBATCH -c 32
 #SBATCH -G 1
 #SBATCH --mem=30GB
-#SBATCH -C GPU_MEM:40GB
 
 conda activate
 
