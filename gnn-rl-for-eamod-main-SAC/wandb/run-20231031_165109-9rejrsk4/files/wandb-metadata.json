@@ -1,0 +1,219 @@
+{
+    "os": "Linux-5.15.0-88-generic-x86_64-with-glibc2.35",
+    "python": "3.10.12",
+    "heartbeatAt": "2023-10-31T23:51:09.557056",
+    "startedAt": "2023-10-31T23:51:09.069882",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--spatial_nodes",
+        "10",
+        "--T",
+        "48",
+        "--city",
+        "NY",
+        "--resume",
+        "True",
+        "--gurobi",
+        "Justin"
+    ],
+    "state": "running",
+    "program": "/home/aaryan/RL-EAMOD-Public/gnn-rl-for-eamod-main-SAC/main.py",
+    "codePathLocal": "main.py",
+    "codePath": "gnn-rl-for-eamod-main-SAC/main.py",
+    "git": {
+        "remote": "https://github.com/Aaryan0404/RL-EAMOD-Public.git",
+        "commit": "064b8389e0103b8a937010e75e1df3dd49e986bb"
+    },
+    "email": null,
+    "root": "/home/aaryan/RL-EAMOD-Public",
+    "host": "iris",
+    "username": "aaryan",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 16,
+    "cpu_count_logical": 32,
+    "cpu_freq": {
+        "current": 2.373281250000001,
+        "min": 2200.0,
+        "max": 3500.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.133,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 3.999,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 3.5,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3500.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 915.3232879638672,
+            "used": 862.2730178833008
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 3080 Ti",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3080 Ti",
+            "memory_total": 12604014592
+        }
+    ],
+    "memory": {
+        "total": 125.6983871459961
+    }
+}
