@@ -10,11 +10,11 @@
 
 conda activate
 
-python main.py --spatial_nodes 5 --T 48 --city NY --zeroShotCity True --gurobi Daniele3
-python main.py --spatial_nodes 5 --T 48 --city SF --zeroShotCity True --gurobi Daniele3
+python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 5 --zeroShotCity True --gurobi Daniele3
+python main.py --spatial_nodes 5 --T 48 --city SF --max_episodes 5 --zeroShotCity True --gurobi Daniele3
 
-python main.py --spatial_nodes 10 --T 48 --city NY --zeroShotNodes True --gurobi Daniele3
-python main.py --spatial_nodes 15 --T 48 --city NY --zeroShotNodes True --gurobi Daniele3
+python main.py --spatial_nodes 10 --T 48 --city NY --max_episodes 5 --zeroShotNodes True --gurobi Daniele3
+python main.py --spatial_nodes 15 --T 48 --city NY --max_episodes 5 --zeroShotNodes True --gurobi Daniele3
 
-python main.py --spatial_nodes 10 --T 48 --city SF --zeroShotNodes True --gurobi Daniele3
-python main.py --spatial_nodes 15 --T 48 --city SF --zeroShotNodes True --gurobi Daniele3
+python main.py --spatial_nodes 10 --T 48 --city SF --max_episodes 5 --zeroShotNodes True --gurobi Daniele3
+python main.py --spatial_nodes 15 --T 48 --city SF --max_episodes 5 --zeroShotNodes True --gurobi Daniele3
