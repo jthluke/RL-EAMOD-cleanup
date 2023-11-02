@@ -139,6 +139,14 @@ if args.gurobi == 'Justin':
     gurobi_env.setParam('LICENSEID', 844698)
     gurobi_env.setParam("OutputFlag",0)
     gurobi_env.start()
+if args.gurobi == 'Justin3':
+    gurobi_env = gp.Env(empty=True)
+    gurobi = "Justin3"
+    gurobi_env.setParam('WLSACCESSID', '5a968762-1062-406f-b88c-b3a14cce820a')
+    gurobi_env.setParam('WLSSECRET', '4193e7c6-e371-4f66-bab3-1976cf25f5f3')
+    gurobi_env.setParam('LICENSEID', 2430722)
+    gurobi_env.setParam("OutputFlag", 0)
+    gurobi_env.start()
 
 # set Gurobi environment Justin
 # gurobi_env = gp.Env(empty=True)
@@ -190,6 +198,9 @@ time_list = []
 env.reset(bool_sample_demand=False)
 # print(env_test.demand)
 
+paxAction = []
+rebAction = []
+
 while (not done):
     time_i_start = time.time()
     paxAction, rebAction = mpc.MPC_exact()
@@ -217,6 +228,36 @@ print(f'MPC: Reward {sum(opt_rew)}, Revenue {revenue}, Served demand {served}, R
 
 # Send current statistics to wandb
 wandb.log({"Reward": sum(opt_rew), "ServedDemand": served, "Reb. Cost": rebcost, "Avg.Time": np.array(time_list).mean()})
+
+num_v_idle = defaultdict(int)
+num_v_charging = defaultdict(int)
+num_v_passenger = defaultdict(int)
+num_v_rebalancing = defaultdict(int)
+
+fleet_size = 0
+for region in env.scenario.G_spatial.nodes:
+    fleet_size += env.scenario.G_spatial.nodes[region]['accInit']
+
+for node in env.nodes_spatial:
+    for t in range(env.tf):
+        num_v_charging[t] += env.n_charging_vehicles_spatial[node][t]
+        num_v_passenger[t] += env.n_customer_vehicles_spatial[node][t]
+        num_v_rebalancing[t] += env.n_rebal_vehicles_spatial[node][t]
+        num_v_idle[t] += fleet_size - num_v_charging[t] - num_v_passenger[t] - num_v_rebalancing[t]
+
+# create a stack plot of the four num_v ..variables over time
+import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.rcParams.update({'font.size': 22})
+plt.figure(figsize=(20,10))
+plt.stackplot(range(env.tf), num_v_idle.values(), num_v_charging.values(), num_v_passenger.values(), num_v_rebalancing.values(), labels=['idle', 'charging', 'passenger', 'rebalancing'])
+plt.legend(loc='upper left')
+plt.xlabel('time')
+plt.ylabel('number of vehicles')
+plt.title('vehicle distribution over time')
+plt.savefig(f'./vehicle_distribution.png')
+
 
 # opt_rew = []
 # served = 0
