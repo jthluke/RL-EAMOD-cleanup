@@ -238,12 +238,19 @@ fleet_size = 0
 for region in env.scenario.G_spatial.nodes:
     fleet_size += env.scenario.G_spatial.nodes[region]['accInit']
 
-for node in env.nodes_spatial:
-    for t in range(env.tf):
-        num_v_charging[t] += env.n_charging_vehicles_spatial[node][t]
-        num_v_passenger[t] += env.n_customer_vehicles_spatial[node][t]
-        num_v_rebalancing[t] += env.n_rebal_vehicles_spatial[node][t]
-        num_v_idle[t] += fleet_size - num_v_charging[t] - num_v_passenger[t] - num_v_rebalancing[t]
+# for node in env.nodes_spatial:
+#     for t in range(env.tf):
+#         num_v_charging[t] += env.n_charging_vehicles_spatial[node][t]
+#         num_v_passenger[t] += env.n_customer_vehicles_spatial[node][t]
+#         num_v_rebalancing[t] += env.n_rebal_vehicles_spatial[node][t]
+#         # num_v_idle[t] = fleet_size - num_v_charging[t] - num_v_passenger[t] - num_v_rebalancing[t]
+
+for t in range(env.tf):
+    num_v_charging[t] = sum(max(0, env.n_charging_vehicles_spatial[node][t]) for node in env.nodes_spatial)
+    num_v_passenger[t] = sum(max(0, env.n_customer_vehicles_spatial[node][t]) for node in env.nodes_spatial)
+    num_v_rebalancing[t] = sum(max(0, env.n_rebal_vehicles_spatial[node][t]) for node in env.nodes_spatial)
+    num_v_idle[t] = fleet_size - num_v_charging[t] - num_v_passenger[t] - num_v_rebalancing[t]
+
 
 # print vectors from above
 print('num_v_idle', num_v_idle)
