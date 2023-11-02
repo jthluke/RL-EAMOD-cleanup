@@ -245,6 +245,12 @@ for node in env.nodes_spatial:
         num_v_rebalancing[t] += env.n_rebal_vehicles_spatial[node][t]
         num_v_idle[t] += fleet_size - num_v_charging[t] - num_v_passenger[t] - num_v_rebalancing[t]
 
+# print vectors from above
+print('num_v_idle', num_v_idle)
+print('num_v_charging', num_v_charging)
+print('num_v_passenger', num_v_passenger)
+print('num_v_rebalancing', num_v_rebalancing)
+
 # create a stack plot of the four num_v ..variables over time
 import matplotlib.pyplot as plt
 import matplotlib
