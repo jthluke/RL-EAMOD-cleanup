@@ -238,10 +238,28 @@ fleet_size = 0
 for region in env.scenario.G_spatial.nodes:
     fleet_size += env.scenario.G_spatial.nodes[region]['accInit']
 
-for region in env.scenario.G_spatial.nodes:
-    print('charging', env.n_charging_vehicles_spatial[region][10])
-    print('customer', env.n_customer_vehicles_spatial[region][10])
-    print('rebalancing', env.n_rebal_vehicles_spatial[region][10])
+for edge in env.scenario.G.edges:
+    o, d = edge
+    for t in range(env.tf):
+        reb_time = env.scenario.reb_time[o, d][t]
+
+        if (o != d):
+            reb_flow = env.rebFlow[o, d][t]
+        else:
+            reb_flow = 0
+            
+        pax_flow = env.paxFlow[o, d][t]
+
+        for t_inner in range(min(env.tf, t + reb_time)):
+            num_v_rebalancing[t_inner] += reb_flow[t_inner]
+            num_v_passenger[t_inner] += pax_flow[t_inner]
+    
+# sort dictionary by time
+num_v_idle = dict(sorted(num_v_idle.items()))
+num_v_charging = dict(sorted(num_v_charging.items()))
+num_v_passenger = dict(sorted(num_v_passenger.items()))
+num_v_rebalancing = dict(sorted(num_v_rebalancing.items()))
+
 
 # for t in range(env.tf):
 #     num_v_charging[t] = sum(max(0, env.n_charging_vehicles_spatial[node][t]) for node in env.nodes_spatial)
@@ -262,7 +280,7 @@ import matplotlib
 
 matplotlib.rcParams.update({'font.size': 22})
 plt.figure(figsize=(20,10))
-plt.stackplot(range(env.tf), num_v_idle.values(), num_v_charging.values(), num_v_passenger.values(), num_v_rebalancing.values(), labels=['idle', 'charging', 'passenger', 'rebalancing'])
+plt.stackplot(range(env.tf), num_v_passenger.values(), num_v_rebalancing.values(), labels=['passenger', 'rebalancing'])
 plt.legend(loc='upper left')
 plt.xlabel('time')
 plt.ylabel('number of vehicles')
