@@ -240,7 +240,11 @@ for region in env.scenario.G_spatial.nodes:
 
 for edge in env.scenario.G.edges:
     o, d = edge
-    for t in range(env.tf):
+    for t in range(env.tf + 1):
+        print(env.scenario.rebTime)
+        print(env.rebFlow)
+        print(env.paxFlow)
+
         reb_time = env.scenario.rebTime[o, d][t]
 
         if (o != d):
