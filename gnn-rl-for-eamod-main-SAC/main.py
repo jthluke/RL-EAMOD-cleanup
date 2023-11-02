@@ -352,15 +352,9 @@ if zeroShotCity or zeroShotNodes:
             scale_price = 0.1
     else:
         if city == 'NY':
-            if num_sn == 10:
-                model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
-            if num_sn == 15:
-                model.load_checkpoint(path='ckpt/NYC_10_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/NYC_5_9000_48_test.pth')
         else:
-            if num_sn == 10:
-                model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
-            if num_sn == 15:
-                model.load_checkpoint(path='ckpt/SF_10_9000_48_test.pth')
+            model.load_checkpoint(path='ckpt/SF_5_9000_48_test.pth')
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
