@@ -2,7 +2,8 @@
 #SBATCH --job-name=he
 #SBATCH --output=he.%j.out
 #SBATCH --error=he.%j.err
-#SBATCH --time=3-00:00:00
+#SBATCH --time=4-00:00:00
+#SBATCH--qos long
 #SBATCH --partition=normal
 #SBATCH -c 32
 
