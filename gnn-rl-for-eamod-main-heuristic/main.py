@@ -324,7 +324,8 @@ for i_episode in epochs:
         for n in env.nodes:
             if n[1]>=env.scenario.max_energy_distance:
                 total_idle_acc += env.acc[n][env.time+1]
-        desired_acc_spatial = {env.nodes_spatial[i]: int(action_rl[i] *total_idle_acc) for i in env.nodes_spatial} # over spatial nodes
+        # desired_acc_spatial = {env.nodes_spatial[i]: int(action_rl[i] *total_idle_acc) for i in env.nodes_spatial} # over spatial nodes
+        desired_acc_spatial = {env.nodes_spatial[i]: int(action_rl[i] * total_idle_acc) if not np.isnan(action_rl[i]) else 0 for i in env.nodes_spatial} # over spatial nodes
         total_desiredAcc = sum(desired_acc_spatial[n] for n in env.nodes_spatial)
         missing_cars = total_idle_acc - total_desiredAcc
         most_likely_node = np.argmax(action_rl)
