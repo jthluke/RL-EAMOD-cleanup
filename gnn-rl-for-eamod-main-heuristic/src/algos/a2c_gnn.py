@@ -266,7 +266,9 @@ class A2C(nn.Module):
                 else:
                     selected_time_steps = time_steps[self.env.time + 1:self.env.time + 5]
                 selected_values = [self.env.demand[o, d][time_step] for time_step in selected_time_steps]
-                print(np.mean(selected_values))
+                # handle if NaN
+                if (np.isnan(selected_values).any()):
+                    selected_values = [0]
                 demand_o += np.mean(selected_values)
             
             action[o] = demand_o
