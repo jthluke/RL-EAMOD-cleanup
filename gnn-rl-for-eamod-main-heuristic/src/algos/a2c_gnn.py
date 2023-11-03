@@ -258,7 +258,6 @@ class A2C(nn.Module):
         for o in range(self.env.number_nodes_spatial):
             demand_o = 0
             for d in range(self.env.number_nodes_spatial):
-                avg = 0
                 # take the average of the demand over the next 4 time steps, limited to max time horizon
                 time_steps = sorted(self.env.demand[o, d])
                 selected_time_steps = []
@@ -267,6 +266,7 @@ class A2C(nn.Module):
                 else:
                     selected_time_steps = time_steps[self.env.time + 1:self.env.time + 5]
                 selected_values = [self.env.demand[o, d][time_step] for time_step in selected_time_steps]
+                print(np.mean(selected_values))
                 demand_o += np.mean(selected_values)
             
             action[o] = demand_o
