@@ -11,5 +11,4 @@
 conda activate
 
 python main.py --spatial_nodes 10 --T 48 --city NY --resume True --gurobi Daniele2
-python main.py --spatial_nodes 10 --T 48 --city SF --resume True --gurobi Daniele2
 
