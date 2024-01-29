@@ -462,25 +462,28 @@ for i_episode in epochs:
 
         # stop episode if terminating conditions are met
         step += 1
-        if i_episode > 10:
-            if (city == "SF") and not args.scratch:
-                for step in range(100):
-                    batch = model.replay_buffer.sample_batch(
-                        args.batch_size)  # sample from replay buffer
-                    model = model.float()
-                    try:
-                        model.update(data=batch)  # update model
-                    except ValueError:
-                        model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
-            else:
-                for step in range(50):
-                    batch = model.replay_buffer.sample_batch(
-                        args.batch_size)  # sample from replay buffer
-                    model = model.float()
-                    try:
-                        model.update(data=batch)  # update model
-                    except ValueError:
-                        model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
+        if args.resume and i_episode > 100:
+            if i_episode > 10:
+                if (city == "SF") and not args.scratch:
+                    for step in range(100):
+                        batch = model.replay_buffer.sample_batch(
+                            args.batch_size)  # sample from replay buffer
+                        model = model.float()
+                        try:
+                            model.update(data=batch)  # update model
+                        except ValueError:
+                            model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
+                else:
+                    for step in range(50):
+                        batch = model.replay_buffer.sample_batch(
+                            args.batch_size)  # sample from replay buffer
+                        model = model.float()
+                        try:
+                            model.update(data=batch)  # update model
+                        except ValueError:
+                            model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
+        else:
+            continue
 
     
     # see which time is highest
