@@ -196,7 +196,7 @@ if args.gurobi == 'Daniele2':
     gurobi_env.start()
 if args.gurobi == 'Daniele3':
     gurobi_env = gp.Env(empty=True)
-    gurobi = "Daniele2"
+    gurobi = "Daniele3"
     gurobi_env.setParam('WLSACCESSID', 'f07bce97-f3f5-484b-919f-5ee314418659')
     gurobi_env.setParam('WLSSECRET', 'd934832c-3415-4ead-a636-bd4b5ccb95b1')
     gurobi_env.setParam('LICENSEID', 2431159)
