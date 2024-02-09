@@ -493,10 +493,23 @@ for i_episode in epochs:
     
     # Send current statistics to wandb
     for spatial_node in range(env.scenario.spatial_nodes):
-        wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
-        wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
+        try:
+            print(f"wandb log failed for episode {i_episode+1}")
+            wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
+        except:
+            pass
+        try:
+            print(f"wandb log failed for episode {i_episode+1}")
+            wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
+        except:
+            pass
+
         if total_demand_per_spatial_node[spatial_node] > 0:
-            wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
+            try:
+                print(f"wandb log failed for episode {i_episode+1}")
+                wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
+            except:
+                pass
 
     # Checkpoint best performing model
     if episode_reward >= best_reward:
@@ -507,9 +520,13 @@ for i_episode in epochs:
         best_rebal_cost = episode_rebalancing_cost
         best_served_demand  = episode_served_demand
         best_model = model
-
-    wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand, 
-    "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
+    
+    try:
+        print(f"wandb log failed for episode {i_episode+1}")
+        wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand,
+                   "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
+    except:
+        pass
 
     if i_episode % 10 == 0:  # test model every 10th episode
         test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
@@ -528,5 +545,10 @@ model.load_checkpoint(path=path)
 test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
     50, env, pax_flows_solver, rebal_flow_solver, parser=parser)
 
-wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
+try:
+    print(f"wandb log failed for test results")
+    wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
+except:
+    pass
+
 wandb.finish()
