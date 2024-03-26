@@ -317,6 +317,8 @@ class AMoD:
                 # we have to add plus one because charging starts in the next timestep
                 for future_time in range(t+1, t+charge_time+1):
                     self.scenario.cars_charging_per_station[i[0]][future_time] += self.rebAction[k]
+                    if (self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]]) > 1e-7:
+                        self.scenario.cars_charging_per_station[i[0]][future_time] = self.scenario.cars_per_station_capacity[i[0]]
                     assert self.scenario.cars_charging_per_station[i[0]][future_time] - self.scenario.cars_per_station_capacity[i[0]] < 1e-7
                     self.n_charging_vehicles_spatial[i[0]][future_time] += self.rebAction[k]
             # road and charging edge
