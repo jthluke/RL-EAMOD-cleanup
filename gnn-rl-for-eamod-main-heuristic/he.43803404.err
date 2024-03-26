@@ -3855,4 +3855,512 @@ wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run uniform_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_off_peak_one_step_new
 wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
 wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/3udoabht
-  0%|          | 0/5 [00:00<?, ?it/s]
+  0%|          | 0/5 [00:00<?, ?it/s]Episode 1 | Reward: 119571.30 | ServedDemand: 13072.69 | Reb. Cost: 1124.57 | Time: 4.42 +- 1.38sec:   0%|          | 0/5 [03:33<?, ?it/s]Episode 1 | Reward: 119571.30 | ServedDemand: 13072.69 | Reb. Cost: 1124.57 | Time: 4.42 +- 1.38sec:  20%|██        | 1/5 [03:33<14:12, 213.16s/it]Episode 2 | Reward: 117773.67 | ServedDemand: 12793.04 | Reb. Cost: 1153.97 | Time: 4.31 +- 0.02sec:  20%|██        | 1/5 [07:00<14:12, 213.16s/it]Episode 2 | Reward: 117773.67 | ServedDemand: 12793.04 | Reb. Cost: 1153.97 | Time: 4.31 +- 0.02sec:  40%|████      | 2/5 [07:00<10:29, 209.94s/it]Episode 3 | Reward: 119004.29 | ServedDemand: 13082.40 | Reb. Cost: 1144.88 | Time: 4.32 +- 0.02sec:  40%|████      | 2/5 [10:29<10:29, 209.94s/it]Episode 3 | Reward: 119004.29 | ServedDemand: 13082.40 | Reb. Cost: 1144.88 | Time: 4.32 +- 0.02sec:  60%|██████    | 3/5 [10:29<06:58, 209.22s/it]Episode 4 | Reward: 118244.72 | ServedDemand: 12953.96 | Reb. Cost: 1144.10 | Time: 4.29 +- 0.05sec:  60%|██████    | 3/5 [13:56<06:58, 209.22s/it]Episode 4 | Reward: 118244.72 | ServedDemand: 12953.96 | Reb. Cost: 1144.10 | Time: 4.29 +- 0.05sec:  80%|████████  | 4/5 [13:56<03:28, 208.34s/it]Episode 5 | Reward: 118820.36 | ServedDemand: 13064.70 | Reb. Cost: 1146.81 | Time: 4.30 +- 0.01sec:  80%|████████  | 4/5 [17:23<03:28, 208.34s/it]Episode 5 | Reward: 118820.36 | ServedDemand: 13064.70 | Reb. Cost: 1146.81 | Time: 4.30 +- 0.01sec: 100%|██████████| 5/5 [17:23<00:00, 208.04s/it]Episode 5 | Reward: 118820.36 | ServedDemand: 13064.70 | Reb. Cost: 1146.81 | Time: 4.30 +- 0.01sec: 100%|██████████| 5/5 [17:23<00:00, 208.74s/it]
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.004 MB of 0.004 MB uploaded (0.000 MB deduped)wandb: \ 0.004 MB of 0.013 MB uploaded (0.000 MB deduped)wandb: | 0.004 MB of 0.013 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:                    AVG Charging Cost  ▁
+wandb:                           AVG Reward  ▁
+wandb:                 AVG Satisfied Demand  ▁
+wandb:          AVG Spatial Rebalancing Cost ▁
+wandb:                     AVG Timestep Time ▁
+wandb:  Desired Acc. to Total Demand ratio 0 ▁▄█▂▃
+wandb:  Desired Acc. to Total Demand ratio 1 ▂▇█▁▅
+wandb: Desired Acc. to Total Demand ratio 10 ▂▇█▁▅
+wandb: Desired Acc. to Total Demand ratio 11 ▂██▁▆
+wandb: Desired Acc. to Total Demand ratio 12 ▂▇█▁▅
+wandb: Desired Acc. to Total Demand ratio 13 ▂██▁▆
+wandb: Desired Acc. to Total Demand ratio 14 ▂██▁▆
+wandb:  Desired Acc. to Total Demand ratio 2 ▂▇█▁▅
+wandb:  Desired Acc. to Total Demand ratio 3 ▂██▁▅
+wandb:  Desired Acc. to Total Demand ratio 4 ▂▇█▁▆
+wandb:  Desired Acc. to Total Demand ratio 5 ▂██▁▆
+wandb:  Desired Acc. to Total Demand ratio 6 ▂▇█▁▅
+wandb:  Desired Acc. to Total Demand ratio 7 ▂▇█▁▆
+wandb:  Desired Acc. to Total Demand ratio 8 ▂▇█▁▅
+wandb:  Desired Acc. to Total Demand ratio 9 ▂██▁▅
+wandb:                Desired Accumulation 0 ▁▄█▂▃
+wandb:                Desired Accumulation 1 ▂▇█▁▅
+wandb:               Desired Accumulation 10 ▂▇█▁▅
+wandb:               Desired Accumulation 11 ▂▇█▁▅
+wandb:               Desired Accumulation 12 ▂▇█▁▅
+wandb:               Desired Accumulation 13 ▂▇█▁▅
+wandb:               Desired Accumulation 14 ▂▇█▁▅
+wandb:                Desired Accumulation 2 ▂▇█▁▅
+wandb:                Desired Accumulation 3 ▂▇█▁▅
+wandb:                Desired Accumulation 4 ▂▇█▁▅
+wandb:                Desired Accumulation 5 ▂▇█▁▅
+wandb:                Desired Accumulation 6 ▂▇█▁▅
+wandb:                Desired Accumulation 7 ▂▇█▁▅
+wandb:                Desired Accumulation 8 ▂▇█▁▅
+wandb:                Desired Accumulation 9 ▂▇█▁▅
+wandb:                               Episode ▁▁▁▁▁▁▁▁▃▃▃▃▃▃▃▃▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆████████
+wandb:                           Std Reward  ▁
+wandb:                        Total Demand 0 ▁▁▁▁▁
+wandb:                        Total Demand 1 ▁▁▁▁▁
+wandb:                       Total Demand 10 ▁▁▁▁▁
+wandb:                       Total Demand 11 ▁▁▁▁▁
+wandb:                       Total Demand 12 ▁▁▁▁▁
+wandb:                       Total Demand 13 ▁▁▁▁▁
+wandb:                       Total Demand 14 ▁▁▁▁▁
+wandb:                        Total Demand 2 ▁▁▁▁▁
+wandb:                        Total Demand 3 ▁▁▁▁▁
+wandb:                        Total Demand 4 ▁▁▁▁▁
+wandb:                        Total Demand 5 ▁▁▁▁▁
+wandb:                        Total Demand 6 ▁▁▁▁▁
+wandb:                        Total Demand 7 ▁▁▁▁▁
+wandb:                        Total Demand 8 ▁▁▁▁▁
+wandb:                        Total Demand 9 ▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:                    AVG Charging Cost  906.027
+wandb:                           AVG Reward  118682.86751
+wandb:                 AVG Satisfied Demand  12993.35513
+wandb:          AVG Spatial Rebalancing Cost 1146.80703
+wandb:                     AVG Timestep Time 4.32895
+wandb:  Desired Acc. to Total Demand ratio 0 0.02314
+wandb:  Desired Acc. to Total Demand ratio 1 0.00649
+wandb: Desired Acc. to Total Demand ratio 10 0.01218
+wandb: Desired Acc. to Total Demand ratio 11 0.0193
+wandb: Desired Acc. to Total Demand ratio 12 0.02214
+wandb: Desired Acc. to Total Demand ratio 13 0.00726
+wandb: Desired Acc. to Total Demand ratio 14 0.00821
+wandb:  Desired Acc. to Total Demand ratio 2 0.01003
+wandb:  Desired Acc. to Total Demand ratio 3 0.02005
+wandb:  Desired Acc. to Total Demand ratio 4 0.01319
+wandb:  Desired Acc. to Total Demand ratio 5 0.01117
+wandb:  Desired Acc. to Total Demand ratio 6 0.00718
+wandb:  Desired Acc. to Total Demand ratio 7 0.00696
+wandb:  Desired Acc. to Total Demand ratio 8 0.00687
+wandb:  Desired Acc. to Total Demand ratio 9 0.01771
+wandb:                Desired Accumulation 0 142.8093
+wandb:                Desired Accumulation 1 68.0
+wandb:               Desired Accumulation 10 68.0
+wandb:               Desired Accumulation 11 68.0
+wandb:               Desired Accumulation 12 68.0
+wandb:               Desired Accumulation 13 68.0
+wandb:               Desired Accumulation 14 68.0
+wandb:                Desired Accumulation 2 68.0
+wandb:                Desired Accumulation 3 68.0
+wandb:                Desired Accumulation 4 68.0
+wandb:                Desired Accumulation 5 68.0
+wandb:                Desired Accumulation 6 68.0
+wandb:                Desired Accumulation 7 68.0
+wandb:                Desired Accumulation 8 68.0
+wandb:                Desired Accumulation 9 68.0
+wandb:                               Episode 5
+wandb:                           Std Reward  621.31118
+wandb:                        Total Demand 0 6172.0
+wandb:                        Total Demand 1 10480.0
+wandb:                       Total Demand 10 5584.0
+wandb:                       Total Demand 11 3524.0
+wandb:                       Total Demand 12 3072.0
+wandb:                       Total Demand 13 9364.0
+wandb:                       Total Demand 14 8284.0
+wandb:                        Total Demand 2 6780.0
+wandb:                        Total Demand 3 3392.0
+wandb:                        Total Demand 4 5156.0
+wandb:                        Total Demand 5 6088.0
+wandb:                        Total Demand 6 9476.0
+wandb:                        Total Demand 7 9776.0
+wandb:                        Total Demand 8 9904.0
+wandb:                        Total Demand 9 3840.0
+wandb: 
+wandb: 🚀 View run uniform_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_off_peak_one_step_new at: https://wandb.ai/madronapixact/e-amod/runs/3udoabht
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MjcwMDEyNg==/version_details/v4
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_102021-3udoabht/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main-heuristic/wandb/run-20240326_103811-fcsosboy
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run uniform_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_relative_charging_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/fcsosboy
+  0%|          | 0/5 [00:00<?, ?it/s]Episode 1 | Reward: 119716.21 | ServedDemand: 13069.37 | Reb. Cost: 1089.40 | Time: 4.47 +- 1.37sec:   0%|          | 0/5 [03:35<?, ?it/s]Episode 1 | Reward: 119716.21 | ServedDemand: 13069.37 | Reb. Cost: 1089.40 | Time: 4.47 +- 1.37sec:  20%|██        | 1/5 [03:35<14:21, 215.47s/it]Episode 2 | Reward: 117694.85 | ServedDemand: 12770.81 | Reb. Cost: 1126.82 | Time: 4.30 +- 0.02sec:  20%|██        | 1/5 [07:02<14:21, 215.47s/it]Episode 2 | Reward: 117694.85 | ServedDemand: 12770.81 | Reb. Cost: 1126.82 | Time: 4.30 +- 0.02sec:  40%|████      | 2/5 [07:02<10:31, 210.58s/it]Episode 3 | Reward: 119013.06 | ServedDemand: 13072.39 | Reb. Cost: 1119.00 | Time: 4.31 +- 0.02sec:  40%|████      | 2/5 [10:30<10:31, 210.58s/it]Episode 3 | Reward: 119013.06 | ServedDemand: 13072.39 | Reb. Cost: 1119.00 | Time: 4.31 +- 0.02sec:  60%|██████    | 3/5 [10:30<06:58, 209.32s/it]Episode 4 | Reward: 117965.75 | ServedDemand: 12884.14 | Reb. Cost: 1119.18 | Time: 4.30 +- 0.02sec:  60%|██████    | 3/5 [13:58<06:58, 209.32s/it]Episode 4 | Reward: 117965.75 | ServedDemand: 12884.14 | Reb. Cost: 1119.18 | Time: 4.30 +- 0.02sec:  80%|████████  | 4/5 [13:58<03:28, 208.63s/it]Episode 5 | Reward: 118623.29 | ServedDemand: 13012.26 | Reb. Cost: 1123.46 | Time: 4.31 +- 0.02sec:  80%|████████  | 4/5 [17:25<03:28, 208.63s/it]Episode 5 | Reward: 118623.29 | ServedDemand: 13012.26 | Reb. Cost: 1123.46 | Time: 4.31 +- 0.02sec: 100%|██████████| 5/5 [17:26<00:00, 208.40s/it]Episode 5 | Reward: 118623.29 | ServedDemand: 13012.26 | Reb. Cost: 1123.46 | Time: 4.31 +- 0.02sec: 100%|██████████| 5/5 [17:26<00:00, 209.20s/it]
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.004 MB of 0.004 MB uploaded (0.000 MB deduped)wandb: \ 0.004 MB of 0.004 MB uploaded (0.000 MB deduped)wandb: | 0.004 MB of 0.004 MB uploaded (0.000 MB deduped)wandb: / 0.004 MB of 0.004 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:                    AVG Charging Cost  ▁
+wandb:                           AVG Reward  ▁
+wandb:                 AVG Satisfied Demand  ▁
+wandb:          AVG Spatial Rebalancing Cost ▁
+wandb:                     AVG Timestep Time ▁
+wandb:  Desired Acc. to Total Demand ratio 0 ▃▁█▅▇
+wandb:  Desired Acc. to Total Demand ratio 1 ▁██▁▆
+wandb: Desired Acc. to Total Demand ratio 10 ▁██▂▆
+wandb: Desired Acc. to Total Demand ratio 11 ▁██▁▆
+wandb: Desired Acc. to Total Demand ratio 12 ▁█▇▁▆
+wandb: Desired Acc. to Total Demand ratio 13 ▁██▁▆
+wandb: Desired Acc. to Total Demand ratio 14 ▁██▂▆
+wandb:  Desired Acc. to Total Demand ratio 2 ▁█▇▁▆
+wandb:  Desired Acc. to Total Demand ratio 3 ▁█▇▂▆
+wandb:  Desired Acc. to Total Demand ratio 4 ▁█▇▂▆
+wandb:  Desired Acc. to Total Demand ratio 5 ▁██▁▆
+wandb:  Desired Acc. to Total Demand ratio 6 ▁██▂▆
+wandb:  Desired Acc. to Total Demand ratio 7 ▁█▇▂▆
+wandb:  Desired Acc. to Total Demand ratio 8 ▁█▇▂▆
+wandb:  Desired Acc. to Total Demand ratio 9 ▁█▇▂▆
+wandb:                Desired Accumulation 0 ▃▁█▅▇
+wandb:                Desired Accumulation 1 ▁█▇▁▆
+wandb:               Desired Accumulation 10 ▁█▇▁▆
+wandb:               Desired Accumulation 11 ▁█▇▁▆
+wandb:               Desired Accumulation 12 ▁█▇▁▆
+wandb:               Desired Accumulation 13 ▁█▇▁▆
+wandb:               Desired Accumulation 14 ▁█▇▁▆
+wandb:                Desired Accumulation 2 ▁█▇▁▆
+wandb:                Desired Accumulation 3 ▁█▇▁▆
+wandb:                Desired Accumulation 4 ▁█▇▁▆
+wandb:                Desired Accumulation 5 ▁█▇▁▆
+wandb:                Desired Accumulation 6 ▁█▇▁▆
+wandb:                Desired Accumulation 7 ▁█▇▁▆
+wandb:                Desired Accumulation 8 ▁█▇▁▆
+wandb:                Desired Accumulation 9 ▁█▇▁▆
+wandb:                               Episode ▁▁▁▁▁▁▁▁▃▃▃▃▃▃▃▃▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆████████
+wandb:                           Std Reward  ▁
+wandb:                        Total Demand 0 ▁▁▁▁▁
+wandb:                        Total Demand 1 ▁▁▁▁▁
+wandb:                       Total Demand 10 ▁▁▁▁▁
+wandb:                       Total Demand 11 ▁▁▁▁▁
+wandb:                       Total Demand 12 ▁▁▁▁▁
+wandb:                       Total Demand 13 ▁▁▁▁▁
+wandb:                       Total Demand 14 ▁▁▁▁▁
+wandb:                        Total Demand 2 ▁▁▁▁▁
+wandb:                        Total Demand 3 ▁▁▁▁▁
+wandb:                        Total Demand 4 ▁▁▁▁▁
+wandb:                        Total Demand 5 ▁▁▁▁▁
+wandb:                        Total Demand 6 ▁▁▁▁▁
+wandb:                        Total Demand 7 ▁▁▁▁▁
+wandb:                        Total Demand 8 ▁▁▁▁▁
+wandb:                        Total Demand 9 ▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:                    AVG Charging Cost  877.25658
+wandb:                           AVG Reward  118602.63094
+wandb:                 AVG Satisfied Demand  12961.7937
+wandb:          AVG Spatial Rebalancing Cost 1123.45695
+wandb:                     AVG Timestep Time 4.33876
+wandb:  Desired Acc. to Total Demand ratio 0 0.02794
+wandb:  Desired Acc. to Total Demand ratio 1 0.00649
+wandb: Desired Acc. to Total Demand ratio 10 0.01218
+wandb: Desired Acc. to Total Demand ratio 11 0.0193
+wandb: Desired Acc. to Total Demand ratio 12 0.02214
+wandb: Desired Acc. to Total Demand ratio 13 0.00726
+wandb: Desired Acc. to Total Demand ratio 14 0.00821
+wandb:  Desired Acc. to Total Demand ratio 2 0.01003
+wandb:  Desired Acc. to Total Demand ratio 3 0.02005
+wandb:  Desired Acc. to Total Demand ratio 4 0.01319
+wandb:  Desired Acc. to Total Demand ratio 5 0.01117
+wandb:  Desired Acc. to Total Demand ratio 6 0.00718
+wandb:  Desired Acc. to Total Demand ratio 7 0.00696
+wandb:  Desired Acc. to Total Demand ratio 8 0.00687
+wandb:  Desired Acc. to Total Demand ratio 9 0.01771
+wandb:                Desired Accumulation 0 172.41695
+wandb:                Desired Accumulation 1 68.0
+wandb:               Desired Accumulation 10 68.0
+wandb:               Desired Accumulation 11 68.0
+wandb:               Desired Accumulation 12 68.0
+wandb:               Desired Accumulation 13 68.0
+wandb:               Desired Accumulation 14 68.0
+wandb:                Desired Accumulation 2 68.0
+wandb:                Desired Accumulation 3 68.0
+wandb:                Desired Accumulation 4 68.0
+wandb:                Desired Accumulation 5 68.0
+wandb:                Desired Accumulation 6 68.0
+wandb:                Desired Accumulation 7 68.0
+wandb:                Desired Accumulation 8 68.0
+wandb:                Desired Accumulation 9 68.0
+wandb:                               Episode 5
+wandb:                           Std Reward  726.44513
+wandb:                        Total Demand 0 6172.0
+wandb:                        Total Demand 1 10480.0
+wandb:                       Total Demand 10 5584.0
+wandb:                       Total Demand 11 3524.0
+wandb:                       Total Demand 12 3072.0
+wandb:                       Total Demand 13 9364.0
+wandb:                       Total Demand 14 8284.0
+wandb:                        Total Demand 2 6780.0
+wandb:                        Total Demand 3 3392.0
+wandb:                        Total Demand 4 5156.0
+wandb:                        Total Demand 5 6088.0
+wandb:                        Total Demand 6 9476.0
+wandb:                        Total Demand 7 9776.0
+wandb:                        Total Demand 8 9904.0
+wandb:                        Total Demand 9 3840.0
+wandb: 
+wandb: 🚀 View run uniform_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_relative_charging_new at: https://wandb.ai/madronapixact/e-amod/runs/fcsosboy
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MjcwMDEyNg==/version_details/v5
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_103811-fcsosboy/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main-heuristic/wandb/run-20240326_105604-yf8ezncq
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run proportional_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_empty_to_full_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/yf8ezncq
+  0%|          | 0/5 [00:00<?, ?it/s]/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/numpy/core/fromnumeric.py:3432: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/numpy/core/_methods.py:190: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+Episode 1 | Reward: 100006.43 | ServedDemand: 10829.56 | Reb. Cost: 2810.99 | Time: 4.48 +- 1.39sec:   0%|          | 0/5 [03:36<?, ?it/s]Episode 1 | Reward: 100006.43 | ServedDemand: 10829.56 | Reb. Cost: 2810.99 | Time: 4.48 +- 1.39sec:  20%|██        | 1/5 [03:36<14:24, 216.11s/it]Episode 2 | Reward: 98770.47 | ServedDemand: 10622.88 | Reb. Cost: 2833.66 | Time: 4.28 +- 0.02sec:  20%|██        | 1/5 [07:02<14:24, 216.11s/it] Episode 2 | Reward: 98770.47 | ServedDemand: 10622.88 | Reb. Cost: 2833.66 | Time: 4.28 +- 0.02sec:  40%|████      | 2/5 [07:02<10:30, 210.26s/it]Episode 3 | Reward: 99879.15 | ServedDemand: 10904.87 | Reb. Cost: 2827.60 | Time: 4.23 +- 0.03sec:  40%|████      | 2/5 [10:26<10:30, 210.26s/it]Episode 3 | Reward: 99879.15 | ServedDemand: 10904.87 | Reb. Cost: 2827.60 | Time: 4.23 +- 0.03sec:  60%|██████    | 3/5 [10:26<06:54, 207.48s/it]Episode 4 | Reward: 98370.18 | ServedDemand: 10687.96 | Reb. Cost: 2842.53 | Time: 4.25 +- 0.03sec:  60%|██████    | 3/5 [13:51<06:54, 207.48s/it]Episode 4 | Reward: 98370.18 | ServedDemand: 10687.96 | Reb. Cost: 2842.53 | Time: 4.25 +- 0.03sec:  80%|████████  | 4/5 [13:51<03:26, 206.42s/it]Episode 5 | Reward: 99314.61 | ServedDemand: 10833.31 | Reb. Cost: 2834.61 | Time: 4.23 +- 0.03sec:  80%|████████  | 4/5 [17:15<03:26, 206.42s/it]Episode 5 | Reward: 99314.61 | ServedDemand: 10833.31 | Reb. Cost: 2834.61 | Time: 4.23 +- 0.03sec: 100%|██████████| 5/5 [17:15<00:00, 205.55s/it]Episode 5 | Reward: 99314.61 | ServedDemand: 10833.31 | Reb. Cost: 2834.61 | Time: 4.23 +- 0.03sec: 100%|██████████| 5/5 [17:15<00:00, 207.05s/it]
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:                    AVG Charging Cost  ▁
+wandb:                           AVG Reward  ▁
+wandb:                 AVG Satisfied Demand  ▁
+wandb:          AVG Spatial Rebalancing Cost ▁
+wandb:                     AVG Timestep Time ▁
+wandb:  Desired Acc. to Total Demand ratio 0 ▁█▂▂▆
+wandb:  Desired Acc. to Total Demand ratio 1 ▃█▅▂▁
+wandb: Desired Acc. to Total Demand ratio 10 ▁█▅▄▇
+wandb: Desired Acc. to Total Demand ratio 11 ▁█▄▅▇
+wandb: Desired Acc. to Total Demand ratio 12 ▁█▁▃█
+wandb: Desired Acc. to Total Demand ratio 13 ▁█▂▂▇
+wandb: Desired Acc. to Total Demand ratio 14 ▁█▃▅█
+wandb:  Desired Acc. to Total Demand ratio 2 ▃█▄▁▇
+wandb:  Desired Acc. to Total Demand ratio 3 ▁█▂▅█
+wandb:  Desired Acc. to Total Demand ratio 4 ▃▃█▁▃
+wandb:  Desired Acc. to Total Demand ratio 5 ▃▆▆▁█
+wandb:  Desired Acc. to Total Demand ratio 6 ▁█▃█▆
+wandb:  Desired Acc. to Total Demand ratio 7 ▂▂▁▁█
+wandb:  Desired Acc. to Total Demand ratio 8 ▁▇▁█▆
+wandb:  Desired Acc. to Total Demand ratio 9 ▁█▅▄▇
+wandb:                Desired Accumulation 0 ▁█▂▂▆
+wandb:                Desired Accumulation 1 ▃█▅▂▁
+wandb:               Desired Accumulation 10 ▁█▅▄▇
+wandb:               Desired Accumulation 11 ▁█▄▅▇
+wandb:               Desired Accumulation 12 ▁█▁▃█
+wandb:               Desired Accumulation 13 ▁█▂▂▇
+wandb:               Desired Accumulation 14 ▁█▃▅█
+wandb:                Desired Accumulation 2 ▃█▄▁▇
+wandb:                Desired Accumulation 3 ▁█▂▅█
+wandb:                Desired Accumulation 4 ▃▃█▁▃
+wandb:                Desired Accumulation 5 ▃▆▆▁█
+wandb:                Desired Accumulation 6 ▁█▃█▆
+wandb:                Desired Accumulation 7 ▂▂▁▁█
+wandb:                Desired Accumulation 8 ▁▇▁█▆
+wandb:                Desired Accumulation 9 ▁█▅▄▇
+wandb:                               Episode ▁▁▁▁▁▁▁▁▃▃▃▃▃▃▃▃▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆████████
+wandb:                           Std Reward  ▁
+wandb:                        Total Demand 0 ▁▁▁▁▁
+wandb:                        Total Demand 1 ▁▁▁▁▁
+wandb:                       Total Demand 10 ▁▁▁▁▁
+wandb:                       Total Demand 11 ▁▁▁▁▁
+wandb:                       Total Demand 12 ▁▁▁▁▁
+wandb:                       Total Demand 13 ▁▁▁▁▁
+wandb:                       Total Demand 14 ▁▁▁▁▁
+wandb:                        Total Demand 2 ▁▁▁▁▁
+wandb:                        Total Demand 3 ▁▁▁▁▁
+wandb:                        Total Demand 4 ▁▁▁▁▁
+wandb:                        Total Demand 5 ▁▁▁▁▁
+wandb:                        Total Demand 6 ▁▁▁▁▁
+wandb:                        Total Demand 7 ▁▁▁▁▁
+wandb:                        Total Demand 8 ▁▁▁▁▁
+wandb:                        Total Demand 9 ▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:                    AVG Charging Cost  2611.87385
+wandb:                           AVG Reward  99268.16991
+wandb:                 AVG Satisfied Demand  10775.71762
+wandb:          AVG Spatial Rebalancing Cost 2834.61091
+wandb:                     AVG Timestep Time 4.29421
+wandb:  Desired Acc. to Total Demand ratio 0 0.00681
+wandb:  Desired Acc. to Total Demand ratio 1 0.01163
+wandb: Desired Acc. to Total Demand ratio 10 0.00716
+wandb: Desired Acc. to Total Demand ratio 11 0.00624
+wandb: Desired Acc. to Total Demand ratio 12 0.00716
+wandb: Desired Acc. to Total Demand ratio 13 0.00716
+wandb: Desired Acc. to Total Demand ratio 14 0.00748
+wandb:  Desired Acc. to Total Demand ratio 2 0.00737
+wandb:  Desired Acc. to Total Demand ratio 3 0.00619
+wandb:  Desired Acc. to Total Demand ratio 4 0.00621
+wandb:  Desired Acc. to Total Demand ratio 5 0.00673
+wandb:  Desired Acc. to Total Demand ratio 6 0.00697
+wandb:  Desired Acc. to Total Demand ratio 7 0.01081
+wandb:  Desired Acc. to Total Demand ratio 8 0.00627
+wandb:  Desired Acc. to Total Demand ratio 9 0.00573
+wandb:                Desired Accumulation 0 42.00578
+wandb:                Desired Accumulation 1 121.8486
+wandb:               Desired Accumulation 10 40.0
+wandb:               Desired Accumulation 11 22.0
+wandb:               Desired Accumulation 12 22.0
+wandb:               Desired Accumulation 13 67.0
+wandb:               Desired Accumulation 14 62.0
+wandb:                Desired Accumulation 2 50.0
+wandb:                Desired Accumulation 3 21.0
+wandb:                Desired Accumulation 4 32.0
+wandb:                Desired Accumulation 5 41.0
+wandb:                Desired Accumulation 6 66.00578
+wandb:                Desired Accumulation 7 105.66647
+wandb:                Desired Accumulation 8 62.08677
+wandb:                Desired Accumulation 9 22.0
+wandb:                               Episode 5
+wandb:                           Std Reward  628.42364
+wandb:                        Total Demand 0 6172.0
+wandb:                        Total Demand 1 10480.0
+wandb:                       Total Demand 10 5584.0
+wandb:                       Total Demand 11 3524.0
+wandb:                       Total Demand 12 3072.0
+wandb:                       Total Demand 13 9364.0
+wandb:                       Total Demand 14 8284.0
+wandb:                        Total Demand 2 6780.0
+wandb:                        Total Demand 3 3392.0
+wandb:                        Total Demand 4 5156.0
+wandb:                        Total Demand 5 6088.0
+wandb:                        Total Demand 6 9476.0
+wandb:                        Total Demand 7 9776.0
+wandb:                        Total Demand 8 9904.0
+wandb:                        Total Demand 9 3840.0
+wandb: 
+wandb: 🚀 View run proportional_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_empty_to_full_new at: https://wandb.ai/madronapixact/e-amod/runs/yf8ezncq
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MjcwMDEyNg==/version_details/v5
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_105604-yf8ezncq/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main-heuristic/wandb/run-20240326_111349-3ntt3bd7
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run proportional_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_off_peak_nothing_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/3ntt3bd7
+  0%|          | 0/5 [00:00<?, ?it/s]/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/numpy/core/fromnumeric.py:3432: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/numpy/core/_methods.py:190: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+Episode 1 | Reward: 119607.84 | ServedDemand: 13107.86 | Reb. Cost: 1137.74 | Time: 4.40 +- 1.38sec:   0%|          | 0/5 [03:32<?, ?it/s]Episode 1 | Reward: 119607.84 | ServedDemand: 13107.86 | Reb. Cost: 1137.74 | Time: 4.40 +- 1.38sec:  20%|██        | 1/5 [03:32<14:09, 212.45s/it]Episode 2 | Reward: 117933.47 | ServedDemand: 12851.89 | Reb. Cost: 1161.95 | Time: 4.23 +- 0.03sec:  20%|██        | 1/5 [06:56<14:09, 212.45s/it]Episode 2 | Reward: 117933.47 | ServedDemand: 12851.89 | Reb. Cost: 1161.95 | Time: 4.23 +- 0.03sec:  40%|████      | 2/5 [06:56<10:22, 207.53s/it]Episode 3 | Reward: 119074.23 | ServedDemand: 13125.88 | Reb. Cost: 1156.35 | Time: 4.22 +- 0.05sec:  40%|████      | 2/5 [10:20<10:22, 207.53s/it]Episode 3 | Reward: 119074.23 | ServedDemand: 13125.88 | Reb. Cost: 1156.35 | Time: 4.22 +- 0.05sec:  60%|██████    | 3/5 [10:20<06:51, 205.68s/it]Episode 4 | Reward: 118312.52 | ServedDemand: 12985.65 | Reb. Cost: 1152.95 | Time: 4.22 +- 0.03sec:  60%|██████    | 3/5 [13:43<06:51, 205.68s/it]Episode 4 | Reward: 118312.52 | ServedDemand: 12985.65 | Reb. Cost: 1152.95 | Time: 4.22 +- 0.03sec:  80%|████████  | 4/5 [13:43<03:24, 204.83s/it]Episode 5 | Reward: 118551.72 | ServedDemand: 13065.29 | Reb. Cost: 1165.71 | Time: 4.24 +- 0.02sec:  80%|████████  | 4/5 [17:07<03:24, 204.83s/it]Episode 5 | Reward: 118551.72 | ServedDemand: 13065.29 | Reb. Cost: 1165.71 | Time: 4.24 +- 0.02sec: 100%|██████████| 5/5 [17:07<00:00, 204.65s/it]Episode 5 | Reward: 118551.72 | ServedDemand: 13065.29 | Reb. Cost: 1165.71 | Time: 4.24 +- 0.02sec: 100%|██████████| 5/5 [17:07<00:00, 205.58s/it]
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.004 MB of 0.004 MB uploaded (0.000 MB deduped)wandb: \ 0.004 MB of 0.014 MB uploaded (0.000 MB deduped)wandb: | 0.004 MB of 0.014 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:                    AVG Charging Cost  ▁
+wandb:                           AVG Reward  ▁
+wandb:                 AVG Satisfied Demand  ▁
+wandb:          AVG Spatial Rebalancing Cost ▁
+wandb:                     AVG Timestep Time ▁
+wandb:  Desired Acc. to Total Demand ratio 0 ▄█▆▁▇
+wandb:  Desired Acc. to Total Demand ratio 1 ▂█▄▁▄
+wandb: Desired Acc. to Total Demand ratio 10 ▂█▆▁▅
+wandb: Desired Acc. to Total Demand ratio 11 ▁█▅▁▇
+wandb: Desired Acc. to Total Demand ratio 12 ▅██▁▅
+wandb: Desired Acc. to Total Demand ratio 13 ▃█▆▁▆
+wandb: Desired Acc. to Total Demand ratio 14 ▁█▇▁▇
+wandb:  Desired Acc. to Total Demand ratio 2 ▂██▁█
+wandb:  Desired Acc. to Total Demand ratio 3 ▁█▂▁▄
+wandb:  Desired Acc. to Total Demand ratio 4 ▂▆█▁▅
+wandb:  Desired Acc. to Total Demand ratio 5 ▃█▇▁▆
+wandb:  Desired Acc. to Total Demand ratio 6 ▁█▆▂▅
+wandb:  Desired Acc. to Total Demand ratio 7 ▅▄▆▁█
+wandb:  Desired Acc. to Total Demand ratio 8 ▁█▄▅▆
+wandb:  Desired Acc. to Total Demand ratio 9 ▂█▇▁▄
+wandb:                Desired Accumulation 0 ▄█▆▁▇
+wandb:                Desired Accumulation 1 ▂█▄▁▄
+wandb:               Desired Accumulation 10 ▂█▆▁▅
+wandb:               Desired Accumulation 11 ▁█▅▁▇
+wandb:               Desired Accumulation 12 ▅██▁▅
+wandb:               Desired Accumulation 13 ▃█▆▁▆
+wandb:               Desired Accumulation 14 ▁█▇▁▇
+wandb:                Desired Accumulation 2 ▂██▁█
+wandb:                Desired Accumulation 3 ▁█▂▁▅
+wandb:                Desired Accumulation 4 ▂▆█▁▅
+wandb:                Desired Accumulation 5 ▃█▇▁▆
+wandb:                Desired Accumulation 6 ▁█▆▂▅
+wandb:                Desired Accumulation 7 ▅▄▆▁█
+wandb:                Desired Accumulation 8 ▁█▄▅▆
+wandb:                Desired Accumulation 9 ▂█▇▁▄
+wandb:                               Episode ▁▁▁▁▁▁▁▁▃▃▃▃▃▃▃▃▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆████████
+wandb:                           Std Reward  ▁
+wandb:                        Total Demand 0 ▁▁▁▁▁
+wandb:                        Total Demand 1 ▁▁▁▁▁
+wandb:                       Total Demand 10 ▁▁▁▁▁
+wandb:                       Total Demand 11 ▁▁▁▁▁
+wandb:                       Total Demand 12 ▁▁▁▁▁
+wandb:                       Total Demand 13 ▁▁▁▁▁
+wandb:                       Total Demand 14 ▁▁▁▁▁
+wandb:                        Total Demand 2 ▁▁▁▁▁
+wandb:                        Total Demand 3 ▁▁▁▁▁
+wandb:                        Total Demand 4 ▁▁▁▁▁
+wandb:                        Total Demand 5 ▁▁▁▁▁
+wandb:                        Total Demand 6 ▁▁▁▁▁
+wandb:                        Total Demand 7 ▁▁▁▁▁
+wandb:                        Total Demand 8 ▁▁▁▁▁
+wandb:                        Total Demand 9 ▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:                    AVG Charging Cost  906.48773
+wandb:                           AVG Reward  118695.9544
+wandb:                 AVG Satisfied Demand  13027.31334
+wandb:          AVG Spatial Rebalancing Cost 1165.70917
+wandb:                     AVG Timestep Time 4.26274
+wandb:  Desired Acc. to Total Demand ratio 0 0.00972
+wandb:  Desired Acc. to Total Demand ratio 1 0.01541
+wandb: Desired Acc. to Total Demand ratio 10 0.00985
+wandb: Desired Acc. to Total Demand ratio 11 0.00936
+wandb: Desired Acc. to Total Demand ratio 12 0.00977
+wandb: Desired Acc. to Total Demand ratio 13 0.01004
+wandb: Desired Acc. to Total Demand ratio 14 0.01038
+wandb:  Desired Acc. to Total Demand ratio 2 0.01062
+wandb:  Desired Acc. to Total Demand ratio 3 0.00855
+wandb:  Desired Acc. to Total Demand ratio 4 0.00912
+wandb:  Desired Acc. to Total Demand ratio 5 0.00936
+wandb:  Desired Acc. to Total Demand ratio 6 0.0096
+wandb:  Desired Acc. to Total Demand ratio 7 0.01432
+wandb:  Desired Acc. to Total Demand ratio 8 0.0089
+wandb:  Desired Acc. to Total Demand ratio 9 0.00833
+wandb:                Desired Accumulation 0 60.00893
+wandb:                Desired Accumulation 1 161.49746
+wandb:               Desired Accumulation 10 55.0
+wandb:               Desired Accumulation 11 33.0
+wandb:               Desired Accumulation 12 30.0
+wandb:               Desired Accumulation 13 94.0
+wandb:               Desired Accumulation 14 86.0
+wandb:                Desired Accumulation 2 72.0
+wandb:                Desired Accumulation 3 29.0
+wandb:                Desired Accumulation 4 47.0
+wandb:                Desired Accumulation 5 57.0
+wandb:                Desired Accumulation 6 91.00893
+wandb:                Desired Accumulation 7 139.94865
+wandb:                Desired Accumulation 8 88.13393
+wandb:                Desired Accumulation 9 32.0
+wandb:                               Episode 5
+wandb:                           Std Reward  587.16791
+wandb:                        Total Demand 0 6172.0
+wandb:                        Total Demand 1 10480.0
+wandb:                       Total Demand 10 5584.0
+wandb:                       Total Demand 11 3524.0
+wandb:                       Total Demand 12 3072.0
+wandb:                       Total Demand 13 9364.0
+wandb:                       Total Demand 14 8284.0
+wandb:                        Total Demand 2 6780.0
+wandb:                        Total Demand 3 3392.0
+wandb:                        Total Demand 4 5156.0
+wandb:                        Total Demand 5 6088.0
+wandb:                        Total Demand 6 9476.0
+wandb:                        Total Demand 7 9776.0
+wandb:                        Total Demand 8 9904.0
+wandb:                        Total Demand 9 3840.0
+wandb: 
+wandb: 🚀 View run proportional_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_off_peak_nothing_new at: https://wandb.ai/madronapixact/e-amod/runs/3ntt3bd7
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MjcwMDEyNg==/version_details/v5
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_111349-3ntt3bd7/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main-heuristic/wandb/run-20240326_113123-0laxuy16
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run proportional_distr_baseline_data/NY/15/NYC_15.json_5_episodes_T_48_heuristic_off_peak_one_step_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/0laxuy16
+  0%|          | 0/5 [00:00<?, ?it/s]/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/numpy/core/fromnumeric.py:3432: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/numpy/core/_methods.py:190: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+Episode 1 | Reward: 119607.84 | ServedDemand: 13107.86 | Reb. Cost: 1137.74 | Time: 4.45 +- 1.38sec:   0%|          | 0/5 [03:34<?, ?it/s]Episode 1 | Reward: 119607.84 | ServedDemand: 13107.86 | Reb. Cost: 1137.74 | Time: 4.45 +- 1.38sec:  20%|██        | 1/5 [03:34<14:17, 214.39s/it]slurmstepd: error: *** JOB 43803404 ON sh03-01n22 CANCELLED AT 2024-03-26T11:38:00 ***
