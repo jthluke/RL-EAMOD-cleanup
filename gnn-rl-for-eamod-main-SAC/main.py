@@ -226,6 +226,10 @@ if args.gurobi == 'Justin2':
     gurobi_env.setParam('LICENSEID', 2430074)
     gurobi_env.setParam("OutputFlag",0)
     gurobi_env.start()
+if args.gurobi == 'None':
+    gurobi_env = gp.Env()
+    gurobi = "None"
+    gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
 env = AMoD(scenario)
@@ -494,21 +498,21 @@ for i_episode in epochs:
     # Send current statistics to wandb
     for spatial_node in range(env.scenario.spatial_nodes):
         try:
-            print(f"wandb log failed for episode {i_episode+1}")
             wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
         except:
+            print(f"wandb log failed for episode {i_episode+1}")
             pass
         try:
-            print(f"wandb log failed for episode {i_episode+1}")
             wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
         except:
+            print(f"wandb log failed for episode {i_episode+1}")
             pass
 
         if total_demand_per_spatial_node[spatial_node] > 0:
             try:
-                print(f"wandb log failed for episode {i_episode+1}")
                 wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
             except:
+                print(f"wandb log failed for episode {i_episode+1}")
                 pass
 
     # Checkpoint best performing model
@@ -522,10 +526,10 @@ for i_episode in epochs:
         best_model = model
     
     try:
-        print(f"wandb log failed for episode {i_episode+1}")
         wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand,
                    "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
     except:
+        print(f"wandb log failed for episode {i_episode+1}")
         pass
 
     if i_episode % 10 == 0:  # test model every 10th episode
@@ -546,9 +550,9 @@ test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_a
     50, env, pax_flows_solver, rebal_flow_solver, parser=parser)
 
 try:
-    print(f"wandb log failed for test results")
     wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
 except:
+    print(f"wandb log failed for test results")
     pass
 
 wandb.finish()
