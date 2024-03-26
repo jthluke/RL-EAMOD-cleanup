@@ -38,3 +38,794 @@ wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run SF_mpc_horizon_2_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new
 wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
 wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/oysghs3o
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 3.9857
+wandb:    Reb. Cost 46131.57179
+wandb:       Reward 845821.30647
+wandb: ServedDemand 145750.5943
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_2_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/oysghs3o
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v7
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_024627-oysghs3o/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_024954-3w5r8mpz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_1_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/3w5r8mpz
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 1.96727
+wandb:    Reb. Cost 0
+wandb:       Reward 297155.82813
+wandb: ServedDemand 47879.97376
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_1_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/3w5r8mpz
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v8
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_024954-3w5r8mpz/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_025151-bbf3zxa0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_48_entire_problem_../data/SF/10/SF_10.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/bbf3zxa0
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 411.17766
+wandb:    Reb. Cost 89313.12372
+wandb:       Reward 2271217.91271
+wandb: ServedDemand 385406.30068
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_48_entire_problem_../data/SF/10/SF_10.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/bbf3zxa0
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v9
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_025151-bbf3zxa0/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_025905-7w74tsl0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_2_entire_problem_../data/SF/10/SF_10.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/7w74tsl0
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 15.26837
+wandb:    Reb. Cost 120660.061
+wandb:       Reward 2008160.53206
+wandb: ServedDemand 345061.10988
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_2_entire_problem_../data/SF/10/SF_10.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/7w74tsl0
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v9
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_025905-7w74tsl0/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_031124-z89t38a8
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_1_entire_problem_../data/SF/10/SF_10.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/z89t38a8
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 7.51107
+wandb:    Reb. Cost 0
+wandb:       Reward 661068.06555
+wandb: ServedDemand 104309.83284
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_1_entire_problem_../data/SF/10/SF_10.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/z89t38a8
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v9
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_031124-z89t38a8/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_031748-raxia8to
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_48_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/raxia8to
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 960.83229
+wandb:    Reb. Cost 132424.85527
+wandb:       Reward 3544804.40042
+wandb: ServedDemand 541579.35984
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_48_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/raxia8to
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v10
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_031748-raxia8to/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_033415-nop0234b
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_2_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/nop0234b
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 33.32821
+wandb:    Reb. Cost 105058.95765
+wandb:       Reward 2366274.45007
+wandb: ServedDemand 351832.99181
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_2_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/nop0234b
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v10
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_033415-nop0234b/logs
+Exception in thread NetStatThr:
+Traceback (most recent call last):
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 256, in check_network_status
+    self._loop_check_status(
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 212, in _loop_check_status
+    local_handle = request()
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface.py", line 864, in deliver_network_status
+    return self._deliver_network_status(status)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 610, in _deliver_network_status
+    return self._deliver_record(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 569, in _deliver_record
+    handle = mailbox._deliver_record(record, interface=self)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 455, in _deliver_record
+    interface._publish(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_sock.py", line 51, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 221, in send_record_publish
+    self.send_server_request(server_req)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 155, in send_server_request
+    self._send_message(msg)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 152, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_040048-yboh64rh
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_1_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/yboh64rh
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 16.3126
+wandb:    Reb. Cost 0
+wandb:       Reward 1079170.90288
+wandb: ServedDemand 139814.94266
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_1_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/yboh64rh
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v10
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_040048-yboh64rh/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_041414-ag0e1rxn
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_48_entire_problem_../data/NY/10/NYC_10.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/ag0e1rxn
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 379.47336
+wandb:    Reb. Cost 12572.15074
+wandb:       Reward 292407.70429
+wandb: ServedDemand 35785.01239
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_48_entire_problem_../data/NY/10/NYC_10.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/ag0e1rxn
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v11
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_041414-ag0e1rxn/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_042056-b3dtkn1v
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_2_entire_problem_../data/NY/10/NYC_10.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/b3dtkn1v
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 14.4898
+wandb:    Reb. Cost 12975.24831
+wandb:       Reward 227333.68726
+wandb: ServedDemand 28431.65342
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_2_entire_problem_../data/NY/10/NYC_10.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/b3dtkn1v
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v11
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_042056-b3dtkn1v/logs
+Exception in thread NetStatThr:
+Traceback (most recent call last):
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 256, in check_network_status
+    self._loop_check_status(
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 212, in _loop_check_status
+    local_handle = request()
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface.py", line 864, in deliver_network_status
+    return self._deliver_network_status(status)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 610, in _deliver_network_status
+    return self._deliver_record(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 569, in _deliver_record
+    handle = mailbox._deliver_record(record, interface=self)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 455, in _deliver_record
+    interface._publish(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_sock.py", line 51, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 221, in send_record_publish
+    self.send_server_request(server_req)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 155, in send_server_request
+    self._send_message(msg)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 152, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_043242-m422a6e0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_1_entire_problem_../data/NY/10/NYC_10.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/m422a6e0
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 7.37408
+wandb:    Reb. Cost 0
+wandb:       Reward 60255.31248
+wandb: ServedDemand 6103.06654
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_1_entire_problem_../data/NY/10/NYC_10.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/m422a6e0
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v11
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_043242-m422a6e0/logs
+Exception in thread ChkStopThr:
+Traceback (most recent call last):
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 274, in check_stop_status
+    self._loop_check_status(
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 212, in _loop_check_status
+    local_handle = request()
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface.py", line 856, in deliver_stop_status
+    return self._deliver_stop_status(status)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 594, in _deliver_stop_status
+    return self._deliver_record(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 569, in _deliver_record
+    handle = mailbox._deliver_record(record, interface=self)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 455, in _deliver_record
+    interface._publish(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/interface/interface_sock.py", line 51, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 221, in send_record_publish
+    self.send_server_request(server_req)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 155, in send_server_request
+    self._send_message(msg)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 152, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/home/users/aaryan04/miniconda3/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_043859-yi6h9d0h
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_48_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/yi6h9d0h
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 940.95244
+wandb:    Reb. Cost 132424.85527
+wandb:       Reward 3544804.40042
+wandb: ServedDemand 541579.35984
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_48_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/yi6h9d0h
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v12
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_043859-yi6h9d0h/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_045507-t9btq7xb
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_2_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/t9btq7xb
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 33.39011
+wandb:    Reb. Cost 105058.95765
+wandb:       Reward 2366274.45007
+wandb: ServedDemand 351832.99181
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_2_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/t9btq7xb
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v12
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_045507-t9btq7xb/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_052141-ctxfzo3g
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_1_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/ctxfzo3g
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 16.03506
+wandb:    Reb. Cost 0
+wandb:       Reward 1079170.90288
+wandb: ServedDemand 139814.94266
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_1_entire_problem_../data/SF/15/SF_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/ctxfzo3g
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v12
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_052141-ctxfzo3g/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_053455-cwnn0pco
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_48_entire_problem_../data/NY/15/NYC_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/cwnn0pco
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 874.35693
+wandb:    Reb. Cost 22267.21024
+wandb:       Reward 528877.88766
+wandb: ServedDemand 66698.99848
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_48_entire_problem_../data/NY/15/NYC_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/cwnn0pco
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v12
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_053455-cwnn0pco/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_054955-a999w6j3
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_2_entire_problem_../data/NY/15/NYC_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/a999w6j3
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 31.61357
+wandb:    Reb. Cost 23121.66425
+wandb:       Reward 409883.59429
+wandb: ServedDemand 51816.6036
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_2_entire_problem_../data/NY/15/NYC_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/a999w6j3
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v12
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_054955-a999w6j3/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_061505-4k1jfwzr
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_1_entire_problem_../data/NY/15/NYC_15.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/4k1jfwzr
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 16.24666
+wandb:    Reb. Cost 0
+wandb:       Reward 108479.5606
+wandb: ServedDemand 11154.02531
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_1_entire_problem_../data/NY/15/NYC_15.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/4k1jfwzr
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v12
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_061505-4k1jfwzr/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_062833-x9q79kph
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_48_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/x9q79kph
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 1490.5829
+wandb:    Reb. Cost 42160.60645
+wandb:       Reward 930801.03064
+wandb: ServedDemand 116319.20536
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_48_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/x9q79kph
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v13
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_062833-x9q79kph/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_065354-vfsp63y8
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_2_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/vfsp63y8
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 54.48138
+wandb:    Reb. Cost 27651.0527
+wandb:       Reward 698916.97243
+wandb: ServedDemand 83553.94874
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_2_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/vfsp63y8
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v13
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_065354-vfsp63y8/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_073703-8z66zouw
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run NY_mpc_horizon_1_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/8z66zouw
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 26.97736
+wandb:    Reb. Cost 0
+wandb:       Reward 183828.89129
+wandb: ServedDemand 17864.78333
+wandb: 
+wandb: 🚀 View run NY_mpc_horizon_1_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/8z66zouw
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v13
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_073703-8z66zouw/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_075906-2950aysb
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_48_entire_problem_../data/SF/20/SF_20.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/2950aysb
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 1727.24304
+wandb:    Reb. Cost 206071.89747
+wandb:       Reward 5261959.40328
+wandb: ServedDemand 794807.93959
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_48_entire_problem_../data/SF/20/SF_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/2950aysb
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v13
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_075906-2950aysb/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_082824-xs03qhyy
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_2_entire_problem_../data/SF/20/SF_20.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/xs03qhyy
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 58.60243
+wandb:    Reb. Cost 136875.65872
+wandb:       Reward 3875641.13019
+wandb: ServedDemand 571873.1743
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_2_entire_problem_../data/SF/20/SF_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/xs03qhyy
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v13
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_082824-xs03qhyy/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_091448-fh85pyyc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_1_entire_problem_../data/SF/20/SF_20.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/fh85pyyc
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 29.25186
+wandb:    Reb. Cost 0
+wandb:       Reward 1510582.59125
+wandb: ServedDemand 194478.15258
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_1_entire_problem_../data/SF/20/SF_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/fh85pyyc
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v13
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_091448-fh85pyyc/logs
