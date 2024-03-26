@@ -408,6 +408,7 @@ for i_episode in epochs:
     #             pickle.dump(env.satisfied_demand, file)
     #         wandb.save(f"./{args.directory}/ckpt/{problem_folder}/satisfied_demand.p")
 wandb.log({"AVG Reward ": rewards_np.mean(), "Std Reward ": rewards_np.std(), "AVG Satisfied Demand ": served_demands_np.mean(), "AVG Charging Cost ": episode_charge_rebalancing_cost.mean(), "AVG Spatial Rebalancing Cost": episode_rebalancing_cost.mean(), "AVG Timestep Time": epoch_times.mean()})
+print("AVG Reward: ", rewards_np.mean(), "Std Reward: ", rewards_np.std(), "AVG Satisfied Demand: ", served_demands_np.mean(), "AVG Charging Cost: ", episode_charge_rebalancing_cost.mean(), "AVG Spatial Rebalancing Cost: ", episode_rebalancing_cost.mean(), "AVG Timestep Time: ", epoch_times.mean())
 # if not use_equal_distr_baseline and not use_prop_distr_baseline and not test:
 #     model.save_checkpoint(path=f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_{charging_heuristic}_final.pth")
 #     wandb.save(f"./{args.directory}/ckpt/{problem_folder}/a2c_gnn_{charging_heuristic}_final.pth")
