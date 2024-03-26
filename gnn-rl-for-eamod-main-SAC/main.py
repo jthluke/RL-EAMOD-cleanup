@@ -331,7 +331,7 @@ if zeroShotCity or (zeroShotNodes > 0):
             model.load_checkpoint(path='checkpoint/NYC_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
         else:
             model.load_checkpoint(path='checkpoint/SF_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
-    epochs = trange(10)
+    epochs = trange(5)
 else:
     if not args.test:
         model.train()  # set model in train mode
