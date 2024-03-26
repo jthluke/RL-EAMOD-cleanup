@@ -1,0 +1,10 @@
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main-heuristic/wandb/run-20240326_150913-1uepa94p
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run proportional_distr_baseline_data/NY/20/NYC_20.json_5_episodes_T_48_heuristic_empty_to_full_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/1uepa94p
+  0%|          | 0/5 [00:00<?, ?it/s]
