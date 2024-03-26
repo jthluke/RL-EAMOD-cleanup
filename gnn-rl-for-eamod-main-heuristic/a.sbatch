@@ -5,7 +5,7 @@
 #SBATCH --time=4-00:00:00
 #SBATCH--qos long
 #SBATCH --partition=normal
-#SBATCH -c 2
+#SBATCH -c 32
 
 conda activate
 

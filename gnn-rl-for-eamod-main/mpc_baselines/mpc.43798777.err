@@ -1,0 +1,40 @@
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_024422-oharvxtr
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_48_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/oharvxtr
+Traceback (most recent call last):
+  File "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py", line 250, in <module>
+    reb_time = env.scenario.rebTime[o, d][t]
+KeyError: 0
+wandb: Waiting for W&B process to finish... (failed 1). Press Control-C to abort syncing.
+wandb: 
+wandb: Run history:
+wandb:     Avg.Time ▁
+wandb:    Reb. Cost ▁
+wandb:       Reward ▁
+wandb: ServedDemand ▁
+wandb: 
+wandb: Run summary:
+wandb:     Avg.Time 101.39058
+wandb:    Reb. Cost 40790.36886
+wandb:       Reward 971672.4927
+wandb: ServedDemand 166309.49279
+wandb: 
+wandb: 🚀 View run SF_mpc_horizon_48_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/oharvxtr
+wandb: ️⚡ View job at https://wandb.ai/madronapixact/e-amod/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjE1MTQ2NjUzMw==/version_details/v7
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240326_024422-oharvxtr/logs
+wandb: Currently logged in as: aaryan04 (madronapixact). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.8
+wandb: Run data is saved locally in /home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/wandb/run-20240326_024627-oysghs3o
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run SF_mpc_horizon_2_entire_problem_../data/SF/5/SF_5.json_heuristic_graph_RL_approach_constraint_new
+wandb: ⭐️ View project at https://wandb.ai/madronapixact/e-amod
+wandb: 🚀 View run at https://wandb.ai/madronapixact/e-amod/runs/oysghs3o
