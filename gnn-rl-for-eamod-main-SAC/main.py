@@ -333,17 +333,18 @@ if zeroShotCity or (zeroShotNodes > 0):
             model.load_checkpoint(path='checkpoint/SF_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
     epochs = trange(10)
 else:
-    model.train()  # set model in train mode
-
-    if not args.scratch:
-        if not args.resume:
-            warm_start_num_sn = num_sn - 5
-            if city == 'NY':
-                model.load_checkpoint(path=f'checkpoint/NYC_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
+    if not args.test:
+        model.train()  # set model in train mode
+    
+        if not args.scratch:
+            if not args.resume:
+                warm_start_num_sn = num_sn - 5
+                if city == 'NY':
+                    model.load_checkpoint(path=f'checkpoint/NYC_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
+                else:
+                    model.load_checkpoint(path=f'checkpoint/SF_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
             else:
-                model.load_checkpoint(path=f'checkpoint/SF_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
-        else:
-            model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth')
+                model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
