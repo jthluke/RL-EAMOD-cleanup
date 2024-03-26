@@ -308,7 +308,7 @@ model = SAC(
 train_episodes = args.max_episodes  # set max number of training episodes
 epochs = trange(train_episodes)  # epoch iterator
 if args.test:
-    epochs = trange(5)
+    epochs = trange(1)
 
 best_reward = -np.inf  # set best reward
 best_reward_test = -np.inf  # set best reward
@@ -316,19 +316,20 @@ best_reward_test = -np.inf  # set best reward
 if zeroShotCity or (zeroShotNodes > 0):
     if zeroShotCity:
         if city == 'NY':
-            model.load_checkpoint(path=f'checkpoint/SF_{num_sn}_{train_episodes}_48_{run_id}_test.pth')
+            checkpoint_path = f'SF_{num_sn}_{train_episodes}_{args.T}_{run_id}'
             # scale_factor = 0.00001
             # scale_price = 0.1
         else:
-            model.load_checkpoint(path=f'checkpoint/NYC_{num_sn}_{train_episodes}_48_{run_id}_test.pth')
+            checkpoint_path = f'NYC_{num_sn}_{train_episodes}_{args.T}_{run_id}'
             scale_factor = 0.01
             scale_price = 0.1
     else:
         if city == 'NY':
-            model.load_checkpoint(path=f'checkpoint/NYC_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
+            checkpoint_path = f'NYC_{zeroShotNodes}_{train_episodes}_{args.T}_{run_id}'
         else:
-            model.load_checkpoint(path=f'checkpoint/SF_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
-    epochs = trange(5)
+            checkpoint_path = f'SF_{zeroShotNodes}_{train_episodes}_{args.T}_{run_id}'
+    model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
+    epochs = trange(1)
 else:
     if not test:
         model.train()  # set model in train mode
@@ -337,9 +338,10 @@ else:
             if not args.resume:
                 warm_start_num_sn = num_sn - 5
                 if city == 'NY':
-                    model.load_checkpoint(path=f'checkpoint/NYC_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
+                    checkpoint_path = f'NYC_{warm_start_num_sn}_{train_episodes}_{args.T}_{run_id}'
                 else:
-                    model.load_checkpoint(path=f'checkpoint/SF_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
+                    checkpoint_path = f'SF_{warm_start_num_sn}_{train_episodes}_{args.T}_{run_id}'
+                model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
             else:
                 model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth')
     else:
@@ -525,8 +527,8 @@ for i_episode in epochs:
     # Checkpoint best performing model
     if episode_reward >= best_reward:
         path = os.path.join('.', 'checkpoint', f'{checkpoint_path}.pth')
-        model.save_checkpoint(
-            path=path)
+        if not test:
+            model.save_checkpoint(path=path)
         best_reward = episode_reward
         best_rebal_cost = episode_rebalancing_cost
         best_served_demand  = episode_served_demand
@@ -547,7 +549,8 @@ for i_episode in epochs:
         if test_reward >= best_reward_test:
             best_reward_test = test_reward
             path = os.path.join('.', 'checkpoint', f'{checkpoint_path}_test.pth')
-            model.save_checkpoint(path=path)
+            if not test:
+                model.save_checkpoint(path=path)
             print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
 
 
