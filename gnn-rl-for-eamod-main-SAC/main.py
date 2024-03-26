@@ -95,8 +95,8 @@ parser.add_argument('--city', type=str, default='NY', metavar='N',
                     help='city (default: NY)')
 parser.add_argument('--zeroShotCity', type=bool, default=False,
                     help='whether to try different city')
-parser.add_argument('--zeroShotNodes', type=bool, default=False,
-                    help='whether to try different number of nodes')
+parser.add_argument('--zeroShotNodes', type=int, default=0, 
+                    help='num nodes in model to load')
 parser.add_argument('--scratch', type=bool, default=False,
                     help='whether to start training from scratch')
 parser.add_argument('--resume', type=bool, default=False,
@@ -310,24 +310,27 @@ if test:
 
 train_episodes = args.max_episodes  # set max number of training episodes
 epochs = trange(train_episodes)  # epoch iterator
+if args.test:
+    epochs = trange(5)
+
 best_reward = -np.inf  # set best reward
 best_reward_test = -np.inf  # set best reward
 
-if zeroShotCity or zeroShotNodes:
+if zeroShotCity or (zeroShotNodes > 0):
     if zeroShotCity:
         if city == 'NY':
-            model.load_checkpoint(path=f'checkpoint/SF_{num_sn}_9000_48_{run_id}_test.pth')
+            model.load_checkpoint(path=f'checkpoint/SF_{num_sn}_{train_episodes}_48_{run_id}_test.pth')
             # scale_factor = 0.00001
             # scale_price = 0.1
         else:
-            model.load_checkpoint(path=f'checkpoint/NYC_{num_sn}_9000_48_{run_id}_test.pth')
+            model.load_checkpoint(path=f'checkpoint/NYC_{num_sn}_{train_episodes}_48_{run_id}_test.pth')
             scale_factor = 0.01
             scale_price = 0.1
     else:
         if city == 'NY':
-            model.load_checkpoint(path='checkpoint/NYC_10_9000_48_{run_id}_test.pth')
+            model.load_checkpoint(path='checkpoint/NYC_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
         else:
-            model.load_checkpoint(path='checkpoint/SF_10_9000_48_{run_id}_test.pth')
+            model.load_checkpoint(path='checkpoint/SF_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
     epochs = trange(10)
 else:
     model.train()  # set model in train mode
@@ -336,9 +339,9 @@ else:
         if not args.resume:
             warm_start_num_sn = num_sn - 5
             if city == 'NY':
-                model.load_checkpoint(path=f'checkpoint/NYC_{warm_start_num_sn}_9000_48_{run_id}_test.pth')
+                model.load_checkpoint(path=f'checkpoint/NYC_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
             else:
-                model.load_checkpoint(path=f'checkpoint/SF_{warm_start_num_sn}_9000_48_{run_id}_test.pth')
+                model.load_checkpoint(path=f'checkpoint/SF_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
         else:
             model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth')
 
@@ -494,16 +497,19 @@ for i_episode in epochs:
     # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
+    print(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     
     # Send current statistics to wandb
     for spatial_node in range(env.scenario.spatial_nodes):
         try:
             wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
+            print({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
         except:
             print(f"wandb log failed for episode {i_episode+1}")
             pass
         try:
             wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
+            print({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
         except:
             print(f"wandb log failed for episode {i_episode+1}")
             pass
@@ -511,6 +517,7 @@ for i_episode in epochs:
         if total_demand_per_spatial_node[spatial_node] > 0:
             try:
                 wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
+                print({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
             except:
                 print(f"wandb log failed for episode {i_episode+1}")
                 pass
@@ -527,6 +534,8 @@ for i_episode in epochs:
     
     try:
         wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand,
+                   "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
+        print({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand,
                    "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
     except:
         print(f"wandb log failed for episode {i_episode+1}")
@@ -551,6 +560,7 @@ test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_a
 
 try:
     wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
+    print({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
 except:
     print(f"wandb log failed for test results")
     pass
