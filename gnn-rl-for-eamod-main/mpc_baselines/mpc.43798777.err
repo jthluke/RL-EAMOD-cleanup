@@ -667,7 +667,7 @@ wandb:
 wandb: Run summary:
 wandb:     Avg.Time 1490.5829
 wandb:    Reb. Cost 42160.60645
-wandb:       Reward 930801.03064
+wandb:       Reward  .03064
 wandb: ServedDemand 116319.20536
 wandb: 
 wandb: 🚀 View run NY_mpc_horizon_48_entire_problem_../data/NY/20/NYC_20.json_heuristic_graph_RL_approach_constraint_new at: https://wandb.ai/madronapixact/e-amod/runs/x9q79kph
