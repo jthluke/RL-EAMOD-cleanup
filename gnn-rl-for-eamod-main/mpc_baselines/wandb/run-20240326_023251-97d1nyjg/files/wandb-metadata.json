@@ -1,0 +1,146 @@
+{
+    "os": "Linux-3.10.0-1160.108.1.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.10.12",
+    "heartbeatAt": "2024-03-26T09:32:52.180050",
+    "startedAt": "2024-03-26T09:32:51.057682",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--spatial_nodes",
+        "5",
+        "--mpc_horizon",
+        "48",
+        "--city",
+        "NY",
+        "--gurobi",
+        "Justin"
+    ],
+    "state": "running",
+    "program": "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal/gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py",
+    "codePath": "gnn-rl-for-eamod-main/mpc_baselines/main_mpc.py",
+    "git": {
+        "remote": "https://github.com/Aaryan0404/private-RL-EAMOD-Personal.git",
+        "commit": "0eb2e8209c9f6cabc6cd20e5a2e341335f20a420"
+    },
+    "email": null,
+    "root": "/home/groups/pavone/RL-EAMOD/private-RL-EAMOD-Personal",
+    "host": "sh02-01n50.int",
+    "username": "aaryan04",
+    "executable": "/home/users/aaryan04/miniconda3/bin/python",
+    "cpu_count": 20,
+    "cpu_count_logical": 20,
+    "cpu_freq": {
+        "current": 2288.9351500000002,
+        "min": 1200.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2400.0,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2715.234,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2399.853,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2640.38,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.0,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2399.853,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1242.773,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2631.591,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1297.265,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2658.251,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2423.291,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2634.96,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2647.851,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2683.154,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2399.853,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2434.863,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1398.193,
+            "min": 1200.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "total": 23.98828125,
+        "used": 3.091796875
+    },
+    "memory": {
+        "total": 125.65940856933594
+    }
+}
