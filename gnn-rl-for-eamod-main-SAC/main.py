@@ -305,9 +305,6 @@ model = SAC(
     city=city
 ).to(device)
 
-if test:
-    model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
-
 train_episodes = args.max_episodes  # set max number of training episodes
 epochs = trange(train_episodes)  # epoch iterator
 if args.test:
@@ -328,12 +325,12 @@ if zeroShotCity or (zeroShotNodes > 0):
             scale_price = 0.1
     else:
         if city == 'NY':
-            model.load_checkpoint(path='checkpoint/NYC_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
+            model.load_checkpoint(path=f'checkpoint/NYC_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
         else:
-            model.load_checkpoint(path='checkpoint/SF_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
+            model.load_checkpoint(path=f'checkpoint/SF_{zeroShotNodes}_{train_episodes}_48_{run_id}_test.pth')
     epochs = trange(5)
 else:
-    if not args.test:
+    if not test:
         model.train()  # set model in train mode
     
         if not args.scratch:
@@ -345,6 +342,8 @@ else:
                     model.load_checkpoint(path=f'checkpoint/SF_{warm_start_num_sn}_{train_episodes}_48_{run_id}_test.pth')
             else:
                 model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth')
+    else:
+        model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
