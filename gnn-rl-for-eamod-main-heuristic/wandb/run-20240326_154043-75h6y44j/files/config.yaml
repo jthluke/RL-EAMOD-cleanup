@@ -90,7 +90,7 @@ seed:
   value: 10
 charging_heuristic:
   desc: null
-  value: empty_to_full
+  value: off_peak_nothing
 charge_levels_per_timestep:
   desc: null
   value: 6
@@ -105,7 +105,7 @@ _wandb:
     framework: torch
     is_jupyter_run: false
     is_kaggle_kernel: false
-    start_time: 1711490953.88857
+    start_time: 1711492843.310871
     t:
       1:
       - 1
@@ -116,7 +116,6 @@ _wandb:
       - 55
       - 77
       3:
-      - 2
       - 13
       - 16
       - 23
