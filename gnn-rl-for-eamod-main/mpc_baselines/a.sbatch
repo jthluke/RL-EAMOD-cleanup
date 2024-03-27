@@ -7,8 +7,5 @@
 #SBATCH -c 32
 
 
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 3 --city NY --noisy True --gurobi Aaryan
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 3 --city SF --noisy True --gurobi Aaryan
-
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 4 --city NY --noisy True --gurobi Aaryan
-python main_mpc.py --spatial_nodes 5 --mpc_horizon 4 --city SF --noisy True --gurobi Aaryan
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 5 --city NY --noisy True --gurobi Aaryan
+python main_mpc.py --spatial_nodes 5 --mpc_horizon 5 --city SF --noisy True --gurobi Aaryan
