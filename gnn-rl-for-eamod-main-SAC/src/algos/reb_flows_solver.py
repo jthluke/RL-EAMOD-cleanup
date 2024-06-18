@@ -19,7 +19,8 @@ class RebalFlowSolver:
         self.m.Params.Crossover = 0
         self.m.Params.BarConvTol = 1e-6
         self.m.Params.Threads = 32
-        self.m.setParam("LogFile", os.path.join(os.getcwd(), 'reb_flow_gurobi_log.log'))
+        self.m.Params.LogToConsole = 0
+        #self.m.setParam("LogFile", os.path.join(os.getcwd(), 'reb_flow_gurobi_log.log'))
 
         self.flow = self.m.addMVar(shape=(len(env.edges)), lb=0, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="flow") # both could be INTEGER
         self.slack_variables = self.m.addMVar(shape=(len(env.nodes)), lb=-10000000, ub=gp.GRB.INFINITY, vtype=gp.GRB.CONTINUOUS, name="slack")
