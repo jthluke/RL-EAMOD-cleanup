@@ -9,19 +9,18 @@ You will need to have a working Gurobi Optimizer installation. If you are a stud
 
 To install all required dependencies, run:
 ```
-cd gnn-rl-for-eamod-main-SAC
 pip install -r requirements.txt
 ```
 
 ## Contents
 
-* `gnn-rl-for-eamod-main-SAC/src/algos/pax_flows_solver.py`: Gurobi Python formulation of the Passenger Matching problem (Section IV-A Step 1 in the paper).
-* `gnn-rl-for-eamod-main-SAC/src/algos/sac.py`: PyTorch implementation of SAC-GNN for determining Desired Distribution (Section IV-A Step 2 in the paper).
-* `gnn-rl-for-eamod-main-SAC/src/algos/reb_flows_solver.py`: Gurobi Python formulation of the Vehicle Rebalancing problem (Section IV-A Step 3 in the paper).
-* `gnn-rl-for-eamod-main-SAC/src/envs/amod_env.py`: E-AMoD simulator.
-* `gnn-rl-for-eamod-main-SAC/src/misc/`: helper functions.
-* `gnn-rl-for-eamod-main-SAC/data/`: json and npy files for NYC experiments.
-* `gnn-rl-for-eamod-main-SAC/checkpoint/`: directory for saved SAC-GNN model weights.
+* `src/algos/pax_flows_solver.py`: Gurobi Python formulation of the Passenger Matching problem (Section IV-A Step 1 in the paper).
+* `src/algos/sac.py`: PyTorch implementation of SAC-GNN for determining Desired Distribution (Section IV-A Step 2 in the paper).
+* `src/algos/reb_flows_solver.py`: Gurobi Python formulation of the Vehicle Rebalancing problem (Section IV-A Step 3 in the paper).
+* `src/envs/amod_env.py`: E-AMoD simulator.
+* `src/misc/`: helper functions.
+* `data/`: json and npy files for NYC experiments.
+* `checkpoint/`: directory for saved SAC-GNN model weights.
 
 ## Examples
 
@@ -39,24 +38,27 @@ arguments:
 ```
 To see all arguments, run:
 ```
-python gnn-rl-for-eamod-main-SAC/main.py --help
+python main.py --help
 ```
 
-### Training and testing an agent
-
-1. To train an agent from scratch with run_id X (e.g., 123) run the following:
+### Testing an agent
+Pretrained agents for NYC are available in the `checkpoint/` directory.
+To evaluate a pretrained agent with run_id X (e.g., 99) run the following:
 ```
-python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --scratch True  --run_id 123
+python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --test True --run_id 99
+```
+
+### Training an agent
+1. To train a new agent from scratch with run_id X (e.g., 123) run the following:
+```
+python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --scratch True --run_id 123
 ```
 **Important**: make sure to use a unique run_id to avoid overwriting existing checkpoints.
 2. To resume training of an agent with run_id X (e.g., 123) run the following:
 ```
-python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --resume True  --run_id 123
+python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --resume True --run_id 123
 ```
-3. To evaluate a pretrained agent with run_id X (e.g., 99) run the following:
-```
-python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --test True --run_id 99
-```
+
 
 ## Credits
 This work was conducted as a joint effort by [Aaryan Singhal*](https://www.aaryan-singhal.com/), [Daniele Gammelli*](https://scholar.google.it/citations?user=C9ZbB3cAAAAJ), [Justin Luke*](https://scholar.google.com/citations?user=G-_Za4EAAAAJ), [Karthik Gopalakrishnan*](https://scholar.google.com/citations?user=Tt2MJQsAAAAJ), Dominik Helmreich' and [Marco Pavone*](https://web.stanford.edu/~pavone/), at ETH Zurich' and Stanford University*. 
