@@ -14,7 +14,6 @@ import time
 import copy
 
 from src.envs.amod_env import Scenario, AMoD
-from src.algos.a2c_gnn import A2C
 from src.algos.sac import SAC
 from src.misc.utils import dictsum
 
@@ -100,9 +99,6 @@ parser.add_argument('--scratch', type=bool, default=False,
                     help='whether to start training from scratch')
 parser.add_argument('--resume', type=bool, default=False,
                     help='whether to resume training')
-
-parser.add_argument('--gurobi', type=str, default='Daniele', metavar='N',
-                    help='gurobi license (default: Daniele)')
 
 # Model parameters
 parser.add_argument('--test', type=bool, default=False,
