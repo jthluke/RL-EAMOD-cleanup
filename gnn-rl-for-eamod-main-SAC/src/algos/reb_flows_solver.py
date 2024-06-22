@@ -17,7 +17,7 @@ class RebalFlowSolver:
 
         self.m.Params.Method = 2
         self.m.Params.Crossover = 0
-        self.m.Params.BarConvTol = 1e-6
+        #self.m.Params.BarConvTol = 1e-12
         self.m.Params.Threads = 32
         self.m.Params.LogToConsole = 0
         #self.m.setParam("LogFile", os.path.join(os.getcwd(), 'reb_flow_gurobi_log.log'))

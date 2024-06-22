@@ -9,7 +9,6 @@ from src.algos.reb_flows_solver import RebalFlowSolver
 import torch
 import json
 import os
-import wandb
 import pickle
 import time
 import copy
@@ -175,61 +174,7 @@ else:
     file_path = os.path.join('data', problem_folder, str(num_sn), f'SF_{num_sn}.json')
 
 experiment = 'training_' + file_path + '_' + str(args.max_episodes) + '_episodes_T_' + str(args.T) + '_new' + str(args.run_id)
-# energy_dist_path = os.path.join('data', problem_folder, 'ClusterDataset1', 'energy_distance.npy')
 energy_dist_path = os.path.join('data', problem_folder, str(num_sn), 'energy_distance.npy')
-
-if args.gurobi == 'Daniele':
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Daniele"
-    gurobi_env.setParam('WLSACCESSID', '62ac7a45-735c-4cdd-9491-c4e934fd8dd3')
-    gurobi_env.setParam('WLSSECRET', 'd9edc316-a915-4f00-8f28-da4c0ef2c301')
-    gurobi_env.setParam('LICENSEID', 2403732)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-if args.gurobi == 'Daniele2':
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Daniele2"
-    gurobi_env.setParam('WLSACCESSID', '672d91ba-fee2-4007-aeee-434877507382')
-    gurobi_env.setParam('WLSSECRET', '778fbd58-b1b4-4ec4-ae51-53304b1cfbbd')
-    gurobi_env.setParam('LICENSEID', 2431155)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-if args.gurobi == 'Daniele3':
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Daniele3"
-    gurobi_env.setParam('WLSACCESSID', 'f07bce97-f3f5-484b-919f-5ee314418659')
-    gurobi_env.setParam('WLSSECRET', 'd934832c-3415-4ead-a636-bd4b5ccb95b1')
-    gurobi_env.setParam('LICENSEID', 2431159)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-if args.gurobi == 'Aaryan':
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Aaryan"
-    gurobi_env.setParam('WLSACCESSID', '5e57977b-50af-41bc-88c4-b4b248c861ad')
-    gurobi_env.setParam('WLSSECRET', '233f2933-4c63-41fe-9616-62e1304e33b2')
-    gurobi_env.setParam('LICENSEID', 2403727)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-if args.gurobi == 'Justin':
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Justin"
-    gurobi_env.setParam('WLSACCESSID', '82115472-a780-40e8-9297-b9c92969b6d4')
-    gurobi_env.setParam('WLSSECRET', '0c069810-f45f-4920-a6cf-3f174425e641')
-    gurobi_env.setParam('LICENSEID', 844698)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-if args.gurobi == 'Justin2':
-    gurobi_env = gp.Env(empty=True)
-    gurobi = "Justin2"
-    gurobi_env.setParam('WLSACCESSID', '1a1fe5b7-4a13-40a7-9b38-411ea3e5f099')
-    gurobi_env.setParam('WLSSECRET', 'b0f7f971-2ffe-40d1-a287-039fe9934bde')
-    gurobi_env.setParam('LICENSEID', 2430074)
-    gurobi_env.setParam("OutputFlag",0)
-    gurobi_env.start()
-if args.gurobi == 'None':
-    gurobi_env = gp.Env()
-    gurobi = "None"
-    gurobi_env.start()
 
 scenario = create_scenario(file_path, energy_dist_path)
 env = AMoD(scenario)
@@ -256,34 +201,6 @@ if zeroShotCity:
 if zeroShotNodes:
     experiment += '_zeroShotNodes'
 
-# set up wandb
-wandb.init(
-      # Set the project where this run will be logged
-      project='e-amod',
-      # pass a run name 
-      name=experiment,
-      # Track hyperparameters and run metadata
-      config={
-        "number_chargelevels": env.scenario.number_charge_levels,
-        "number_spatial_nodes": env.scenario.spatial_nodes,
-        "dataset": file_path,
-        "episodes": args.max_episodes,
-        "number_vehicles_per_node_init": env.G.nodes[(0,1)]['accInit'],
-        "charging_stations": list(env.scenario.charging_stations),
-        "charging_station_capacities": list(env.scenario.cars_per_station_capacity),
-        "learning_rate_actor": lr_a,
-        "learning_rate_critic": lr_c,
-        "gradient_norm_clip_actor": grad_norm_clip_a,
-        "gradient_norm_clip_critic": grad_norm_clip_c,
-        "scale_factor": scale_factor,
-        "scale_price": scale_price,
-        "time_horizon": T,
-        "episode_length": env.tf,
-        "seed": seed,
-        "charge_levels_per_timestep": env.scenario.charge_levels_per_charge_step, 
-        "licence": gurobi,
-      })
-
 experiment = et
 
 if city == 'NY':
@@ -303,7 +220,7 @@ model = SAC(
     critic_version=args.critic_version,
     device=device,
     city=city
-).to(device)
+).to(device);
 
 train_episodes = args.max_episodes  # set max number of training episodes
 epochs = trange(train_episodes)  # epoch iterator
@@ -341,11 +258,11 @@ else:
                     checkpoint_path = f'NYC_{warm_start_num_sn}_{train_episodes}_{args.T}_{run_id}'
                 else:
                     checkpoint_path = f'SF_{warm_start_num_sn}_{train_episodes}_{args.T}_{run_id}'
-                model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
+                model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth');
             else:
-                model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth')
+                model.load_checkpoint(path=f'checkpoint/{checkpoint_path}.pth');
     else:
-        model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth')
+        model.load_checkpoint(path=f'checkpoint/{checkpoint_path}_test.pth');
 
 total_demand_per_spatial_node = np.zeros(env.number_nodes_spatial)
 for region in env.nodes_spatial:
@@ -381,7 +298,7 @@ for i_episode in epochs:
         # take matching step (Step 1 in paper)
         if step == 0 and i_episode == 0:
             # initialize optimization problem in the first step
-            pax_flows_solver = PaxFlowsSolver(env=env, gurobi_env=gurobi_env)
+            pax_flows_solver = PaxFlowsSolver(env=env, gurobi_env=None)
         else:
             time_a = time.time()
             pax_flows_solver.update_constraints()
@@ -444,7 +361,7 @@ for i_episode in epochs:
         # solve minimum rebalancing distance problem (Step 3 in paper)
         if step == 0 and i_episode == 0:
         # initialize optimization problem in the first step
-            rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
+            rebal_flow_solver = RebalFlowSolver(env=env, desiredAcc=desired_acc, gurobi_env=None)
         else:
             time_c = time.time()
             rebal_flow_solver.update_constraints(desired_acc, env)
@@ -456,7 +373,6 @@ for i_episode in epochs:
         rebAction = rebal_flow_solver.optimize()
         time_e_end = time.time() - time_e
         time_8_end = time.time() - time_8
-        # print(f"Time a: {time_a_end:.2f}sec, Time b: {time_b_end:.2f}sec, Time c: {time_c_end:.2f}sec, Time d: {time_d_end:.2f}sec, Time e: {time_e_end:.2f}sec")
 
         time_9 = time.time()
         # Take action in environment
@@ -494,36 +410,11 @@ for i_episode in epochs:
         else:
             continue
 
-    
-    # see which time is highest
-    # print(f"Time 2: {time_2_end:.2f}sec, Time 3: {time_3_end:.2f}sec, Time 4: {time_4_end:.2f}sec, Time 5: {time_5_end:.2f}sec, Time 6: {time_6_end:.2f}sec, Time 7: {time_7_end:.2f}sec, Time 8: {time_8_end:.2f}sec, Time 9: {time_9_end:.2f}sec")
+    # Log performance
     epochs.set_description(
         f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     print(f"Episode {i_episode+1} | Reward: {episode_reward:.2f} | ServedDemand: {episode_served_demand:.2f} | Reb. Cost: {episode_rebalancing_cost:.2f} | Avg. Time: {np.array(episode_times).mean():.2f}sec")
     
-    # Send current statistics to wandb
-    for spatial_node in range(env.scenario.spatial_nodes):
-        try:
-            wandb.log({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
-            print({"Episode": i_episode+1, f"Desired Accumulation {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]})
-        except:
-            print(f"wandb log failed for episode {i_episode+1}")
-            pass
-        try:
-            wandb.log({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
-            print({"Episode": i_episode+1, f"Total Demand {spatial_node}": total_demand_per_spatial_node[spatial_node]})
-        except:
-            print(f"wandb log failed for episode {i_episode+1}")
-            pass
-
-        if total_demand_per_spatial_node[spatial_node] > 0:
-            try:
-                wandb.log({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
-                print({"Episode": i_episode+1, f"Desired Acc. to Total Demand ratio {spatial_node}": desired_accumulations_spatial_nodes[spatial_node]/total_demand_per_spatial_node[spatial_node]})
-            except:
-                print(f"wandb log failed for episode {i_episode+1}")
-                pass
-
     # Checkpoint best performing model
     if episode_reward >= best_reward:
         path = os.path.join('.', 'checkpoint', f'{checkpoint_path}.pth')
@@ -533,15 +424,6 @@ for i_episode in epochs:
         best_rebal_cost = episode_rebalancing_cost
         best_served_demand  = episode_served_demand
         best_model = model
-    
-    try:
-        wandb.log({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand,
-                   "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
-        print({"Episode": i_episode+1, "Reward": episode_reward, "Best Reward:": best_reward, "ServedDemand": episode_served_demand, "Best Served Demand": best_served_demand,
-                   "Reb. Cost": episode_rebalancing_cost, "Best Reb. Cost": best_rebal_cost, "Spatial Reb. Cost": -rebreward, "Avg. Time": np.array(episode_times).mean()})
-    except:
-        print(f"wandb log failed for episode {i_episode+1}")
-        pass
 
     if i_episode % 10 == 0:  # test model every 10th episode
         test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
@@ -552,20 +434,3 @@ for i_episode in epochs:
             if not test:
                 model.save_checkpoint(path=path)
             print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
-
-
-## now test trained model
-# load best test.pth model
-path = os.path.join('.', 'checkpoint', f'{checkpoint_path}_test.pth')
-model.load_checkpoint(path=path)
-test_reward, test_served_demand, test_rebalancing_cost, test_time = model.test_agent(
-    50, env, pax_flows_solver, rebal_flow_solver, parser=parser)
-
-try:
-    wandb.log({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
-    print({"AVG Reward ": test_reward, "AVG Satisfied Demand ": test_served_demand, "AVG Rebalancing Cost": test_rebalancing_cost, "AVG Timestep Time": test_time})
-except:
-    print(f"wandb log failed for test results")
-    pass
-
-wandb.finish()
