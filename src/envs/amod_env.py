@@ -521,7 +521,7 @@ class Scenario:
             self.tf = tf
 
             for o,d in self.edges:
-                for t in range(0,tf*2): # TODO: do not know why
+                for t in range(0,tf*2):
                     if t in self.demand_input[o[0],d[0]] and self.demand_input[o[0],d[0]][t] > 0:
                         continue
                     else:
@@ -532,7 +532,6 @@ class Scenario:
                 hr, acc = item['hour'], item['acc']
                 for region in self.G_spatial.nodes:
                     self.G_spatial.nodes[region]['accInit'] = int(0)
-                    # TODO: uncommment
                     # for c in range(self.number_charge_levels):
                     #     cut_off_charge = int(0.5*self.number_charge_levels)
                     #     print("cutoff charge init", cut_off_charge)
@@ -554,7 +553,6 @@ class Scenario:
                             self.G_spatial.nodes[region]['accInit'] += number_cars_per_node
                         else:
                             self.G.nodes[(region,c)]['accInit'] = 0
-                    # TODO: delete
                     # for c in range(self.number_charge_levels):
                     #     number_cars_per_node = int(acc/(len(list(self.G_spatial.nodes))))
                     #     if c == number_charge_levels - 1:
@@ -620,13 +618,13 @@ class Scenario:
                         break
 
                     # old version from codebase
-                    # assert target_charge < c  # we have to loose energy to move
+                    # assert target_charge < c  # we have to lose energy to move
 
                     # version assumed to be correct
                     if (o == d):
                         target_charge = c # no charge lost if staying at the same location
                     else:
-                        assert target_charge < c  # we have to loose energy to move
+                        assert target_charge < c  # we have to lose energy to move
                     
                     if (o != d):
                         self.G.add_edge((o, c), (d, target_charge))

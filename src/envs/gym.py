@@ -40,7 +40,6 @@ class FleetEnv(gym.Env):
         self.rebal_flow_solver = RebalFlowSolver(
             env=self.env, desiredAcc=desired_acc, gurobi_env=gurobi_env)
         # Define action and observation space
-        # TODO: adapt to experiment SF: 0.0001, Toy: 0.01, NY:?
         self.scale_factor = scale_factor
         self.price_scale_factor = price_scale_factor
         self.scale_factor_reward = scale_factor_reward
