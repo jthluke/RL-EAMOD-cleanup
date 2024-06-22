@@ -5,7 +5,7 @@ Official implementation of [Real-time Control of Electric Autonomous Mobility-on
 
 ## Prerequisites
 
-You will need to have a working Gurobi Optimizer installation. If you are a student or academic, Gurobi Optimization provides Gurobi Optimizer at no cost. You can find more info [here](https://www.gurobi.com/downloads/end-user-license-agreement-academic/).
+You will need to have a working Gurobi Optimizer installation. If you are a student or academic, Gurobi Optimization provides Gurobi Optimizer at no cost. You can find more information [here](https://www.gurobi.com/downloads/end-user-license-agreement-academic/).
 
 To install all required dependencies, run:
 ```
@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ## Examples
 
 To train and test an agent, `main.py` accepts the following key arguments:
-```bash
+```
 arguments:
   --spatial_nodes N     number of spatial nodes (default: 5)
   --city N              city (default: NY)
@@ -54,6 +54,7 @@ python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --test Tru
 python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --scratch True --run_id 123
 ```
 **Important**: make sure to use a unique run_id to avoid overwriting existing checkpoints.
+
 2. To resume training of an agent with run_id X (e.g., 123) run the following:
 ```
 python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --resume True --run_id 123
@@ -61,7 +62,7 @@ python main.py --spatial_nodes 5 --T 48 --city NY --max_episodes 9000 --resume T
 
 
 ## Credits
-This work was conducted as a joint effort by [Aaryan Singhal*](https://www.aaryan-singhal.com/), [Daniele Gammelli*](https://scholar.google.it/citations?user=C9ZbB3cAAAAJ), [Justin Luke*](https://scholar.google.com/citations?user=G-_Za4EAAAAJ), [Karthik Gopalakrishnan*](https://scholar.google.com/citations?user=Tt2MJQsAAAAJ), Dominik Helmreich' and [Marco Pavone*](https://web.stanford.edu/~pavone/), at ETH Zurich' and Stanford University*. 
+This work was conducted as a joint effort by [Aaryan Singhal*](https://www.aaryan-singhal.com/), [Daniele Gammelli*](https://scholar.google.it/citations?user=C9ZbB3cAAAAJ), [Justin Luke*](https://scholar.google.com/citations?user=G-_Za4EAAAAJ), [Karthik Gopalakrishnan*](https://scholar.google.com/citations?user=Tt2MJQsAAAAJ), Dominik Helmreich', and [Marco Pavone*](https://web.stanford.edu/~pavone/), at ETH Zurich' and Stanford University*. 
 
 ## Reference
 ```
