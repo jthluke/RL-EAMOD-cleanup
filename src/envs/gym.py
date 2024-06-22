@@ -6,11 +6,10 @@ import torch.nn.functional as F
 import torch
 from src.algos.reb_flows_solver import RebalFlowSolver
 from src.algos.pax_flows_solver import PaxFlowsSolver
-from cmath import inf
 import numpy as np
 import sys
 import time
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../gnn-rl-for-eamod-main-SAC/')
 
 
 class FleetEnv(gym.Env):
