@@ -9,7 +9,7 @@ from src.algos.pax_flows_solver import PaxFlowsSolver
 import numpy as np
 import sys
 import time
-sys.path.insert(0, '../../gnn-rl-for-eamod-main-SAC/')
+sys.path.insert(0, '../../')
 
 
 class FleetEnv(gym.Env):

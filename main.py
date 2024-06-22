@@ -413,7 +413,7 @@ for i_episode in epochs:
     
     # Checkpoint best performing model
     if episode_reward >= best_reward:
-        path = os.path.join('gnn-rl-for-eamod-main-SAC', 'checkpoint', f'{checkpoint_path}.pth')
+        path = os.path.join('checkpoint', f'{checkpoint_path}.pth')
         if not test:
             model.save_checkpoint(path=path)
         best_reward = episode_reward
@@ -426,7 +426,7 @@ for i_episode in epochs:
             1, env, pax_flows_solver, rebal_flow_solver, parser=parser)
         if test_reward >= best_reward_test:
             best_reward_test = test_reward
-            path = os.path.join('gnn-rl-for-eamod-main-SAC', 'checkpoint', f'{checkpoint_path}_test.pth')
+            path = os.path.join('checkpoint', f'{checkpoint_path}_test.pth')
             if not test:
                 model.save_checkpoint(path=path)
             print(f"Best test results: reward = {best_reward_test}, best served demand = {test_served_demand}, best rebalancing cost = {test_rebalancing_cost}")
